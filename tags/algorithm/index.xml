@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>algorithm on I&#39;m Li. Mingzhi</title>
+    <link>/tags/algorithm/</link>
+    <description>Recent content in algorithm on I&#39;m Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh_CN</language>
+    <lastBuildDate>Sat, 05 Dec 2020 23:44:52 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>1. Binary Search</title>
+      <link>/posts/algorithm_illustration/binary-search/</link>
+      <pubDate>Sat, 05 Dec 2020 23:44:52 +0800</pubDate>
+      
+      <guid>/posts/algorithm_illustration/binary-search/</guid>
+      <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows. * Algorithm speed isn’t measured in seconds. * Algorithm times are measured in terms of growth of an algorithm.</description>
+    </item>
+    
+    <item>
+      <title>2. Selection Sort</title>
+      <link>/posts/algorithm_illustration/selection-search/</link>
+      <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
+      
+      <guid>/posts/algorithm_illustration/selection-search/</guid>
+      <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list. With an array, all your elements are stored right next to each other. With a list, elements are strewn all over, and one element stores the address of the next one.</description>
+    </item>
+    
+  </channel>
+</rss>

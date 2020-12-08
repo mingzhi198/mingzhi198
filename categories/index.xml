@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on I&#39;m Li. Mingzhi</title>
+    <link>/categories/</link>
+    <description>Recent content in Categories on I&#39;m Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh_CN</language>
+    <lastBuildDate>Sat, 05 Dec 2020 23:44:52 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>algorithm_illustration</title>
+      <link>/categories/algorithm_illustration/</link>
+      <pubDate>Sat, 05 Dec 2020 23:44:52 +0800</pubDate>
+      
+      <guid>/categories/algorithm_illustration/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

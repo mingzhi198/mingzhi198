@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on I&#39;m Li. Mingzhi</title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on I&#39;m Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh_CN</language>
+    <lastBuildDate>Sun, 06 Dec 2020 11:44:52 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>git</title>
+      <link>/tags/git/</link>
+      <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
+      
+      <guid>/tags/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>github</title>
+      <link>/tags/github/</link>
+      <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
+      
+      <guid>/tags/github/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>multiple users</title>
+      <link>/tags/multiple-users/</link>
+      <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
+      
+      <guid>/tags/multiple-users/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>resume</title>
+      <link>/tags/resume/</link>
+      <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
+      
+      <guid>/tags/resume/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>algorithm</title>
+      <link>/tags/algorithm/</link>
+      <pubDate>Sat, 05 Dec 2020 23:44:52 +0800</pubDate>
+      
+      <guid>/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>binary search</title>
+      <link>/tags/binary-search/</link>
+      <pubDate>Sat, 05 Dec 2020 23:44:52 +0800</pubDate>
+      
+      <guid>/tags/binary-search/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sort</title>
+      <link>/tags/sort/</link>
+      <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
+      
+      <guid>/tags/sort/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
