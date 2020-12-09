@@ -6,13 +6,23 @@
     <description>Recent content on I&#39;m Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
-    <lastBuildDate>Wed, 09 Dec 2020 08:32:27 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 09 Dec 2020 23:09:04 +0800</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>AL: 4. QuickSort</title>
+      <title>AL: 5. Hash tables</title>
+      <link>/posts/algorithm_illustration/cp5_hash_tables/</link>
+      <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
+      
+      <guid>/posts/algorithm_illustration/cp5_hash_tables/</guid>
+      <description>1. Requirements for hash function  It needs to be consistent. It should map different workds to different numbers.  You get a hash table by putting a hash function and an array together. Hash tables use an array to store data since we can get an item from an array instantly(O(1)).
+2. Use cases 2.1 Using hash tables for lookups Hash tables make it easy to model a relationship from one item to another.</description>
+    </item>
+    
+    <item>
+      <title>AL: 4. Quicksort</title>
       <link>/posts/algorithm_illustration/cp4_quick_sort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
@@ -24,7 +34,7 @@ Besides, the plots must be as big as possible.</description>
     </item>
     
     <item>
-      <title>AL3: Recursion</title>
+      <title>AL: 3. Recursion</title>
       <link>/posts/algorithm_illustration/cp3_recursion/</link>
       <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
       
@@ -55,7 +65,7 @@ Personal Information  Name: Mingzhi Li University: Shenzhen University, Software
     </item>
     
     <item>
-      <title>AL: 2. Selection Sort</title>
+      <title>AL: 2. Selection sort</title>
       <link>/posts/algorithm_illustration/cp2_selection-search/</link>
       <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
@@ -64,7 +74,7 @@ Personal Information  Name: Mingzhi Li University: Shenzhen University, Software
     </item>
     
     <item>
-      <title>AL: 1. Binary Search</title>
+      <title>AL: 1. Binary search</title>
       <link>/posts/algorithm_illustration/cp1_binary-search/</link>
       <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
       

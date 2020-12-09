@@ -3,22 +3,72 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/posts/algorithm_illustration/cp5_hash_tables/</loc>
+    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/algorithm/</loc>
+    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/algorithm_illustration/</loc>
+    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/</loc>
+    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/hash/</loc>
+    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/hash-tables/</loc>
+    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/posts/algorithm_illustration/cp4_quick_sort/</loc>
     <lastmod>2020-12-09T08:32:27+08:00</lastmod>
   </url>
   
   <url>
-    <loc>/</loc>
+    <loc>/tags/quick-sort/</loc>
     <lastmod>2020-12-09T08:32:27+08:00</lastmod>
   </url>
   
   <url>
-    <loc>/posts/</loc>
+    <loc>/tags/sort/</loc>
     <lastmod>2020-12-09T08:32:27+08:00</lastmod>
   </url>
   
   <url>
     <loc>/posts/algorithm_illustration/cp3_recursion/</loc>
+    <lastmod>2020-12-08T18:36:08+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/recursion/</loc>
     <lastmod>2020-12-08T18:36:08+08:00</lastmod>
   </url>
   
@@ -53,22 +103,7 @@
   </url>
   
   <url>
-    <loc>/tags/</loc>
-    <lastmod>2020-12-06T11:44:52+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/posts/algorithm_illustration/cp2_selection-search/</loc>
-    <lastmod>2020-12-04T23:44:52+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/algorithm/</loc>
-    <lastmod>2020-12-04T23:44:52+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/sort/</loc>
     <lastmod>2020-12-04T23:44:52+08:00</lastmod>
   </url>
   
@@ -78,17 +113,7 @@
   </url>
   
   <url>
-    <loc>/categories/algorithm_illustration/</loc>
-    <lastmod>2020-12-03T23:44:52+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/binary-search/</loc>
-    <lastmod>2020-12-03T23:44:52+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/categories/</loc>
     <lastmod>2020-12-03T23:44:52+08:00</lastmod>
   </url>
   

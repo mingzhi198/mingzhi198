@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>recursion on I&#39;m Li. Mingzhi</title>
+    <link>/tags/recursion/</link>
+    <description>Recent content in recursion on I&#39;m Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh_CN</language>
+    <lastBuildDate>Tue, 08 Dec 2020 18:36:08 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/recursion/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>AL: 3. Recursion</title>
+      <link>/posts/algorithm_illustration/cp3_recursion/</link>
+      <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
+      
+      <guid>/posts/algorithm_illustration/cp3_recursion/</guid>
+      <description>In this chapter, I learned about recursion, which is very useful in many algorithms. Also, this chapter shows us how to break down a problem into a base case and a recursive case.
+ 1. Recursion If you have a box containing more boxes, in which there will be no or more boxes.
+The key is in one of the boxes.
+How can you do to search for the key?</description>
+    </item>
+    
+  </channel>
+</rss>
