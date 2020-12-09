@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on I&#39;m Li. Mingzhi</title>
-    <link>https://limingzhi618.com/posts/</link>
+    <link>/posts/</link>
     <description>Recent content in Posts on I&#39;m Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <lastBuildDate>Wed, 09 Dec 2020 08:32:27 +0800</lastBuildDate>
     
-	<atom:link href="https://limingzhi618.com/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>AL: 4. QuickSort</title>
-      <link>https://limingzhi618.com/posts/algorithm_illustration/cp4_quick_sort/</link>
+      <link>/posts/algorithm_illustration/cp4_quick_sort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/posts/algorithm_illustration/cp4_quick_sort/</guid>
+      <guid>/posts/algorithm_illustration/cp4_quick_sort/</guid>
       <description>This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
  1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.
  1.1 Example1 If you am a farmer with a large land and plan to divide this farmland evenly into square plots. Besides, the plots must be as big as possible.</description>
@@ -24,47 +24,47 @@
     
     <item>
       <title>Github config for multiple users</title>
-      <link>https://limingzhi618.com/posts/github-config-for-multile-users/</link>
+      <link>/posts/github-config-for-multile-users/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/posts/github-config-for-multile-users/</guid>
+      <guid>/posts/github-config-for-multile-users/</guid>
       <description>1. Background We sometimes use more than one github account to manage different repositories. Even though we&#39;ve set the config file(~/.ssh/config) correctly and test(ssh -T git@github.com) correctly, it will promote &amp;quot;permission denied(public key)&amp;quot; while we hit git push.  The problem is that we need to clarify different hosts for different users. And make the Host of url in you repository config the same as that of ~/.ssh/config  2. Here is the content of my git config file(~/.</description>
     </item>
     
     <item>
       <title>Resume</title>
-      <link>https://limingzhi618.com/posts/resume/</link>
+      <link>/posts/resume/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/posts/resume/</guid>
+      <guid>/posts/resume/</guid>
       <description>Contact Me Phone: +86 18818686216　Email: lmingzhi618@gmail.com
 Personal Information  Name: Mingzhi Li University: Shenzhen University, Software Engineering blogs: https://mingzhi198.github.io Github: https://github.com/mingzhi198  Tech Stack  Golang, C\C++, Python, Shell, Linux gRPC, RabbitMQ, MySQL  </description>
     </item>
     
     <item>
       <title>AL: 2. Selection Sort</title>
-      <link>https://limingzhi618.com/posts/algorithm_illustration/ch2_selection-search/</link>
+      <link>/posts/algorithm_illustration/ch2_selection-search/</link>
       <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/posts/algorithm_illustration/ch2_selection-search/</guid>
+      <guid>/posts/algorithm_illustration/ch2_selection-search/</guid>
       <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list. With an array, all your elements are stored right next to each other. With a list, elements are strewn all over, and one element stores the address of the next one.</description>
     </item>
     
     <item>
       <title>AL: 1. Binary Search</title>
-      <link>https://limingzhi618.com/posts/algorithm_illustration/cp1_binary-search/</link>
+      <link>/posts/algorithm_illustration/cp1_binary-search/</link>
       <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/posts/algorithm_illustration/cp1_binary-search/</guid>
+      <guid>/posts/algorithm_illustration/cp1_binary-search/</guid>
       <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows. * Algorithm speed isn’t measured in seconds. * Algorithm times are measured in terms of growth of an algorithm.</description>
     </item>
     
     <item>
       <title>TOEFL W2: Money_support_for_arts_or_sports</title>
-      <link>https://limingzhi618.com/posts/toefl/writings/money_support_for_arts_or_sports/</link>
+      <link>/posts/toefl/writings/money_support_for_arts_or_sports/</link>
       <pubDate>Fri, 09 Oct 2020 10:09:03 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/posts/toefl/writings/money_support_for_arts_or_sports/</guid>
+      <guid>/posts/toefl/writings/money_support_for_arts_or_sports/</guid>
       <description>A/D: Governments should spend more money supporting the arts than supporting athletics such as an Olympic team.  [Opening Sentence] Even though there are limited government resources for arts and sports funding, money is often misspent on athletics and Olympic teams.
 [Thesis statement] However, I believe that governments should put more resources and money on art projects since it will bring a lot more benefits to society and people.
 [Topic 1] Through their creation of the arts, some people become larger-than-life inspirations to everyone.</description>

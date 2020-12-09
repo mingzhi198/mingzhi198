@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>resume on I&#39;m Li. Mingzhi</title>
-    <link>https://limingzhi618.com/tags/resume/</link>
+    <link>/tags/resume/</link>
     <description>Recent content in resume on I&#39;m Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <lastBuildDate>Sun, 06 Dec 2020 11:44:52 +0800</lastBuildDate>
     
-	<atom:link href="https://limingzhi618.com/tags/resume/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/resume/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Resume</title>
-      <link>https://limingzhi618.com/posts/resume/</link>
+      <link>/posts/resume/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/posts/resume/</guid>
+      <guid>/posts/resume/</guid>
       <description>Contact Me Phone: +86 18818686216　Email: lmingzhi618@gmail.com
 Personal Information  Name: Mingzhi Li University: Shenzhen University, Software Engineering blogs: https://mingzhi198.github.io Github: https://github.com/mingzhi198  Tech Stack  Golang, C\C++, Python, Shell, Linux gRPC, RabbitMQ, MySQL  </description>
     </item>
