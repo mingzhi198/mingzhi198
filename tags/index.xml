@@ -2,75 +2,75 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on I&#39;m Li. Mingzhi</title>
-    <link>/tags/</link>
+    <link>https://limingzhi618.com/tags/</link>
     <description>Recent content in Tags on I&#39;m Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <lastBuildDate>Sun, 06 Dec 2020 11:44:52 +0800</lastBuildDate>
     
-	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://limingzhi618.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>git</title>
-      <link>/tags/git/</link>
+      <link>https://limingzhi618.com/tags/git/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>/tags/git/</guid>
+      <guid>https://limingzhi618.com/tags/git/</guid>
       <description></description>
     </item>
     
     <item>
       <title>github</title>
-      <link>/tags/github/</link>
+      <link>https://limingzhi618.com/tags/github/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>/tags/github/</guid>
+      <guid>https://limingzhi618.com/tags/github/</guid>
       <description></description>
     </item>
     
     <item>
       <title>multiple users</title>
-      <link>/tags/multiple-users/</link>
+      <link>https://limingzhi618.com/tags/multiple-users/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>/tags/multiple-users/</guid>
+      <guid>https://limingzhi618.com/tags/multiple-users/</guid>
       <description></description>
     </item>
     
     <item>
       <title>resume</title>
-      <link>/tags/resume/</link>
+      <link>https://limingzhi618.com/tags/resume/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>/tags/resume/</guid>
+      <guid>https://limingzhi618.com/tags/resume/</guid>
       <description></description>
     </item>
     
     <item>
       <title>algorithm</title>
-      <link>/tags/algorithm/</link>
-      <pubDate>Sat, 05 Dec 2020 23:44:52 +0800</pubDate>
+      <link>https://limingzhi618.com/tags/algorithm/</link>
+      <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>/tags/algorithm/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>binary search</title>
-      <link>/tags/binary-search/</link>
-      <pubDate>Sat, 05 Dec 2020 23:44:52 +0800</pubDate>
-      
-      <guid>/tags/binary-search/</guid>
+      <guid>https://limingzhi618.com/tags/algorithm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>sort</title>
-      <link>/tags/sort/</link>
+      <link>https://limingzhi618.com/tags/sort/</link>
       <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>/tags/sort/</guid>
+      <guid>https://limingzhi618.com/tags/sort/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>binary search</title>
+      <link>https://limingzhi618.com/tags/binary-search/</link>
+      <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
+      
+      <guid>https://limingzhi618.com/tags/binary-search/</guid>
       <description></description>
     </item>
     

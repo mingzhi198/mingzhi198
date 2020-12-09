@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh_CN">
   <head>
-    <title>Resume // I&#39;m Li. Mingzhi</title>
+    <title>AL: 2. Selection Sort // I&#39;m Li. Mingzhi</title>
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.68.3" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,17 +11,15 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Resume"/>
-<meta name="twitter:description" content="Contact Me Phone: &#43;86 18818686216　Email: lmingzhi618@gmail.com
-Personal Information  Name: Mingzhi Li University: Shenzhen University, Software Engineering blogs: https://mingzhi198.github.io Github: https://github.com/mingzhi198  Tech Stack  Golang, C\C&#43;&#43;, Python, Shell, Linux gRPC, RabbitMQ, MySQL  "/>
+<meta name="twitter:title" content="AL: 2. Selection Sort"/>
+<meta name="twitter:description" content="This blog is used as notes for later reference after reading the book &lsquo;Algorithms an illustrated guide for programmers&rsquo;  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list. With an array, all your elements are stored right next to each other. With a list, elements are strewn all over, and one element stores the address of the next one."/>
 
-    <meta property="og:title" content="Resume" />
-<meta property="og:description" content="Contact Me Phone: &#43;86 18818686216　Email: lmingzhi618@gmail.com
-Personal Information  Name: Mingzhi Li University: Shenzhen University, Software Engineering blogs: https://mingzhi198.github.io Github: https://github.com/mingzhi198  Tech Stack  Golang, C\C&#43;&#43;, Python, Shell, Linux gRPC, RabbitMQ, MySQL  " />
+    <meta property="og:title" content="AL: 2. Selection Sort" />
+<meta property="og:description" content="This blog is used as notes for later reference after reading the book &lsquo;Algorithms an illustrated guide for programmers&rsquo;  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list. With an array, all your elements are stored right next to each other. With a list, elements are strewn all over, and one element stores the address of the next one." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://limingzhi618.com/posts/resume/" />
-<meta property="article:published_time" content="2020-12-06T11:44:52+08:00" />
-<meta property="article:modified_time" content="2020-12-06T11:44:52+08:00" />
+<meta property="og:url" content="https://limingzhi618.com/posts/algorithm_illustration/ch2_selection-search/" />
+<meta property="article:published_time" content="2020-12-04T23:44:52+08:00" />
+<meta property="article:modified_time" content="2020-12-04T23:44:52+08:00" />
 
 
   </head>
@@ -59,46 +57,101 @@ Personal Information  Name: Mingzhi Li University: Shenzhen University, Software
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">Resume</h1>
+      <h1 class ="post-title">AL: 2. Selection Sort</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
   <title>calendar</title>
   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
 </svg>
-          Dec 6, 2020
+          Dec 4, 2020
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          1 min read
+          2 min read
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
   <title>tag</title>
   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
 </svg>
-              <a class="tag" href="https://limingzhi618.com/tags/resume/">resume</a>
+              <a class="tag" href="https://limingzhi618.com/tags/algorithm/">algorithm</a>
+              <a class="tag" href="https://limingzhi618.com/tags/sort/">sort</a>
         </div>
       </div>
     </header>
     <div class="post-content">
-      <h3 id="contact-me">Contact Me</h3>
-<p>Phone: +86 18818686216　　　　　　　　　　　　　　　　　　　　　　　　Email: <a href="mailto:lmingzhi618@gmail.com">lmingzhi618@gmail.com</a></p>
-<h3 id="personal-information">Personal Information</h3>
-<ul>
-<li>Name: Mingzhi Li</li>
-<li>University: Shenzhen University, Software Engineering</li>
-<li>blogs: <a href="https://mingzhi198.github.io">https://mingzhi198.github.io</a></li>
-<li>Github: <a href="https://github.com/mingzhi198">https://github.com/mingzhi198</a></li>
+      <ul>
+<li>This blog is used as notes for later reference after reading the book &lsquo;Algorithms an illustrated guide for programmers&rsquo;</li>
 </ul>
-<h3 id="tech-stack">Tech Stack</h3>
+<h2 id="chapter-2-selection-sort">Chapter 2: Selection Sort</h2>
+<h3 id="1-tips-about-selection-sort">1. Tips About Selection Sort</h3>
 <ul>
-<li>Golang, C\C++, Python, Shell, Linux</li>
-<li>gRPC, RabbitMQ, MySQL</li>
+<li>Your computer’s memory is like a giant set of drawers.</li>
+<li>When you want to store multiple elements, use an array or a list.</li>
+<li>With an array, all your elements are stored right next to each other.</li>
+<li>With a list, elements are strewn all over, and one element stores the address of the next one.</li>
+<li>Arrays allow fast reads.</li>
+<li>Linked lists allow fast inserts and deletes.</li>
+<li>All elements in the array should be the same type (all ints, all doubles, and so on).</li>
 </ul>
+<h3 id="2-codes-in-about-selection-sort">2. Codes in about Selection Sort</h3>
+<ul>
+<li>Python
+{% highlight ruby %}
+def findSmallest(arr):
+smallest = arr[0]
+smallest_idx = 0
+for i in range(1, len(arr)):
+if arr[i] &lt; smallest:
+smallest = arr[i]
+smallest_idx = i
+return smallest_idx</li>
+</ul>
+<p>def selectionSort(arr):
+newArr = []
+for i in range(len(arr)):
+smallest = findSmallest(arr)
+newArr.append(arr.pop(smallest))
+return newArr</p>
+<p>print selectionSort([5, 3, 6, 2, 10])
+{% endhighlight %}</p>
+<ul>
+<li>Golang
+{% highlight ruby %}
+package main</li>
+</ul>
+<p>import &ldquo;fmt&rdquo;</p>
+<p>func findSmallest(arr []int) int {
+smallest := arr[0]
+smallest_idx := 0
+for idx, val := range arr {
+if val &lt; smallest {
+smallest = val
+smallest_idx = idx
+}
+}
+return smallest_idx
+}</p>
+<p>func SelectionSort(arr []int) (ret []int) {
+l := len(arr)
+for i := 0; i &lt; l; i++ {
+fmt.Println(&ldquo;arr: &ldquo;, arr)
+smallest_idx := findSmallest(arr)
+ret = append(ret, arr[smallest_idx])
+arr = append(arr[:smallest_idx], arr[smallest_idx+1:]&hellip;)
+}
+return
+}</p>
+<p>func main() {
+arr := []int{5, 3, 6, 2, 10}
+fmt.Println(SelectionSort(arr))
+}</p>
+<p>{% endhighlight %}</p>
+<p>Check out the <a href="https://jekyllrb.com/docs/home">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>. If you have questions, you can ask them on <a href="https://talk.jekyllrb.com/">Jekyll Talk</a>.</p>
 
     </div>
     <div class="post-footer">
