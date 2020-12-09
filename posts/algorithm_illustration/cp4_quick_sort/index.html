@@ -77,7 +77,7 @@ Besides, the plots must be as big as possible." />
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          6 min read
+          7 min read
         </div>
       </div>
     </header>
@@ -230,7 +230,7 @@ Using D&amp;C, we can break down a array until we get the base case.</p>
 <p>Even though the two sub-arrays are not sorted, they&rsquo;re partitioned.
 However, sorting the whole array would be pretty easy, if they were sorted.</p>
 <p>Then, we can combine the whole thing together, like this: left array + pivot + right array.
-We do this recursively and will get a sorted array.
+We do this recursively and will get a sorted array.<br>
 Here is the code, which would be easy to understand(In order to save space, We provide only the Golang code).</p>
 <ul>
 <li>Golang</li>
@@ -282,7 +282,34 @@ Here you can see codes optimized by using no extra memory space.</p>
 	quickSortE(arr[j+1:])
 	return
 }
-</code></pre><h3 id="big-o-notation">Big O notation</h3>
+
+func swap(arr []int, i, j int) {
+	arr[i], arr[j] = arr[j], arr[i]
+}
+</code></pre><p>In order to have better performance, we use random element as the pivot:</p>
+<pre><code>func quickSortERand(arr []int) {
+	if len(arr) &lt; 2 {
+		return
+	}
+
+	l := len(arr)
+	rand.Seed(time.Now().UnixNano())
+	pIdx := rand.Intn(l - 1)
+	pivot := arr[pIdx]
+	j := 0 // idx of element bigger than pivot
+	for i := 0; i &lt; l-1; i++ {
+		if arr[i] &gt; pivot {
+			continue
+		}
+		swap(arr, i, j)
+		j++
+	}
+	swap(arr, j, l-1)
+	quickSortERand(arr[:j])
+	quickSortERand(arr[j+1:])
+	return
+}
+</code></pre><h3 id="4-big-o-notation">4. Big O notation</h3>
 <p>Quicksort is unique since its speed depends on the pivot we use.<br>
 Here we can see the most common Big O run times.
 <img src="/posts/algorithm_illustration/big_o_times.png" alt="alt Big O Times"></p>
@@ -290,7 +317,7 @@ Here we can see the most common Big O run times.
 Compared with Merged Sort, which is O(nlogn) and faster, quicksort is different:<br>
 In the worst case, quicksorts takes O(n^2)time, which is as slow as selection sort.
 In the average case, quicksorts takes O(nlogn)time.</p>
-<h4 id="merge-sort-vs-quicksort">Merge Sort vs. Quicksort</h4>
+<h3 id="5-merge-sort-vs-quicksort">5. Merge Sort vs. Quicksort</h3>
 <p>For algorithms with O(n), there are a constant for every operation.<br>
 Commonly, the constant is ignored, however, it&rsquo;ll make a difference in some cases.</p>
 <ul>
@@ -300,7 +327,7 @@ Commonly, the constant is ignored, however, it&rsquo;ll make a difference in som
 <p>Therefore, if they&rsquo;re both O(nlogn)time, quicksort will be faster.
 Besides, quicksort is faster in practice since it hits the average case way more often than the worst case.</p>
 </blockquote>
-<h4 id="averge-case-vs-worst-case">Averge case vs. Worst case</h4>
+<h3 id="6-averge-case-vs-worst-case">6. Averge case vs. Worst case</h3>
 <p>The performance of quicksort is heavily affected by the pivot.
 Suppose we always choose the first element as the pivot, and call quick with an sorted array.
 Since quicksort doesn&rsquo;t to see whether the input array is already sorted, it will still try to sort it.</p>
@@ -309,14 +336,26 @@ Since quicksort doesn&rsquo;t to see whether the input array is already sorted, 
 <p>Since we&rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.
 As we always get O(n) in every level of the stack, we finally get O(n)*O(n)O(n^2)time.<br>
 Therefore, the call stack is so long that it takes O(n^2) time.</p>
-<p>On the other hand, if we make the middle element as the pivot, the call stack would be much shorter.
+<p>On the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).<br>
+Therefore, we get operation time O(nlogn).  <br>
 <img src="/posts/algorithm_illustration/quick_sort_best_case.png" alt="quick_sort_best_case"></p>
+<ul>
+<li>However, the best case is also the average case.</li>
+<li>If we choose a random element in the array as the pivot, quicksort will have O(nlogn)time on average.</li>
+</ul>
 <pre><code>Thank you for your effort to read this part of this passage.
 What are included in this passage are my study notes about algorithm.
 If you want to know more details about it, I strongly recommend you this book: 
 grokking algoriths: An illustrated guide for programmers and other curious people.
 The author illustrate algorithms with pictures, which make people easily understand difficult questions.
-</code></pre>
+</code></pre><h3 id="summary">Summary</h3>
+<ul>
+<li>D&amp;C works by splitting a problem into smaller parts. And the base case is usually an array with no or only one element.</li>
+<li>Choosing a random element as the pivot can make quicksort complete in O(nlog n) time on average.</li>
+<li>Quicksort is faster than merge sort since the constant in Big O notation matters.</li>
+<li>Since O(log n) is pretty faster than O(n) with a large list, the constant never matters for simple search versus binary search.</li>
+</ul>
+
     </div>
     <div class="post-footer">
       
