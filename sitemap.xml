@@ -18,6 +18,11 @@
   </url>
   
   <url>
+    <loc>/posts/algorithm_illustration/cp3_recursion/</loc>
+    <lastmod>2020-12-08T18:36:08+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/tags/git/</loc>
     <lastmod>2020-12-06T11:44:52+08:00</lastmod>
   </url>
@@ -53,7 +58,7 @@
   </url>
   
   <url>
-    <loc>/posts/algorithm_illustration/ch2_selection-search/</loc>
+    <loc>/posts/algorithm_illustration/cp2_selection-search/</loc>
     <lastmod>2020-12-04T23:44:52+08:00</lastmod>
   </url>
   

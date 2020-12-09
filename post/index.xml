@@ -2,13 +2,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on I&#39;m Li. Mingzhi</title>
-    <link>/posts/</link>
+    <link>/post/</link>
     <description>Recent content in Posts on I&#39;m Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <lastBuildDate>Wed, 09 Dec 2020 08:32:27 +0800</lastBuildDate>
     
-	<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -21,18 +21,6 @@
  1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.
  Example If you are a farmer with a large land and plan to divide this farmland evenly into square plots.
 Besides, the plots must be as big as possible.</description>
-    </item>
-    
-    <item>
-      <title>AL3: Recursion</title>
-      <link>/posts/algorithm_illustration/cp3_recursion/</link>
-      <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
-      
-      <guid>/posts/algorithm_illustration/cp3_recursion/</guid>
-      <description>In this chapter, I learned about recursion, which is very useful in many algorithms. Also, this chapter shows us how to break down a problem into a base case and a recursive case.
- 1. Recursion If you have a box containing more boxes, in which there will be no or more boxes.
-The key is in one of the boxes.
-How can you do to search for the key?</description>
     </item>
     
     <item>
@@ -56,10 +44,10 @@ Personal Information  Name: Mingzhi Li University: Shenzhen University, Software
     
     <item>
       <title>AL: 2. Selection Sort</title>
-      <link>/posts/algorithm_illustration/cp2_selection-search/</link>
+      <link>/posts/algorithm_illustration/ch2_selection-search/</link>
       <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>/posts/algorithm_illustration/cp2_selection-search/</guid>
+      <guid>/posts/algorithm_illustration/ch2_selection-search/</guid>
       <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list. With an array, all your elements are stored right next to each other. With a list, elements are strewn all over, and one element stores the address of the next one.</description>
     </item>
     
