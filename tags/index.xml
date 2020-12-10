@@ -6,7 +6,7 @@
     <description>Recent content in Tags on I&#39;m Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
-    <lastBuildDate>Wed, 09 Dec 2020 23:09:04 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,45 @@
     <item>
       <title>algorithm</title>
       <link>/tags/algorithm/</link>
-      <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
+      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
       
       <guid>/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>bfs</title>
+      <link>/tags/bfs/</link>
+      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
+      
+      <guid>/tags/bfs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>breadth-first-search</title>
+      <link>/tags/breadth-first-search/</link>
+      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
+      
+      <guid>/tags/breadth-first-search/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>graph</title>
+      <link>/tags/graph/</link>
+      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
+      
+      <guid>/tags/graph/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>search</title>
+      <link>/tags/search/</link>
+      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
+      
+      <guid>/tags/search/</guid>
       <description></description>
     </item>
     

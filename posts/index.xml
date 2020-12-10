@@ -6,10 +6,19 @@
     <description>Recent content in Posts on I&#39;m Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
-    <lastBuildDate>Wed, 09 Dec 2020 23:09:04 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate>
     
 	<atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>AL: 6. Breadth-first search</title>
+      <link>/posts/algorithm_illustration/cp6_breadth_first_search/</link>
+      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
+      
+      <guid>/posts/algorithm_illustration/cp6_breadth_first_search/</guid>
+      <description>From this chapter we get to know graphs, which is a new data structure and can help us model a network. We also get to know a new algorhtim named breadth-first search, which can help us find the shortest path. We review the difference between directed and undirected graphs. We get to know a new sorting algorithm called topological sort, which can help us know dependent relationships between nodes. ===  1.</description>
+    </item>
     
     <item>
       <title>AL: 5. Hash tables</title>

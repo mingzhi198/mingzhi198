@@ -3,22 +3,62 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/posts/algorithm_illustration/cp5_hash_tables/</loc>
-    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+    <loc>/posts/algorithm_illustration/cp6_breadth_first_search/</loc>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
   </url>
   
   <url>
     <loc>/tags/algorithm/</loc>
-    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
   </url>
   
   <url>
     <loc>/categories/algorithm_illustration/</loc>
-    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/bfs/</loc>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/breadth-first-search/</loc>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
   </url>
   
   <url>
     <loc>/categories/</loc>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/graph/</loc>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/search/</loc>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/algorithm_illustration/cp5_hash_tables/</loc>
     <lastmod>2020-12-09T23:09:04+08:00</lastmod>
   </url>
   
@@ -29,21 +69,6 @@
   
   <url>
     <loc>/tags/hash-tables/</loc>
-    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/</loc>
-    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/</loc>
-    <lastmod>2020-12-09T23:09:04+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2020-12-09T23:09:04+08:00</lastmod>
   </url>
   
