@@ -2,13 +2,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>resume on I&#39;m Li. Mingzhi</title>
-    <link>/tags/resume/</link>
+    <link>/categories/resume/</link>
     <description>Recent content in resume on I&#39;m Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh_CN</language>
     <lastBuildDate>Sun, 06 Dec 2020 11:44:52 +0800</lastBuildDate>
     
-	<atom:link href="/tags/resume/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/resume/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>

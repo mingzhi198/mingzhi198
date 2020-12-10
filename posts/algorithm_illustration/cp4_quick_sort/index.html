@@ -232,9 +232,9 @@ Using D&amp;C, we can break down a array until we get the base case.</p>
 </blockquote>
 <p>3.2  Here we can see one example from the book.</p>
 <p>After partitioning, we get three parts: numbers less than the pivot, the pivot and numbers greater than the pivot.</p>
-<p><img src="/posts/algorithm_illustration/quick_sort_1.png" alt="alt quick_sort_1"></p>
+<p><img src="/posts/algorithm_illustration/images/quick_sort_1.png" alt="alt quick_sort_1"></p>
 <p>Next, we&rsquo;ll quick sort the two sub-arrays.</p>
-<p><img src="/posts/algorithm_illustration/quick_sort_2.png" alt="alt quick_sort_2"></p>
+<p><img src="/posts/algorithm_illustration/images/quick_sort_2.png" alt="alt quick_sort_2"></p>
 <p>Even though the two sub-arrays are not sorted, they&rsquo;re partitioned.
 However, sorting the whole array would be pretty easy, if they were sorted.</p>
 <p>Then, we can combine the whole thing together, like this: left array + pivot + right array.
@@ -319,8 +319,8 @@ func swap(arr []int, i, j int) {
 }
 </code></pre><h3 id="4-big-o-notation">4. Big O notation</h3>
 <p>Quicksort is unique since its speed depends on the pivot we use.<br>
-Here we can see the most common Big O run times.
-<img src="/posts/algorithm_illustration/big_o_times.png" alt="alt Big O Times"></p>
+Here we can see the most common Big O run times.<br>
+<img src="/posts/algorithm_illustration/images/big_o_times.png" alt="alt Big_O_Times"></p>
 <p>Please pay attention to the example times in the chart because they are estimates of seconds per operation.<br>
 Compared with Merged Sort, which is O(nlogn) and faster, quicksort is different:<br>
 In the worst case, quicksorts takes O(n^2)time, which is as slow as selection sort.
@@ -340,13 +340,13 @@ Besides, quicksort is faster in practice since it hits the average case way more
 Suppose we always choose the first element as the pivot, and call quick with an sorted array.
 Since quicksort doesn&rsquo;t to see whether the input array is already sorted, it will still try to sort it.</p>
 <p>As we can see in the following figure:<br>
-<img src="/posts/algorithm_illustration/quick_sort_worst_case.png" alt="quick_sort_worst_case"></p>
+<img src="/posts/algorithm_illustration/images/quick_sort_worst_case.png" alt="quick_sort_worst_case"></p>
 <p>Since we&rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.
 As we always get O(n) in every level of the stack, we finally get O(n)*O(n)O(n^2)time.<br>
 Therefore, the call stack is so long that it takes O(n^2) time.</p>
 <p>On the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).<br>
 Therefore, we get operation time O(nlogn).  <br>
-<img src="/posts/algorithm_illustration/quick_sort_best_case.png" alt="quick_sort_best_case"></p>
+<img src="/posts/algorithm_illustration/images/quick_sort_best_case.png" alt="quick_sort_best_case"></p>
 <ul>
 <li>However, the best case is also the average case.</li>
 <li>If we choose a random element in the array as the pivot, quicksort will have O(nlogn)time on average.</li>

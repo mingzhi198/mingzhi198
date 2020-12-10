@@ -112,13 +112,13 @@ Thus, caching is a common way to make things faster.</p>
 Since Collisions are bad, we need to work around them.
 We have many distinct ways to deal with collisions, the simplest one of which is this:<br>
 If multiple keys map to the same slot, start a linked list at that slot.
-<img src="/posts/algorithm_illustration/hash_collision_1.png" alt="hash collision"></p>
+<img src="/posts/algorithm_illustration/images/hash_collision_1.png" alt="hash collision"></p>
 <ul>
 <li>However, if you have many keys startig with the letter A, you will only use one slot with a giant linked list.</li>
 <li>This will definitely slow down your hash table.</li>
 </ul>
 <h2 id="4-performance">4. Performance</h2>
-<p><img src="/posts/algorithm_illustration/hash_performance_time.png" alt="hash collision">
+<p><img src="/posts/algorithm_illustration/images/hash_performance_time.png" alt="hash collision">
 We can see from the figure above that hash tables are as fast as arrays at searching,<br>
 and are as fast as linked lists at inserts and delets.<br>
 Nevertheless, hash tables are slow(O(n)) at all of those operations.
@@ -128,9 +128,9 @@ In order not to hit the worst case performance with hash tables, we need to avoi
 <li>A good hash function</li>
 </ul>
 <h3 id="41-load-factor">4.1 Load factor</h3>
-<p><img src="/posts/algorithm_illustration/load_factor_1.png" alt="hash collision"></p>
+<p><img src="/posts/algorithm_illustration/images/load_factor_1.png" alt="hash collision"></p>
 <pre><code>Load Factor: Number of items in hash table / total number of slots 
-</code></pre><p><img src="/posts/algorithm_illustration/load_factor_1.png" alt="hash time">
+</code></pre><p><img src="/posts/algorithm_illustration/images/load_factor_1.png" alt="hash time">
 For example, if your hash table has 5 slots and 2 of them used, the load factor would be 2/5.</p>
 <ul>
 <li>If the hash table is getting pretty full, we need to resize this table.</li>
@@ -150,7 +150,7 @@ You can check the SHA function if your curiosity is great enough.</p>
 <li>Hash tables are widely used for caching data.</li>
 <li>Hash tables are great for catching duplicates.</li>
 </ul>
-<p><img src="/posts/algorithm_illustration/hash_end.png" alt="hash end"></p>
+<p><img src="/posts/algorithm_illustration/images/hash_end.png" alt="hash end"></p>
 
     </div>
     <div class="post-footer">
