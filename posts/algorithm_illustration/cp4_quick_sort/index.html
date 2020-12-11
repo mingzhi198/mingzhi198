@@ -111,108 +111,102 @@ Then we are left with a land of 10 * 10, which is the answer.</p>
 <ul>
 <li>Golang</li>
 </ul>
-<pre><code>func findMaxEvenSquareR(width, height int) int {
-	if 0 == height || 0 == width {
-		return height + width
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">findMaxEvenSquareR</span>(<span style="color:#a6e22e">width</span>, <span style="color:#a6e22e">height</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">if</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">height</span> <span style="color:#f92672">||</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">width</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">height</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">width</span>
 	}
 
-	if height &gt; width {
-		height = height % width
-	} else {
-		width = width % height
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">height</span> &gt; <span style="color:#a6e22e">width</span> {
+		<span style="color:#a6e22e">height</span> = <span style="color:#a6e22e">height</span> <span style="color:#f92672">%</span> <span style="color:#a6e22e">width</span>
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">width</span> = <span style="color:#a6e22e">width</span> <span style="color:#f92672">%</span> <span style="color:#a6e22e">height</span>
 	}
-	return findMaxEvenSquareR(width, height)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">findMaxEvenSquareR</span>(<span style="color:#a6e22e">width</span>, <span style="color:#a6e22e">height</span>)
 }
-</code></pre><h3 id="2-exercises">2. Exercises:</h3>
+</code></pre></div><h3 id="2-exercises">2. Exercises:</h3>
 <ol>
 <li>Add up all numbers and return the total.</li>
 </ol>
 <ul>
 <li>Python</li>
 </ul>
-<pre><code>def sumR(arr):
-    if len(arr) == 1:
-        return arr[0] 
-    return arr[0] + sumR(arr[1:])
-</code></pre><ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sumR</span>(arr):
+    <span style="color:#66d9ef">if</span> len(arr) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+        <span style="color:#66d9ef">return</span> arr[<span style="color:#ae81ff">0</span>] 
+    <span style="color:#66d9ef">return</span> arr[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> sumR(arr[<span style="color:#ae81ff">1</span>:])
+</code></pre></div><ul>
 <li>Golang</li>
 </ul>
-<pre><code>func sumR(arr []int) (total int) {
-	if len(arr) == 1 {
-		return arr[0]
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">sumR</span>(<span style="color:#a6e22e">arr</span> []<span style="color:#66d9ef">int</span>) (<span style="color:#a6e22e">total</span> <span style="color:#66d9ef">int</span>) {
+	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">arr</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">0</span>]
 	}
-	return arr[0] + sumR(arr[1:])
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> <span style="color:#a6e22e">sumR</span>(<span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">1</span>:])
 }
-</code></pre><ol start="2">
+</code></pre></div><ol start="2">
 <li>Write a recursive function to count the number of elements in a list</li>
 </ol>
 <ul>
 <li>Python</li>
 </ul>
-<pre><code>def countEleR(arr): 
-    if len(arr) == 1:
-        return 1 
-    return 1 + countEleR(arr[1:])
-</code></pre><ul>
-<li>Golang</li>
-</ul>
-<pre><code></code></pre><ol start="3">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">countEleR</span>(arr): 
+    <span style="color:#66d9ef">if</span> len(arr) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> 
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> countEleR(arr[<span style="color:#ae81ff">1</span>:])
+</code></pre></div><ol start="3">
 <li>Find the maximum number in a list</li>
 </ol>
 <ul>
 <li>Python</li>
 </ul>
-<pre><code>def findMaxR(arr): 
-    if len(arr) == 1:
-        return arr[0]
-    ret = findMaxR(arr[1:])
-    if arr[0] &gt; ret:
-        return arr[0] 
-    else:
-        return ret 
-</code></pre><ul>
-<li>Golang</li>
-</ul>
-<pre><code></code></pre><ol start="4">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">findMaxR</span>(arr): 
+    <span style="color:#66d9ef">if</span> len(arr) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+        <span style="color:#66d9ef">return</span> arr[<span style="color:#ae81ff">0</span>]
+    ret <span style="color:#f92672">=</span> findMaxR(arr[<span style="color:#ae81ff">1</span>:])
+    <span style="color:#66d9ef">if</span> arr[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">&gt;</span> ret:
+        <span style="color:#66d9ef">return</span> arr[<span style="color:#ae81ff">0</span>] 
+    <span style="color:#66d9ef">else</span>:
+        <span style="color:#66d9ef">return</span> ret 
+</code></pre></div><ol start="4">
 <li>Write the D&amp;C code for Binary Search</li>
 </ol>
 <ul>
 <li>Python</li>
 </ul>
-<pre><code>def binarySearchR(list, item, low, high):
-    if low &gt; high:
-        return None 
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">binarySearchR</span>(list, item, low, high):
+    <span style="color:#66d9ef">if</span> low <span style="color:#f92672">&gt;</span> high:
+        <span style="color:#66d9ef">return</span> None 
 
-    mid = (low + high) / 2
-    guess = list[mid]
-    if guess &gt; item: 
-        high = mid -1 
-    else: 
-        low = mid + 1
-    return binarySearchR(list, item, low, high)
-</code></pre><ul>
+    mid <span style="color:#f92672">=</span> (low <span style="color:#f92672">+</span> high) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
+    guess <span style="color:#f92672">=</span> list[mid]
+    <span style="color:#66d9ef">if</span> guess <span style="color:#f92672">&gt;</span> item: 
+        high <span style="color:#f92672">=</span> mid <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> 
+    <span style="color:#66d9ef">else</span>: 
+        low <span style="color:#f92672">=</span> mid <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">return</span> binarySearchR(list, item, low, high)
+</code></pre></div><ul>
 <li>Golang</li>
 </ul>
-<pre><code>func binarySearchR(list []int, item, low, high int) int {
-	// 1. figure out the base case
-	if low &gt; high {
-		return -1
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">binarySearchR</span>(<span style="color:#a6e22e">list</span> []<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">item</span>, <span style="color:#a6e22e">low</span>, <span style="color:#a6e22e">high</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+	<span style="color:#75715e">// 1. figure out the base case
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">low</span> &gt; <span style="color:#a6e22e">high</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
 	}
 
-	//. 2. reduce the problem and get to the base case
-	mid := (low + high) / 2
-	guess := list[mid]
-	if guess == item {
-		return mid
+	<span style="color:#75715e">//. 2. reduce the problem and get to the base case
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">mid</span> <span style="color:#f92672">:=</span> (<span style="color:#a6e22e">low</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">high</span>) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
+	<span style="color:#a6e22e">guess</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">list</span>[<span style="color:#a6e22e">mid</span>]
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">guess</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">item</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">mid</span>
 	}
-	if guess &gt; item {
-		high = mid - 1
-	} else {
-		low = mid + 1
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">guess</span> &gt; <span style="color:#a6e22e">item</span> {
+		<span style="color:#a6e22e">high</span> = <span style="color:#a6e22e">mid</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">low</span> = <span style="color:#a6e22e">mid</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
 	}
-	return binarySearchR(list, item, low, high)
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">binarySearchR</span>(<span style="color:#a6e22e">list</span>, <span style="color:#a6e22e">item</span>, <span style="color:#a6e22e">low</span>, <span style="color:#a6e22e">high</span>)
 }
-</code></pre><blockquote>
+</code></pre></div><blockquote>
 <p>Tip: When we got a recursive function involving an array, the base case is often an empty array or an array with one element.</p>
 </blockquote>
 <h2 id="3-quick-sort">3. Quick Sort</h2>
@@ -243,81 +237,81 @@ Here is the code, which would be easy to understand(In order to save space, We p
 <ul>
 <li>Golang</li>
 </ul>
-<pre><code>func quickSort(arr []int) (ret []int) {
-	if len(arr) &lt; 2 {
-		ret = append(ret, arr...)
-		return
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">quickSort</span>(<span style="color:#a6e22e">arr</span> []<span style="color:#66d9ef">int</span>) (<span style="color:#a6e22e">ret</span> []<span style="color:#66d9ef">int</span>) {
+	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">arr</span>) &lt; <span style="color:#ae81ff">2</span> {
+		<span style="color:#a6e22e">ret</span> = append(<span style="color:#a6e22e">ret</span>, <span style="color:#a6e22e">arr</span><span style="color:#f92672">...</span>)
+		<span style="color:#66d9ef">return</span>
 	}
 
-	pivot := arr[0]
-	less, greater := []int{}, []int{}
-	for _, v := range arr[1:] {
-		if v &lt;= pivot {
-			less = append(less, v)
-		} else {
-			greater = append(greater, v)
+	<span style="color:#a6e22e">pivot</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">0</span>]
+	<span style="color:#a6e22e">less</span>, <span style="color:#a6e22e">greater</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}, []<span style="color:#66d9ef">int</span>{}
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">1</span>:] {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">&lt;=</span> <span style="color:#a6e22e">pivot</span> {
+			<span style="color:#a6e22e">less</span> = append(<span style="color:#a6e22e">less</span>, <span style="color:#a6e22e">v</span>)
+		} <span style="color:#66d9ef">else</span> {
+			<span style="color:#a6e22e">greater</span> = append(<span style="color:#a6e22e">greater</span>, <span style="color:#a6e22e">v</span>)
 		}
 	}
-	fmt.Println(&quot;less: &quot;, less, &quot;, pivot: &quot;, pivot, &quot;, greater: &quot;, greater)
-	lessRet := quickSort(less)
-	greaterRet := quickSort(greater)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;less: &#34;</span>, <span style="color:#a6e22e">less</span>, <span style="color:#e6db74">&#34;, pivot: &#34;</span>, <span style="color:#a6e22e">pivot</span>, <span style="color:#e6db74">&#34;, greater: &#34;</span>, <span style="color:#a6e22e">greater</span>)
+	<span style="color:#a6e22e">lessRet</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">quickSort</span>(<span style="color:#a6e22e">less</span>)
+	<span style="color:#a6e22e">greaterRet</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">quickSort</span>(<span style="color:#a6e22e">greater</span>)
 
-	ret = append(ret, lessRet...)
-	ret = append(ret, pivot)
-	ret = append(ret, greaterRet...)
-	return
+	<span style="color:#a6e22e">ret</span> = append(<span style="color:#a6e22e">ret</span>, <span style="color:#a6e22e">lessRet</span><span style="color:#f92672">...</span>)
+	<span style="color:#a6e22e">ret</span> = append(<span style="color:#a6e22e">ret</span>, <span style="color:#a6e22e">pivot</span>)
+	<span style="color:#a6e22e">ret</span> = append(<span style="color:#a6e22e">ret</span>, <span style="color:#a6e22e">greaterRet</span><span style="color:#f92672">...</span>)
+	<span style="color:#66d9ef">return</span>
 }
-</code></pre><p>If you&rsquo;d come through the explanation above, you would find this code easy to understand.
+</code></pre></div><p>If you&rsquo;d come through the explanation above, you would find this code easy to understand.
 Nevertheless, it&rsquo;s not efficent in memory.
 Here you can see codes optimized by using no extra memory space.</p>
-<pre><code>func quickSortE(arr []int) {
-	if len(arr) &lt; 2 {
-		return
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">quickSortE</span>(<span style="color:#a6e22e">arr</span> []<span style="color:#66d9ef">int</span>) {
+	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">arr</span>) &lt; <span style="color:#ae81ff">2</span> {
+		<span style="color:#66d9ef">return</span>
 	}
 
-	l := len(arr)
-	pivot := arr[l-1]
-	j := 0 // idx of element bigger than pivot
-	for i := 0; i &lt; l-1; i++ {
-		if arr[i] &gt; pivot {
-			continue
+	<span style="color:#a6e22e">l</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">arr</span>)
+	<span style="color:#a6e22e">pivot</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+	<span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span> <span style="color:#75715e">// idx of element bigger than pivot
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">i</span>] &gt; <span style="color:#a6e22e">pivot</span> {
+			<span style="color:#66d9ef">continue</span>
 		}
-		swap(arr, i, j)
-		j++
+		<span style="color:#a6e22e">swap</span>(<span style="color:#a6e22e">arr</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span>)
+		<span style="color:#a6e22e">j</span><span style="color:#f92672">++</span>
 	}
-	swap(arr, j, l-1)
-	quickSortE(arr[:j])
-	quickSortE(arr[j+1:])
-	return
+	<span style="color:#a6e22e">swap</span>(<span style="color:#a6e22e">arr</span>, <span style="color:#a6e22e">j</span>, <span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+	<span style="color:#a6e22e">quickSortE</span>(<span style="color:#a6e22e">arr</span>[:<span style="color:#a6e22e">j</span>])
+	<span style="color:#a6e22e">quickSortE</span>(<span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:])
+	<span style="color:#66d9ef">return</span>
 }
 
-func swap(arr []int, i, j int) {
-	arr[i], arr[j] = arr[j], arr[i]
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">swap</span>(<span style="color:#a6e22e">arr</span> []<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>) {
+	<span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">i</span>]
 }
-</code></pre><p>In order to have better performance, we use random element as the pivot:</p>
-<pre><code>func quickSortERand(arr []int) {
-	if len(arr) &lt; 2 {
-		return
+</code></pre></div><p>In order to have better performance, we use random element as the pivot:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">quickSortERand</span>(<span style="color:#a6e22e">arr</span> []<span style="color:#66d9ef">int</span>) {
+	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">arr</span>) &lt; <span style="color:#ae81ff">2</span> {
+		<span style="color:#66d9ef">return</span>
 	}
 
-	l := len(arr)
-	rand.Seed(time.Now().UnixNano())
-	pIdx := rand.Intn(l - 1)
-	pivot := arr[pIdx]
-	j := 0 // idx of element bigger than pivot
-	for i := 0; i &lt; l-1; i++ {
-		if arr[i] &gt; pivot {
-			continue
+	<span style="color:#a6e22e">l</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">arr</span>)
+	<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Seed</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>())
+	<span style="color:#a6e22e">pIdx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#a6e22e">l</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
+	<span style="color:#a6e22e">pivot</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">pIdx</span>]
+	<span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span> <span style="color:#75715e">// idx of element bigger than pivot
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">i</span>] &gt; <span style="color:#a6e22e">pivot</span> {
+			<span style="color:#66d9ef">continue</span>
 		}
-		swap(arr, i, j)
-		j++
+		<span style="color:#a6e22e">swap</span>(<span style="color:#a6e22e">arr</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span>)
+		<span style="color:#a6e22e">j</span><span style="color:#f92672">++</span>
 	}
-	swap(arr, j, l-1)
-	quickSortERand(arr[:j])
-	quickSortERand(arr[j+1:])
-	return
+	<span style="color:#a6e22e">swap</span>(<span style="color:#a6e22e">arr</span>, <span style="color:#a6e22e">j</span>, <span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+	<span style="color:#a6e22e">quickSortERand</span>(<span style="color:#a6e22e">arr</span>[:<span style="color:#a6e22e">j</span>])
+	<span style="color:#a6e22e">quickSortERand</span>(<span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:])
+	<span style="color:#66d9ef">return</span>
 }
-</code></pre><h3 id="4-big-o-notation">4. Big O notation</h3>
+</code></pre></div><h3 id="4-big-o-notation">4. Big O notation</h3>
 <p>Quicksort is unique since its speed depends on the pivot we use.<br>
 Here we can see the most common Big O run times.<br>
 <img src="/posts/algorithm_illustration/images/big_o_times.png" alt="alt Big_O_Times"></p>

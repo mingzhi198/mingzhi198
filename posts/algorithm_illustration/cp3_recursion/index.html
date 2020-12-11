@@ -123,26 +123,26 @@ Thus, every recursive function has two parts: the base case, and the recurive ca
 <ul>
 <li>example</li>
 </ul>
-<pre><code>def countdown(i):
-  print i
-  if i &lt;= 0:  # &lt;------- Base case: we are done here.
-    return 
-  else:       # &lt;----- Recursive case
-    countdown(i-1)
-</code></pre><h2 id="3-stack">3. Stack</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">countdown</span>(i):
+  <span style="color:#66d9ef">print</span> i
+  <span style="color:#66d9ef">if</span> i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span>:  <span style="color:#75715e"># &lt;------- Base case: we are done here.</span>
+    <span style="color:#66d9ef">return</span> 
+  <span style="color:#66d9ef">else</span>:       <span style="color:#75715e"># &lt;----- Recursive case</span>
+    countdown(i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</code></pre></div><h2 id="3-stack">3. Stack</h2>
 <p>Our computers also uses a stack internally named call stack.
 Here we use an example of factor to illustrate this concept:<br>
-5! = 5 * 4 * 3 * 2 * 1 ==&gt; 5! = 5 * 4!
-4! = 4 * 3!
-3! = 3 * 2!
-2! = 2 * 1!
+5! = 5 * 4 * 3 * 2 * 1 ==&gt; 5! = 5 * 4!<br>
+4! = 4 * 3!<br>
+3! = 3 * 2!<br>
+2! = 2 * 1!<br>
 1! = 1</p>
-<pre><code>def fact(x): 
-  if x == 1:
-    return 1 
-  else: 
-    return x * fact(x-1)
-</code></pre><h2 id="summary">Summary</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fact</span>(x): 
+  <span style="color:#66d9ef">if</span> x <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> 
+  <span style="color:#66d9ef">else</span>: 
+    <span style="color:#66d9ef">return</span> x <span style="color:#f92672">*</span> fact(x<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</code></pre></div><h2 id="summary">Summary</h2>
 <ul>
 <li>Recursive functions have two cases: the base case and the recursive case.</li>
 <li>Stacks have two operations: push and pop.</li>
