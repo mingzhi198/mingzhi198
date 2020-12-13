@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Li. Mingzhi</title>
-    <link>limingzhi618.com/categories/</link>
+    <link>http://limingzhi618.com/categories/</link>
     <description>Recent content in Categories on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 11 Dec 2020 17:58:22 +0800</lastBuildDate><atom:link href="limingzhi618.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate><atom:link href="http://limingzhi618.com/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>algorithm_illustration</title>
-      <link>limingzhi618.com/categories/algorithm_illustration/</link>
-      <pubDate>Fri, 11 Dec 2020 17:58:22 +0800</pubDate>
+      <link>http://limingzhi618.com/categories/algorithm_illustration/</link>
+      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
       
-      <guid>limingzhi618.com/categories/algorithm_illustration/</guid>
+      <guid>http://limingzhi618.com/categories/algorithm_illustration/</guid>
       <description></description>
     </item>
     
     <item>
       <title>resume</title>
-      <link>limingzhi618.com/categories/resume/</link>
+      <link>http://limingzhi618.com/categories/resume/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>limingzhi618.com/categories/resume/</guid>
+      <guid>http://limingzhi618.com/categories/resume/</guid>
       <description></description>
     </item>
     

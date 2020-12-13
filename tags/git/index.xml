@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>git on Li. Mingzhi</title>
-    <link>limingzhi618.com/tags/git/</link>
+    <link>http://limingzhi618.com/tags/git/</link>
     <description>Recent content in git on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 06 Dec 2020 11:44:52 +0800</lastBuildDate><atom:link href="limingzhi618.com/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 06 Dec 2020 11:44:52 +0800</lastBuildDate><atom:link href="http://limingzhi618.com/tags/git/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Github config for multiple users</title>
-      <link>limingzhi618.com/posts/github-config-for-multile-users/</link>
+      <link>http://limingzhi618.com/post/github-config-for-multile-users/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>limingzhi618.com/posts/github-config-for-multile-users/</guid>
+      <guid>http://limingzhi618.com/post/github-config-for-multile-users/</guid>
       <description>1. Background We sometimes use more than one github account to manage different repositories. Even though we&#39;ve set the config file(~/.ssh/config) correctly and test(ssh -T git@github.com) correctly, it will promote &amp;quot;permission denied(public key)&amp;quot; while we hit git push.  The problem is that we need to clarify different hosts for different users. And make the Host of url in you repository config the same as that of ~/.ssh/config  2. Here is the content of my git config file(~/.</description>
     </item>
     
