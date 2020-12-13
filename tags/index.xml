@@ -1,166 +1,171 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on I&#39;m Li. Mingzhi</title>
-    <link>/tags/</link>
-    <description>Recent content in Tags on I&#39;m Li. Mingzhi</description>
+    <title>Tags on Li. Mingzhi</title>
+    <link>limingzhi618.com/tags/</link>
+    <description>Recent content in Tags on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh_CN</language>
-    <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate>
-    
-	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <language>en-us</language>
+    <lastBuildDate>Fri, 11 Dec 2020 17:58:22 +0800</lastBuildDate><atom:link href="limingzhi618.com/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>algorithm</title>
-      <link>/tags/algorithm/</link>
-      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
+      <link>limingzhi618.com/tags/algorithm/</link>
+      <pubDate>Fri, 11 Dec 2020 17:58:22 +0800</pubDate>
       
-      <guid>/tags/algorithm/</guid>
+      <guid>limingzhi618.com/tags/algorithm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>bfs</title>
-      <link>/tags/bfs/</link>
-      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
+      <link>limingzhi618.com/tags/bfs/</link>
+      <pubDate>Fri, 11 Dec 2020 17:58:22 +0800</pubDate>
       
-      <guid>/tags/bfs/</guid>
+      <guid>limingzhi618.com/tags/bfs/</guid>
       <description></description>
     </item>
     
     <item>
       <title>breadth-first-search</title>
-      <link>/tags/breadth-first-search/</link>
-      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
+      <link>limingzhi618.com/tags/breadth-first-search/</link>
+      <pubDate>Fri, 11 Dec 2020 17:58:22 +0800</pubDate>
       
-      <guid>/tags/breadth-first-search/</guid>
+      <guid>limingzhi618.com/tags/breadth-first-search/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>dijkstra</title>
+      <link>limingzhi618.com/tags/dijkstra/</link>
+      <pubDate>Fri, 11 Dec 2020 17:58:22 +0800</pubDate>
+      
+      <guid>limingzhi618.com/tags/dijkstra/</guid>
       <description></description>
     </item>
     
     <item>
       <title>graph</title>
-      <link>/tags/graph/</link>
-      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
+      <link>limingzhi618.com/tags/graph/</link>
+      <pubDate>Fri, 11 Dec 2020 17:58:22 +0800</pubDate>
       
-      <guid>/tags/graph/</guid>
+      <guid>limingzhi618.com/tags/graph/</guid>
       <description></description>
     </item>
     
     <item>
       <title>search</title>
-      <link>/tags/search/</link>
-      <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
+      <link>limingzhi618.com/tags/search/</link>
+      <pubDate>Fri, 11 Dec 2020 17:58:22 +0800</pubDate>
       
-      <guid>/tags/search/</guid>
+      <guid>limingzhi618.com/tags/search/</guid>
       <description></description>
     </item>
     
     <item>
       <title>hash</title>
-      <link>/tags/hash/</link>
+      <link>limingzhi618.com/tags/hash/</link>
       <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
       
-      <guid>/tags/hash/</guid>
+      <guid>limingzhi618.com/tags/hash/</guid>
       <description></description>
     </item>
     
     <item>
       <title>hash tables</title>
-      <link>/tags/hash-tables/</link>
+      <link>limingzhi618.com/tags/hash-tables/</link>
       <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
       
-      <guid>/tags/hash-tables/</guid>
+      <guid>limingzhi618.com/tags/hash-tables/</guid>
       <description></description>
     </item>
     
     <item>
       <title>quick sort</title>
-      <link>/tags/quick-sort/</link>
+      <link>limingzhi618.com/tags/quick-sort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
-      <guid>/tags/quick-sort/</guid>
+      <guid>limingzhi618.com/tags/quick-sort/</guid>
       <description></description>
     </item>
     
     <item>
       <title>sort</title>
-      <link>/tags/sort/</link>
+      <link>limingzhi618.com/tags/sort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
-      <guid>/tags/sort/</guid>
+      <guid>limingzhi618.com/tags/sort/</guid>
       <description></description>
     </item>
     
     <item>
       <title>recursion</title>
-      <link>/tags/recursion/</link>
+      <link>limingzhi618.com/tags/recursion/</link>
       <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
       
-      <guid>/tags/recursion/</guid>
+      <guid>limingzhi618.com/tags/recursion/</guid>
       <description></description>
     </item>
     
     <item>
       <title>git</title>
-      <link>/tags/git/</link>
+      <link>limingzhi618.com/tags/git/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>/tags/git/</guid>
+      <guid>limingzhi618.com/tags/git/</guid>
       <description></description>
     </item>
     
     <item>
       <title>github</title>
-      <link>/tags/github/</link>
+      <link>limingzhi618.com/tags/github/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>/tags/github/</guid>
+      <guid>limingzhi618.com/tags/github/</guid>
       <description></description>
     </item>
     
     <item>
       <title>multiple users</title>
-      <link>/tags/multiple-users/</link>
+      <link>limingzhi618.com/tags/multiple-users/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>/tags/multiple-users/</guid>
+      <guid>limingzhi618.com/tags/multiple-users/</guid>
       <description></description>
     </item>
     
     <item>
       <title>resume</title>
-      <link>/tags/resume/</link>
+      <link>limingzhi618.com/tags/resume/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>/tags/resume/</guid>
+      <guid>limingzhi618.com/tags/resume/</guid>
       <description></description>
     </item>
     
     <item>
       <title>binary search</title>
-      <link>/tags/binary-search/</link>
+      <link>limingzhi618.com/tags/binary-search/</link>
       <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>/tags/binary-search/</guid>
+      <guid>limingzhi618.com/tags/binary-search/</guid>
       <description></description>
     </item>
     
     <item>
       <title>TOEFL</title>
-      <link>/tags/toefl/</link>
+      <link>limingzhi618.com/tags/toefl/</link>
       <pubDate>Sat, 10 Oct 2020 17:16:02 +0800</pubDate>
       
-      <guid>/tags/toefl/</guid>
+      <guid>limingzhi618.com/tags/toefl/</guid>
       <description></description>
     </item>
     
     <item>
       <title>writing</title>
-      <link>/tags/writing/</link>
+      <link>limingzhi618.com/tags/writing/</link>
       <pubDate>Sat, 10 Oct 2020 17:16:02 +0800</pubDate>
       
-      <guid>/tags/writing/</guid>
+      <guid>limingzhi618.com/tags/writing/</guid>
       <description></description>
     </item>
     

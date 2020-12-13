@@ -1,0 +1,267 @@
+[
+{
+	"uri": "limingzhi618.com/en/posts/algorithm_illustration/cp7_dijkstra_algorithm/",
+	"title": "AL: 7. Dijkstra&#39;s algorithm",
+	"tags": ["algorithm", "graph", "search", "breadth-first-search", "bfs", "dijkstra"],
+	"description": "",
+	"content": "1. Dijkstra\u0026rsquo;s algorithm 2. Terminology 3. Negative-weight edges 4. Implementation Summary "
+},
+{
+	"uri": "limingzhi618.com/en/tags/algorithm/",
+	"title": "algorithm",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/categories/algorithm_illustration/",
+	"title": "algorithm_illustration",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/bfs/",
+	"title": "bfs",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/breadth-first-search/",
+	"title": "breadth-first-search",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/categories/",
+	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/dijkstra/",
+	"title": "dijkstra",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/graph/",
+	"title": "graph",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/",
+	"title": "Li. Mingzhi",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/posts/",
+	"title": "Posts",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/search/",
+	"title": "search",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/",
+	"title": "Tags",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/posts/algorithm_illustration/cp6_breadth_first_search/",
+	"title": "AL: 6. Breadth-first search",
+	"tags": ["algorithm", "graph", "search", "breadth-first-search", "bfs"],
+	"description": "",
+	"content": "  From this chapter we get to know graphs, which is a new data structure and can help us model a network. We also get to know a new algorhtim named breadth-first search, which can help us find the shortest path. We review the difference between directed and undirected graphs. We get to know a new sorting algorithm called topological sort, which can help us know dependent relationships between nodes.   1. Graphs Graphs, which can reflect connections between nodes, are made up of nodes and edges. And the nodes connected directly to a node are called neghbors.\n2. BFS(Breadth-first search) BFS can help us solve two problems:\n   Is there a path from one node to another?    What is the shortest path between the two nodes.    If you have a graph like this, and want to find a person whose name ends with character \u0026lsquo;m\u0026rsquo;.\n   Make a list of people to search.    Go to each person in the list and check whether this person\u0026rsquo;s name ends with \u0026lsquo;m\u0026rsquo;.      If none of your friends\u0026rsquo; name ends with \u0026lsquo;m\u0026rsquo;, you have to see friends of your friends.    When your search for someone from the list, add all of their friends to the list.    2.1 Get the shortest path As we can see from the graph, your friends are first-degree connections, and friends of them are second-degree connections. We should always search the first-degree connections before searching the second-degree connections, and so on. Thus, we use queue as the data structure to store the list.\n2.2 Queues Compared with stack, which is LIFO(Last in, first out), queue is FIFO(First in, first out). It\u0026rsquo;s a very vivid picture, from which we can see this abstract concept.\n3. Implementing the graph  We should construct a graph that\u0026rsquo;s made up of nodes, each of which is connected to its neighboring nodes. We can map a node to all its neighbors by using a hash table.  Here is an example of Golang:\ngraph := make(map[string][]string, 0) graph[\u0026#34;you\u0026#34;] = []string{\u0026#34;alice\u0026#34;, \u0026#34;bob\u0026#34;, \u0026#34;claire\u0026#34;} graph[\u0026#34;bob\u0026#34;] = []string{\u0026#34;anuj\u0026#34;, \u0026#34;peggy\u0026#34;} graph[\u0026#34;alice\u0026#34;] = []string{\u0026#34;peggy\u0026#34;} graph[\u0026#34;claire\u0026#34;] = []string{\u0026#34;thom\u0026#34;, \u0026#34;jonny} graph[\u0026#34;anuj\u0026#34;] = []string{} graph[\u0026#34;peggy\u0026#34;] = []string{} graph[\u0026#34;thom\u0026#34;] = []string{} graph[\u0026#34;jonny\u0026#34;] = []string{}  In the example above, Anuj is Bob\u0026rsquo;s neighbor, however, Bob isn\u0026rsquo;t Anju\u0026rsquo;s neighbor, since this graph is a directed graph.  4. Implementing the algorithm  Python  from collections import deque def search(name): search_queue = deque() # creates a new queue  search_queue += graph[\u0026#34;you\u0026#34;] # Adds all of your neighbors to the search queue  searched = [] while search_queue: # While the queue isn\u0026#39;t empty  person = search_queue.popleft() # grabs the first person off the queue  if person in searched: continue if person_is_seller(person): # Checks whether the person is a mango seller print person + \u0026#34; is a mango seller!\u0026#34; # Yes, they\u0026#39;re a mango seller. return True else: search_queue += graph[person] # No, they aren\u0026#39;t. Add all of this person\u0026#39;s friends to the search queue. searched.append(person) return False # If you reached here, no one in the queue was a mongo seller.  def person_is_seller(name): return name[-1] == \u0026#39;m\u0026#39; graph = {} graph[\u0026#34;you\u0026#34;] = [\u0026#34;alice\u0026#34;, \u0026#34;bob\u0026#34;, \u0026#34;claire\u0026#34;] graph[\u0026#34;bob\u0026#34;] = [\u0026#34;anuj\u0026#34;, \u0026#34;peggy\u0026#34;] graph[\u0026#34;alice\u0026#34;] = [\u0026#34;peggy\u0026#34;] graph[\u0026#34;claire\u0026#34;] = [\u0026#34;thom\u0026#34;, \u0026#34;jonny\u0026#34;] graph[\u0026#34;anuj\u0026#34;] = [] graph[\u0026#34;peggy\u0026#34;] = [] graph[\u0026#34;thom\u0026#34;] = [] graph[\u0026#34;jonny\u0026#34;] = [] search(\u0026#34;you\u0026#34;)  Golang  hash_collision_1ckage main import \u0026#34;fmt\u0026#34; var ( graph map[string][]string ) func init() { graph = make(map[string][]string, 0) graph[\u0026#34;you\u0026#34;] = []string{\u0026#34;alice\u0026#34;, \u0026#34;bob\u0026#34;, \u0026#34;claire\u0026#34;} graph[\u0026#34;bob\u0026#34;] = []string{\u0026#34;anuj\u0026#34;, \u0026#34;peggy\u0026#34;} graph[\u0026#34;alice\u0026#34;] = []string{\u0026#34;peggy\u0026#34;} graph[\u0026#34;claire\u0026#34;] = []string{\u0026#34;thom\u0026#34;, \u0026#34;jonny\u0026#34;} graph[\u0026#34;anuj\u0026#34;] = []string{} graph[\u0026#34;peggy\u0026#34;] = []string{} graph[\u0026#34;thom\u0026#34;] = []string{} graph[\u0026#34;jonny\u0026#34;] = []string{} } func search(name string) bool { searchQueue := []string{} searchQueue = append(searchQueue, graph[\u0026#34;you\u0026#34;]...) searched := make(map[string]bool, 0) for len(searchQueue) \u0026gt; 0 { //fmt.Println(\u0026#34;search_queue: \u0026#34;, searchQueue) \tperson := searchQueue[0] searchQueue = searchQueue[1:] if searched[person] { continue } if personIsSeller(person) { fmt.Println(person, \u0026#34; is a mango seller!\u0026#34;) return true } searchQueue = append(searchQueue, graph[person]...) searched[person] = true } return false } func personIsSeller(name string) bool { n := len(name) return name[n-1] == \u0026#39;m\u0026#39; } func main() { fmt.Println(search(\u0026#34;you\u0026#34;)) } Running time   Since we\u0026rsquo;ll search the entire network, we\u0026rsquo;ll work through each edge.\nThus, the running time is at least O(number of edges).\n  Since We have a queue of every node to search and searching for each node cost time O(1),\nsearching for every node will take O(number of nodes) total.\n  BFS takes O(V+E), in which V represent number of vertices, and E represents number of edges.\n  Summary  BFS can tell us if there\u0026rsquo;s a path from A to B. If there\u0026rsquo;s a path between two nodes, BFS will find the shortest path. To find solutions of problems like \u0026ldquo;finding the shortest X\u0026rdquo;, we can model the problems as graphs and use BFS to solve them. There are arrows in directed graphs, following the direction of the arrows are the relationship. Since undirected graphs have no arrows, the relationship goes both ways. Queues are FIFO. Stacks are LIFO. We should use a queue to keep the Nodes, otherwise, we won\u0026rsquo;t find the shortest path. To avoid infinite loop, every node can only be checked once.  "
+},
+{
+	"uri": "limingzhi618.com/en/posts/algorithm_illustration/cp5_hash_tables/",
+	"title": "AL: 5. Hash tables",
+	"tags": ["algorithm", "hash tables", "hash"],
+	"description": "",
+	"content": "1. Requirements for hash function  It needs to be consistent. It should map different workds to different numbers.  You get a hash table by putting a hash function and an array together. Hash tables use an array to store data since we can get an item from an array instantly(O(1)).\n2. Use cases 2.1 Using hash tables for lookups Hash tables make it easy to model a relationship from one item to another. Hash tables are used for lookups on a much larger scale.\n2.2 Preventing duplicate entries Keep in mind that the hash function would be really slow if you were storing elements in a array,\nsince it would have to run a simple search(O(n)) over the entire list.\nHowever, you can get the value instantly if you store them in a hash table. Thus, checking for duplicates is very fast with a hash table.\n2.3 Using hash tables as Caching is One of the final use of hash tables.\nCaching is widely used in websites, since the servers don\u0026rsquo;t have to do much work to find the requested data. Thus, caching is a common way to make things faster.\n3. Collisions Collision: two or more keys have been assigned the same slot.\nSince Collisions are bad, we need to work around them. We have many distinct ways to deal with collisions, the simplest one of which is this:\nIf multiple keys map to the same slot, start a linked list at that slot.  However, if you have many keys startig with the letter A, you will only use one slot with a giant linked list. This will definitely slow down your hash table.  4. Performance We can see from the figure above that hash tables are as fast as arrays at searching,\nand are as fast as linked lists at inserts and delets.\nNevertheless, hash tables are slow(O(n)) at all of those operations. In order not to hit the worst case performance with hash tables, we need to avoid collisions.\n A low load factor A good hash function  4.1 Load factor Load Factor: Number of items in hash table / total number of slots For example, if your hash table has 5 slots and 2 of them used, the load factor would be 2/5.\n If the hash table is getting pretty full, we need to resize this table. And the rule of thumb is to make an array that is twice the size. Even though, the resizing takes some time, hash tables take O(1) on average.  4.2 A good hash function A good hash function districutes values in the array evenly. You can check the SHA function if your curiosity is great enough.\nSummary  We can make a hash table by combining a hash function with an array. We need a hash function to minimize collisions. Hash tables have really fast search, insert, and delete. Hash tables are good for modeling relations from one item to another item. You\u0026rsquo;d better resize your hash table when your load facotor is greater than 0.7. Hash tables are widely used for caching data. Hash tables are great for catching duplicates.  "
+},
+{
+	"uri": "limingzhi618.com/en/tags/hash/",
+	"title": "hash",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/hash-tables/",
+	"title": "hash tables",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/posts/algorithm_illustration/cp4_quick_sort/",
+	"title": "AL: 4. Quicksort",
+	"tags": ["algorithm", "quick sort", "sort"],
+	"description": "",
+	"content": " This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.\n 1. Divide \u0026amp; Conquer  It can take us some time to understand D\u0026amp;C. Therefore, we will see some problems to learn about it.\n Example If you are a farmer with a large land and plan to divide this farmland evenly into square plots.\nBesides, the plots must be as big as possible. Before continuing your reading, think about how can you solve this problem?\nWe can use D\u0026amp;C(Divde \u0026amp; Conquer) to solve this problem.\nTo solve a problem using D\u0026amp;C, we should follow two steps:\n1. Figure out the base case, which should be the simplest possible case. 2. Divide or decrease you problem until it becomes the base case. Suppose you have a land of 30 * 50, now you have the largest square with side of 30.\nWe have the rest of the land(20 * 30) and have the largest square of 20 * 20. Then we are left with a land of 10 * 10, which is the answer.\n Golang  func findMaxEvenSquareR(width, height int) int { if 0 == height || 0 == width { return height + width } if height \u0026gt; width { height = height % width } else { width = width % height } return findMaxEvenSquareR(width, height) } 2. Exercises:  Add up all numbers and return the total.   Python  def sumR(arr): if len(arr) == 1: return arr[0] return arr[0] + sumR(arr[1:])  Golang  func sumR(arr []int) (total int) { if len(arr) == 1 { return arr[0] } return arr[0] + sumR(arr[1:]) } Write a recursive function to count the number of elements in a list   Python  def countEleR(arr): if len(arr) == 1: return 1 return 1 + countEleR(arr[1:]) Find the maximum number in a list   Python  def findMaxR(arr): if len(arr) == 1: return arr[0] ret = findMaxR(arr[1:]) if arr[0] \u0026gt; ret: return arr[0] else: return ret Write the D\u0026amp;C code for Binary Search   Python  def binarySearchR(list, item, low, high): if low \u0026gt; high: return None mid = (low + high) / 2 guess = list[mid] if guess \u0026gt; item: high = mid -1 else: low = mid + 1 return binarySearchR(list, item, low, high)  Golang  func binarySearchR(list []int, item, low, high int) int { // 1. figure out the base case \tif low \u0026gt; high { return -1 } //. 2. reduce the problem and get to the base case \tmid := (low + high) / 2 guess := list[mid] if guess == item { return mid } if guess \u0026gt; item { high = mid - 1 } else { low = mid + 1 } return binarySearchR(list, item, low, high) }  Tip: When we got a recursive function involving an array, the base case is often an empty array or an array with one element.\n 3. Quick Sort 3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life. The base case for quicksort are arrays that are empty and arrays with just one element. Using D\u0026amp;C, we can break down a array until we get the base case.\n Here are the steps for quick sort:    Pick an element from the array as the pivot Find the elements smaller than the privot and the elements larger than it(This is called Partitioning). Call quicksort recursively on the two sub-arrays. The sub-arrays get sorted, and then we combine the whole thing to get a sorted array.   3.2 Here we can see one example from the book.\nAfter partitioning, we get three parts: numbers less than the pivot, the pivot and numbers greater than the pivot.\nNext, we\u0026rsquo;ll quick sort the two sub-arrays.\nEven though the two sub-arrays are not sorted, they\u0026rsquo;re partitioned. However, sorting the whole array would be pretty easy, if they were sorted.\nThen, we can combine the whole thing together, like this: left array + pivot + right array. We do this recursively and will get a sorted array.\nHere is the code, which would be easy to understand(In order to save space, We provide only the Golang code).\n Golang  func quickSort(arr []int) (ret []int) { if len(arr) \u0026lt; 2 { ret = append(ret, arr...) return } pivot := arr[0] less, greater := []int{}, []int{} for _, v := range arr[1:] { if v \u0026lt;= pivot { less = append(less, v) } else { greater = append(greater, v) } } fmt.Println(\u0026#34;less: \u0026#34;, less, \u0026#34;, pivot: \u0026#34;, pivot, \u0026#34;, greater: \u0026#34;, greater) lessRet := quickSort(less) greaterRet := quickSort(greater) ret = append(ret, lessRet...) ret = append(ret, pivot) ret = append(ret, greaterRet...) return } If you\u0026rsquo;d come through the explanation above, you would find this code easy to understand. Nevertheless, it\u0026rsquo;s not efficent in memory. Here you can see codes optimized by using no extra memory space.\nfunc quickSortE(arr []int) { if len(arr) \u0026lt; 2 { return } l := len(arr) pivot := arr[l-1] j := 0 // idx of element bigger than pivot \tfor i := 0; i \u0026lt; l-1; i++ { if arr[i] \u0026gt; pivot { continue } swap(arr, i, j) j++ } swap(arr, j, l-1) quickSortE(arr[:j]) quickSortE(arr[j+1:]) return } func swap(arr []int, i, j int) { arr[i], arr[j] = arr[j], arr[i] } In order to have better performance, we use random element as the pivot:\nfunc quickSortERand(arr []int) { if len(arr) \u0026lt; 2 { return } l := len(arr) rand.Seed(time.Now().UnixNano()) pIdx := rand.Intn(l - 1) pivot := arr[pIdx] j := 0 // idx of element bigger than pivot \tfor i := 0; i \u0026lt; l-1; i++ { if arr[i] \u0026gt; pivot { continue } swap(arr, i, j) j++ } swap(arr, j, l-1) quickSortERand(arr[:j]) quickSortERand(arr[j+1:]) return } 4. Big O notation Quicksort is unique since its speed depends on the pivot we use.\nHere we can see the most common Big O run times.\nPlease pay attention to the example times in the chart because they are estimates of seconds per operation.\nCompared with Merged Sort, which is O(nlogn) and faster, quicksort is different:\nIn the worst case, quicksorts takes O(n^2)time, which is as slow as selection sort. In the average case, quicksorts takes O(nlogn)time.\n5. Merge Sort vs. Quicksort For algorithms with O(n), there are a constant for every operation.\nCommonly, the constant is ignored, however, it\u0026rsquo;ll make a difference in some cases.\n Quick sort has a smaller constant than merge sort.   Therefore, if they\u0026rsquo;re both O(nlogn)time, quicksort will be faster. Besides, quicksort is faster in practice since it hits the average case way more often than the worst case.\n 6. Averge case vs. Worst case The performance of quicksort is heavily affected by the pivot. Suppose we always choose the first element as the pivot, and call quick with an sorted array. Since quicksort doesn\u0026rsquo;t to see whether the input array is already sorted, it will still try to sort it.\nAs we can see in the following figure:\nSince we\u0026rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty. As we always get O(n) in every level of the stack, we finally get O(n)*O(n)O(n^2)time.\nTherefore, the call stack is so long that it takes O(n^2) time.\nOn the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).\nTherefore, we get operation time O(nlogn).  However, the best case is also the average case. If we choose a random element in the array as the pivot, quicksort will have O(nlogn)time on average.  Thank you for your effort to read this part of this passage. What are included in this passage are my study notes about algorithm. If you want to know more details about it, I strongly recommend you this book: grokking algoriths: An illustrated guide for programmers and other curious people. The author illustrate algorithms with pictures, which make people easily understand difficult questions. Summary  D\u0026amp;C works by splitting a problem into smaller parts. And the base case is usually an array with no or only one element. Choosing a random element as the pivot can make quicksort complete in O(nlog n) time on average. Quicksort is faster than merge sort since the constant in Big O notation matters. Since O(log n) is pretty faster than O(n) with a large list, the constant never matters for simple search versus binary search.  "
+},
+{
+	"uri": "limingzhi618.com/en/tags/quick-sort/",
+	"title": "quick sort",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/sort/",
+	"title": "sort",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/posts/algorithm_illustration/cp3_recursion/",
+	"title": "AL: 3. Recursion",
+	"tags": ["algorithm", "recursion"],
+	"description": "",
+	"content": " In this chapter, I learned about recursion, which is very useful in many algorithms. Also, this chapter shows us how to break down a problem into a base case and a recursive case.\n 1. Recursion If you have a box containing more boxes, in which there will be no or more boxes.\nThe key is in one of the boxes.\nHow can you do to search for the key?\n1.1 Solution 1  Make a pile of boxes to check. Pick a box and look through it. Add a box to the pile to look through later, if you find one. If you find the key, you\u0026rsquo;re done. Repeat.  1.2 Solution 2  Look through a box. Go to step 1, if you find a box. If you find a key, you\u0026rsquo;re done.   Even though both solutions accomplish the same thing, the second one is clearer. However, loops have better performance in reality. Nevertheless, it\u0026rsquo;s essential to understand the concept since most significant algorithms use recursion.  2. Base case and recursive case We have to tell the function when to stop recursing in a recursive function.\nThus, every recursive function has two parts: the base case, and the recurive case.\n example  def countdown(i): print i if i \u0026lt;= 0: # \u0026lt;------- Base case: we are done here. return else: # \u0026lt;----- Recursive case countdown(i-1) 3. Stack Our computers also uses a stack internally named call stack. Here we use an example of factor to illustrate this concept:\n5! = 5 * 4 * 3 * 2 * 1 ==\u0026gt; 5! = 5 * 4!\n4! = 4 * 3!\n3! = 3 * 2!\n2! = 2 * 1!\n1! = 1\ndef fact(x): if x == 1: return 1 else: return x * fact(x-1) Summary  Recursive functions have two cases: the base case and the recursive case. Stacks have two operations: push and pop. All function calls go onto the call stack. The call stack can take up lot of memory if it gets large.  "
+},
+{
+	"uri": "limingzhi618.com/en/tags/recursion/",
+	"title": "recursion",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/git/",
+	"title": "git",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/github/",
+	"title": "github",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/posts/github-config-for-multile-users/",
+	"title": "Github config for multiple users",
+	"tags": ["github", "git", "multiple users"],
+	"description": "",
+	"content": "1. Background We sometimes use more than one github account to manage different repositories. Even though we've set the config file(~/.ssh/config) correctly and test(ssh -T git@github.com) correctly, it will promote \u0026quot;permission denied(public key)\u0026quot; while we hit git push.  The problem is that we need to clarify different hosts for different users. And make the Host of url in you repository config the same as that of ~/.ssh/config  2. Here is the content of my git config file(~/.ssh/config): Host github1 # Do make the Host distinct from each other Hostname github.com User mingzhi999 # This is your github account name IdentityFile ~/.ssh/id_rsa_git # Please config your SSH key in your github settings Host github2 Hostname github.com User lilu888 IdentityFile ~/.ssh/id_rsa_lilu_git 3. The following is part of git config in my repository [remote \u0026quot;origin\u0026quot;] url = git@github2:lilu888/project.git fetch = +refs/heads/*:refs/remotes/origin/*  Please pay attention the the format of url: git@Host:user/project.git  4. Finally, there will be no error with \u0026lsquo;git push\u0026rsquo; References https://blog.csdn.net/cxrsdn/article/details/83274333 "
+},
+{
+	"uri": "limingzhi618.com/en/tags/multiple-users/",
+	"title": "multiple users",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/posts/resume/",
+	"title": "Resume",
+	"tags": ["resume"],
+	"description": "",
+	"content": "　Li. Mingzhi\n   　 　 　 　     Phone: +86 18818686216 Email: lmingzhi618@gmail.com   Blog: https://mingzhi198.github.io　(https://limingzhi618.com) Github: https://github.com/mingzhi198   Jianshu: https://www.jianshu.com/u/f9f3adb6764a      Education Background    University Major Period     Shenzhen University Software Engineering 2016.3~2019.1   Shenzhen University Software Engineering 2013.3~2015.7   Henan Institute of Technology Mechanical Manufacture and Automation 2005.9~2008.7    Language Skills    Language Level     Chinese Fluent   English TOEFL: 102 (MyBest107), GRE:322    Special Skills Good at troubleshooting, analyzing and solving problems.\nGood at optimizing interface performance, achieving high concurrent access and stability.\nProfessional Skills  Familiar with Golang (2017 to present), C/C++, Python development under Linux Familiar with TCP/IP, HTTP network protocol Familiar with encryption algorithms (DES/AES/RSA/MD5/HASH) Familiar with GCC, GDB, Makefile, Blade, and other compilation and debugging tools, and proficient in Vim development Familiar with databases: MySQL, Redis, MongoDB, SQLite Familiar with message queues: RabbitMq. Familiar with RPC framework: Thrift, gRPC; Golang web framework: Beego, Gin Familiar with Golang database components such as gorm and redigo Familiar with Boost, POCO, and other open-source libraries, familiar with Docker Familiar with wrk (Lua) pressure measurement tool, pprof performance optimization tool  Other Hubbies Reading, Music, Gym\n"
+},
+{
+	"uri": "limingzhi618.com/en/tags/resume/",
+	"title": "resume",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/categories/resume/",
+	"title": "resume",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/posts/algorithm_illustration/cp2_selection-search/",
+	"title": "AL: 2. Selection sort",
+	"tags": ["algorithm", "sort"],
+	"description": "",
+	"content": " This blog is used as notes for later reference after reading the book \u0026lsquo;Algorithms an illustrated guide for programmers\u0026rsquo;  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list. With an array, all your elements are stored right next to each other. With a list, elements are strewn all over, and one element stores the address of the next one. Arrays allow fast reads. Linked lists allow fast inserts and deletes. All elements in the array should be the same type (all ints, all doubles, and so on).  2. Codes in about Selection Sort  Python  def findSmallest(arr): smallest = arr[0] smallest_idx = 0 for i in range(1, len(arr)): if arr[i] \u0026lt; smallest: smallest = arr[i] smallest_idx = i return smallest_idx def selectionSort(arr): newArr = [] for i in range(len(arr)): smallest = findSmallest(arr) newArr.append(arr.pop(smallest)) return newArr print selectionSort([5, 3, 6, 2, 10])  Golang  package main import \u0026#34;fmt\u0026#34; func findSmallest(arr []int) int { smallest := arr[0] smallest_idx := 0 for idx, val := range arr { if val \u0026lt; smallest { smallest = val smallest_idx = idx } } return smallest_idx } func SelectionSort(arr []int) (ret []int) { l := len(arr) for i := 0; i \u0026lt; l; i++ { fmt.Println(\u0026#34;arr: \u0026#34;, arr) smallest_idx := findSmallest(arr) ret = append(ret, arr[smallest_idx]) arr = append(arr[:smallest_idx], arr[smallest_idx+1:]...) } return } func main() { arr := []int{5, 3, 6, 2, 10} fmt.Println(SelectionSort(arr)) } Check out the Jekyll docs for more info on how to get the most out of Jekyll. File all bugs/feature requests at Jekyll’s GitHub repo.\nIf you have questions, you can ask them on Jekyll Talk.\n"
+},
+{
+	"uri": "limingzhi618.com/en/posts/algorithm_illustration/cp1_binary-search/",
+	"title": "AL: 1. Binary search",
+	"tags": ["algorithm", "binary search"],
+	"description": "",
+	"content": " This blog is used as notes for later reference after reading the book \u0026lsquo;Algorithms an illustrated guide for programmers\u0026rsquo;  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows. * Algorithm speed isn’t measured in seconds. * Algorithm times are measured in terms of growth of an algorithm. * Algorithm times are written in Big O notation.  2. Codes in about Binary Search  Python  def binary_search(list, item): low = 0 high = len(list)-1 while low \u0026lt;= high: mid = (low + high)/2 guess = list[mid] if guess == item: return mid if guess \u0026gt; item: high = mid -1 else: low = mid + 1 return None my_list = [1, 3, 5, 7, 9] print binary_search(my_list, 5) print binary_search(my_list, -1)  Golang  func BinarySearch(list []int, item int) int { low := 0 high := len(list) - 1 for low \u0026lt;= high { mid := (low + high) / 2 guess := list[mid] if guess == item { return mid } if guess \u0026gt; item { high = mid - 1 } else { low = mid + 1 } } return -1 } func main() { my_list := []int{1, 3, 5, 7, 9} fmt.Println(BinarySearch(my_list, 5)) fmt.Println(BinarySearch(my_list, -1)) } Five Big O run times sorted from fastest to slowest: * O(log n), also known as log time. Example: Binary search. * O(n), also known as linear time. Example: Simple search. * O(n * log n). Example: A fast sorting algorithm, like quicksort. * O(n2). Example: A slow sorting algorithm, like selection sort. * O(n!). Example: A really slow algorithm, like the traveling salesperson. Check out the Jekyll docs for more info on how to get the most out of Jekyll. File all bugs/feature requests at Jekyll’s GitHub repo. If you have questions, you can ask them on Jekyll Talk.\n"
+},
+{
+	"uri": "limingzhi618.com/en/tags/binary-search/",
+	"title": "binary search",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/tags/toefl/",
+	"title": "TOEFL",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/posts/toefl/writings/job_performance_and_mood/",
+	"title": "TOEFL W2: Job performance and mood",
+	"tags": ["TOEFL", "writing"],
+	"description": "",
+	"content": "Some people may think that they can do a better job and make fewer mistakes if they deal with things in a serious mood.\nHowever, I believe that people should work out solutions with a light mood since it can bring them many benefits.\nTaking things easy can help people relax and perform better.\nAccording to a psychological report from China Daily, stress can have adverse effects on their jobs.\nFor example, I was an engineer five years ago and often got lots of work every day. Sometimes, there would be at least ten machines with issues that need repair. The machines\u0026rsquo; intricate system makes it challenging work since there were numerous electric lines and various equipment. And some of them are very sensitive to static electricity, so we must be careful and patient. Lots of people would be frustrated after hours of work. However, I found that I could do better and finish my job with high efficiency after drinking coffee and relaxation.\nIndeed, doing a job with relaxation can us improve work efficiency.\nBeing happy can help people make friends more easily.\nPeople with a light mood are more likely to make a good impression on other people. Thus they think that you are a kind person and want to communicate with you.\nTake my brother Tom as an instance. He is a software engineer in a big company and gets lots of work every day. Even though he is often busy with his job, he manages to be happy and comfortable by listening to music. Besides, he is very kind and willing to help other people, making him very popular in the office. Moreover, he is used to taking a walk with his colleagues during the break because that can make him think clearly and less stressful.\nSince Tom is always easy with his work, we often see lots of friends at his house.\nLearn to be relaxed can be helpful to people\u0026rsquo;s health.\nWe all know that being serious for a long time makes people feel tired, frustrated, and get health problems more frequently.\nIn contrast, being relaxed can bring people more positive effects.\nFor example, my father is a famous psychology doctor in a local hospital. And he often meets with lots of people with psychological problems. He often tells us that most people have no or less psychical issues at first. But after a long term of pressure, some of them don\u0026rsquo;t sleep well or have a good appetite. And finally, they get various problems, such as high blood pressure. Nevertheless, most of these health issues would disappear if they learned to relax.\nTherefore, people would be more healthy if they can deal with things in a light mood.\nIn conclusion, dealing with works or studies with relaxation will have more benefits for people.\nIt can help people work more efficiently, make new friends relatively quickly, and have less health problems.\n"
+},
+{
+	"uri": "limingzhi618.com/en/tags/writing/",
+	"title": "writing",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "limingzhi618.com/en/posts/toefl/writings/money_support_for_arts_or_sports/",
+	"title": "TOEFL W2: Money spent on arts or sports",
+	"tags": ["TOEFL", "writing"],
+	"description": "",
+	"content": "A/D: Governments should spend more money supporting the arts than supporting athletics such as an Olympic team.  [Opening Sentence] Even though there are limited government resources for arts and sports funding, money is often misspent on athletics and Olympic teams.\n[Thesis statement] However, I believe that governments should put more resources and money on art projects since it will bring a lot more benefits to society and people.\n[Topic 1] Through their creation of the arts, some people become larger-than-life inspirations to everyone.\nHence, governments need to support these people as much as possible.\n[General Statement] Artists often serve as representatives of a nation’s culture.\n[Example] For example, great composers and other artists, such as Beethoven, Mozart, Van Gogh, and Rembrandt, are cultural icons in their home countries. Their genius is recognized worldwide. Without funding for art schools, orchestras, operas, and plays, future artists would have nowhere to improve their work.\n[Closing sentence] By providing funding for arts, governments can ensure a steady flow of cultural icons.\n[Topic 2] By enjoying artworks, people can relieve pressure in life and feel peaceful.\n[General Statement] Due to the burden load of work and life, most people live with tremendous pressure. However, it can help them forget things unhappy when they focus on the artwork.\n[Example] For instance, I work as a software engineer for one of the biggest game companies. I often work on more than three projects at the same time. Besides, there are always new requirements changed before the deadline, and we should report the progress every morning of Monday. Therefore, I often get tired and exhausted after the end of a day’s work. Nevertheless, I happened to found an art museum funded by the government in my community. Then I get used to visiting there every day after work. By walking through various artifacts for no more than fifteen minutes, I would feel relieved and forget anything unhappy.\n[Closing sentence] Indeed, if governments spend more money on art, it can provide more places for people to relax.\n[Topic 2] Besides, since Arts are essential in school education, governments should allocate more resources for arts.\n[General Statement] Many students study music and painting at a young age, and most of them are very talented artists. Without support from the governments, there would be no means for these future artists to develop their abilities.\n[Example] Take my country as an example. With financial support from the government, many schools have courses related to arts, such as music, painting, etc. Also, there are lots of professional art colleges where students can study the arts deeply. Through studying arts, we can learn about different cultures and their ideals.\n[Closing sentence] However, if the governments had not paid more attention to art, we would lose the chance to extend our knowledge about art.\n[Summary] In conclusion, governments should spend more money and put more resources to support the arts.\n[Final Comment] By funding the development of art, people can get inspired, feel less stressed, and have opportunities to study art.\n Tip\nIf you follow the format above and get enough specific ideas and examples to support your points and practice a lot, you\u0026rsquo;ll get at least 25+ in your TOEFL writing.\nOf course, it\u0026rsquo;s based on large vocabulary of at least 8000+ and basic grammar knowledge.  "
+},
+{
+	"uri": "limingzhi618.com/en/posts/toefl/writings/rural_areas_or_cities/",
+	"title": "TOEFL W2: Rural areas or cities",
+	"tags": ["TOEFL", "writing"],
+	"description": "",
+	"content": "DO you agree or disagree with the following statement?\nPeople who live in small villages or farm areas are more satisfied with their lives than people who live in cities.\n Some people may think that people living in rural areas, such as villages and farms, are more contented with their lives since there is a better environment in Villages and farms.\nIn my opinion, however, most people are satisfied with living in cities because it can have more benefits than living in rural areas.\nFor one thing, living in cities can help us make more friends.(social)\nSince there are many people from different regions in cities, we have more chances to know various people than in remote areas.\nFor example, there are three famous art museums and five fantastic gyms near our community where you can see many people. Moreover, I like working out at the gym after work and on weekends. By exercising at the gym, I got a chance to know my best friends, who help me a lot in my life and encourage me to learn Spanish.\nNevertheless, I couldn’t have a chance to make more friends if I had lived in rural areas.\nBesides, living in cities can save us lots of time and trouble. There are more malls and markets in towns for people to go shopping than in remote areas. (daily life)\nEven people from rural areas have to admit that living in rural areas is inconvenient. They often complain that they have to drive for more than one hour to buy living stuff or go to the hospital.\nAccording to a statistical analysis from China Daily, there is at least one merchandise market and one hospital in every city district, let alone numerous clinics distributing in different city communities. Thus, it will take us less than one hour to buy some fruits and vegetables, which make our lives more convenient.\nHowever, you have to spend half the day to go shopping if you live in remote areas.\nFurthermore, more job opportunities are available in cities than in rural areas. (career)\nWe all know that companies are usually located in big cities since there are more talented people and developed transportation. According to a career analysis from the Times, the rate of changing jobs in cities is much higher than in rural areas because you can find a new job easily if you don’t like your current workplace.\nI live in Silly Valley, known as programmers’ heaven, where there are many famous companies. As a software engineer, I’ve never worried that I cannot find a job. Also, there are always popular activities, in which you can know some people who want to find competent employees. Five years ago, I worked as an embedded software engineer in a small company. I was depressed and frustrated during the year I was there because of our boss’s bad temper. Then, I left there and found a job in another company.\nThus, living in cities can have more opportunities in a career.\nIn conclusion, people living in cities are more satisfied with their lives than people living in rural areas.\nLiving in cities can help people make more friends, be more convenient, and provide more job opportunities.\n"
+},
+{
+	"uri": "limingzhi618.com/en/posts/toefl/writings/new_tech_affect_study/",
+	"title": "TOEFL W2: New tech affect study",
+	"tags": ["TOEFL", "writing"],
+	"description": "",
+	"content": "Some people may think that young children should not use new technology and limit their use of technology because it is harmful to young children.\nIn my opinion, however, new technology can be useful for children\u0026rsquo;s studies and bring them a lot more benefits.\nUsing technology can help young students improve their study.\nToday, computers and the Internet are beneficial to students because there are many excellent computer tools related to study.\nTake me as an instance. I was interested in computer science and loved programming when I was in middle school ten years ago. But I encountered a big problem since I didn\u0026rsquo;t have enough money to buy a computer. Nevertheless, our teachers told us that there were lots of computers in our library, in which we can learn a lot about programming. Then, I would go to the computer library and stay until midnight every day.\nIf not for the new technology, I would have no chance to improve my study and programming skills.\nBesides, the use of new technology can help young kids broaden their horizons.\nThrough the Internet, young kids can learn a lot about different cultures and read various books from various countries and regions.\nFor example, my brother Tom loves English literature. He often went to a bookstore downtown to read books. But it usually took him at least two hours to get there since he lived very far away from the downtown. However, his father bought him a computer last year. By reading information online, he can read lots of books and find interesting information about other cultures.\nWith the help of new technology, it saved Tom a lot of trouble to study and broadened his horizons.\nMoreover, young students can also take online courses under some conditions.\nIt\u0026rsquo;s not always convenient and efficient for students and teachers to meet in classrooms.\nInstead, studying and teaching online would be an excellent solution to this problem.\nTake the current world as an instance. After breaking a dangerous virus, many people are limited to their communities and keep a safe social distance. To limit the spread of the virus, governments closed many, and thus students can go nowhere buy stay at home. However, many teachers now teach their students through online programs. By studying online, children can continue their classes.\nYet, children\u0026rsquo;s study would be affected without the help of technology.\nIn conclusion, new technology is essential for young children and can benefit them a lot.\nWith the assistance of modern technology, it can help young students improve their study, broaden their horizons, and study online conveniently.\n"
+},
+{
+	"uri": "limingzhi618.com/en/posts/toefl/writings/ad_teachers_should_assign_more_tasks/",
+	"title": "TOEFL W2: A/D: Teachers should assign students more tasks",
+	"tags": ["TOEFL", "writing"],
+	"description": "",
+	"content": "Many people may think that young students can learn a lot by doing a great deal of homework. However, teachers should assign their students with tasks that can be finished within thirty minutes since it will bring young students a lot more benefits.\nFewer assignments with crucial elements can help young students study more efficiently. People commonly held that the more assignments to do, the more young students could learn. Many students are frustrated with the burden tasks and thus tend to finish the tasks quickly. Therefore, they don’t think deeply about the topics or get much improvement. Nevertheless, Tasks of high quality can be easy to be finished and help students learning things positively. For example, I once was a young student in the local primary school. And our teachers often gave us assignments that can we could finish in a short time. And students are often motivated because of the sense of achievement. Therefore, all students there have a positive attitude toward school and study. Even though we didn’t do many assignments, many students in our class get high scores in the final exams.\nBesides, fewer assignments can give students chances to make some friends. With fewer tasks to do, students will have more time to play with other young kids and know some people. Take My brother Tom as an instance. He was a timid boy who didn’t like talking much and had no friends when our family moved to a new community. However, he was fond of playing basketball and always do it in the playground with other kids. He has more time to play because he was able to finish the assignments in a short time. After years of practicing, he not only become more robust but also have lots of good friends.\nMoreover, fewer tasks also can help students find their interests and broaden their horizons. After they finish their jobs, young kids must be curious about other activities, such as music, painting, etc. which would be beneficial for their future development. According to a statistic report from China daily, young kids who spent most of their time doing homework usually didn’t perform well in their future careers. Whereas those students assigned fewer tasks at their young age are more likely to do well in their jobs and more content with their lives. Since these students often have more time to develop their interests in various fields, they usually have broader horizons and know better about what career they like.\nIn conclusion, it will benefit children a lot; if teachers assign fewer tasks to their students. With less work to do, young students can work more efficiently in their studies, make more friends, and be more satisfied with their future lives.\n I wrote this passage as practice to improve my TOEFL writing skill.\nI share it here to provide help for students who don\u0026rsquo;t know how to write a TOEFL essey.\nI would be very happy if you find it useful.\nYet, you should only take it as an example and not copy it in your own answers.\nOtherwise, you were risking yourself and wouldn\u0026rsquo;t have a good score in your TOEFL test.\n"
+}]

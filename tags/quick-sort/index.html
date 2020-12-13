@@ -1,87 +1,151 @@
-<!doctype html>
-<html lang="zh_CN">
-  <head>
-    <title>quick sort // I&#39;m Li. Mingzhi</title>
-    <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.68.3" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="author" content="Li. Mingzhi" />
-    <meta name="description" content="" />
-    <link rel="stylesheet" href="/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Hi. I am a Backend Software Engineer focusing on system design and algorithm. ^_^ 
+Progress one percent per day...
+I&#39;m the best!'><title>Tag: quick sort - Li. Mingzhi</title>
 
-    
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="quick sort"/>
-<meta name="twitter:description" content="I am a Backend Software Engineer focusing on system design and algorithm. ^_^　　Progress one percent per day..."/>
+<link rel='canonical' href='limingzhi618.com/tags/quick-sort/'>
 
-    <meta property="og:title" content="quick sort" />
-<meta property="og:description" content="I am a Backend Software Engineer focusing on system design and algorithm. ^_^　　Progress one percent per day..." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="/tags/quick-sort/" />
-<meta property="og:updated_time" content="2020-12-09T08:32:27+08:00" />
+<link rel="stylesheet" href="/limingzhi618.com/scss/style.scss"><meta property='og:title' content='Tag: quick sort - Li. Mingzhi'>
+<meta property='og:description' content='Hi. I am a Backend Software Engineer focusing on system design and algorithm. ^_^ 
+Progress one percent per day...
+I&#39;m the best!'>
+<meta property='og:url' content='limingzhi618.com/tags/quick-sort/'>
+<meta property='og:site_name' content='Li. Mingzhi'>
+<meta property='og:type' content='website'><meta property='og:updated_time' content=' 2020-12-11T17:58:22&#43;08:00 '/>
+<meta name="twitter:title" content="Tag: quick sort - Li. Mingzhi">
+<meta name="twitter:description" content="Hi. I am a Backend Software Engineer focusing on system design and algorithm. ^_^ 
+Progress one percent per day...
+I&#39;m the best!"><link rel="alternate" type="application/rss&#43;xml" href="limingzhi618.com/tags/quick-sort/index.xml">
+    </head>
+    <body class="">
+        <div class="container flex on-phone--column align-items--flex-start extended ">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
 
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    
+                    
+                    
+                        
+                        <img src="/limingzhi618.com/img/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
 
-  </head>
-  <body>
-    <header class="app-header">
-      <a href=""><img class="app-header-avatar" src="/avatar.jpg" alt="Li. Mingzhi" /></a>
-      <h1>I&#39;m Li. Mingzhi</h1>
-      <nav class="app-header-menu">
-          <a class="app-header-menu-item" href="/posts/resume/">Resume</a>
-            |
-          
-          <a class="app-header-menu-item" href="/">Home</a>
-      </nav>
-      <p>I am a Backend Software Engineer focusing on system design and algorithm. ^_^　　Progress one percent per day...</p>
-      <div class="app-header-social">
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
         
-          <a target="_blank" href="https://github.com/mingzhi198" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
-  <title>github</title>
-  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-</svg></a>
-        
-          <a target="_blank" href="https://www.jianshu.com/u/f9f3adb6764a" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
-  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-</svg></a>
-        
-          <a target="_blank" href="https://twitter.com/mingzhi198" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
-  <title>twitter</title>
-  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-</svg></a>
-        
-      </div>
+        <h1 class="site-name"><a href="limingzhi618.com">Li. Mingzhi</a></h1>
+        <h2 class="site-description">Hi. I am a Backend Software Engineer focusing on system design and algorithm. ^_^ 
+Progress one percent per day...
+I&#39;m the best!</h2>
     </header>
-    <main class="app-container">
-      
-  <article>
-    <h1>quick sort</h1>
-    <ul class="posts-list">
-      
-        <li class="posts-list-item">
-          <a class="posts-list-item-title" href="/posts/algorithm_illustration/cp4_quick_sort/">AL: 4. Quicksort</a>
-          <span class="posts-list-item-description">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
-  <title>calendar</title>
-  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/limingzhi618.com/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
 </svg>
-            Dec 9, 2020
-            -
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
-  <title>clock</title>
-  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
-</svg>
-            7 min read
-          </span>
+
+
+
+                
+                <span>Home</span>
+            </a>
         </li>
-      
-    </ul>
+        
+        
+
+        <li >
+            <a href='/limingzhi618.com/posts'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <h3 class="taxonomy-type section-title">Tag</h3>
+    <div class="taxonomy-card">
+        <div class="taxonomy-details">
+            <h3 class="taxonomy-count">1 post</h3>
+            <h1 class="taxonomy-term">quick sort</h1>
+            
+        </div>
+    </div>
     
+    <section class="article-list--compact">
+        
+        
+        
+            <article>
+    <a href="limingzhi618.com/posts/algorithm_illustration/cp4_quick_sort/">
+        <div class="article-details">
+            <h2 class="article-title">AL: 4. Quicksort</h2>
+            <footer class="article-time">
+                <time datetime='2020-12-09T08:32:27&#43;08:00'>Dec 09, 2020</time>
+            </footer>
+        </div>
+    </a>
+</article>
+        
+    </section>
+<footer class="site-footer">
+    <section class="copyright">&copy; 2020 Li. Mingzhi</section>
+    <section class="powerby">Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="1.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
 
+            </main>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"
+    integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin="anonymous"></script><script type="text/javascript" src="/limingzhi618.com/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
 
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
 
-  </article>
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link rel="stylesheet" href="/limingzhi618.com/css/highlight/light.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="/limingzhi618.com/css/highlight/dark.min.css" media="(prefers-color-scheme: dark)">
 
-    </main>
-  </body>
+    </body>
 </html>

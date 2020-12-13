@@ -1,96 +1,138 @@
-<!doctype html>
-<html lang="zh_CN">
-  <head>
-    <title>AL: 4. Quicksort // I&#39;m Li. Mingzhi</title>
-    <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.68.3" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="author" content="Li. Mingzhi" />
-    <meta name="description" content="" />
-    <link rel="stylesheet" href="/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
+ 1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.
+ Example If you are a farmer with a large land and plan to divide this farmland evenly into square plots.
+Besides, the plots must be as big as possible.'><title>AL: 4. Quicksort</title>
 
-    
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="AL: 4. Quicksort"/>
+<link rel='canonical' href='limingzhi618.com/posts/algorithm_illustration/cp4_quick_sort/'>
+
+<link rel="stylesheet" href="/limingzhi618.com/scss/style.scss"><meta property='og:title' content='AL: 4. Quicksort'>
+<meta property='og:description' content='This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
+ 1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.
+ Example If you are a farmer with a large land and plan to divide this farmland evenly into square plots.
+Besides, the plots must be as big as possible.'>
+<meta property='og:url' content='limingzhi618.com/posts/algorithm_illustration/cp4_quick_sort/'>
+<meta property='og:site_name' content='Li. Mingzhi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Posts' /><meta property='article:tag' content='algorithm' /><meta property='article:tag' content='quick sort' /><meta property='article:tag' content='sort' /><meta property='article:published_time' content='2020-12-09T08:32:27&#43;08:00'/><meta property='article:modified_time' content='2020-12-09T08:32:27&#43;08:00'/>
+<meta name="twitter:title" content="AL: 4. Quicksort">
 <meta name="twitter:description" content="This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
- 1. Divide &amp; Conquer  It can take us some time to understand D&amp;C. Therefore, we will see some problems to learn about it.
+ 1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.
  Example If you are a farmer with a large land and plan to divide this farmland evenly into square plots.
-Besides, the plots must be as big as possible."/>
+Besides, the plots must be as big as possible.">
+    </head>
+    <body class="article-page keep-sidebar">
+        <div class="container flex on-phone--column align-items--flex-start extended ">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
 
-    <meta property="og:title" content="AL: 4. Quicksort" />
-<meta property="og:description" content="This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
- 1. Divide &amp; Conquer  It can take us some time to understand D&amp;C. Therefore, we will see some problems to learn about it.
- Example If you are a farmer with a large land and plan to divide this farmland evenly into square plots.
-Besides, the plots must be as big as possible." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="/posts/algorithm_illustration/cp4_quick_sort/" />
-<meta property="article:published_time" content="2020-12-09T08:32:27+08:00" />
-<meta property="article:modified_time" content="2020-12-09T08:32:27+08:00" />
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    
+                    
+                    
+                        
+                        <img src="/limingzhi618.com/img/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
 
-
-  </head>
-  <body>
-    <header class="app-header">
-      <a href=""><img class="app-header-avatar" src="/avatar.jpg" alt="Li. Mingzhi" /></a>
-      <h1>I&#39;m Li. Mingzhi</h1>
-      <nav class="app-header-menu">
-          <a class="app-header-menu-item" href="/posts/resume/">Resume</a>
-            |
-          
-          <a class="app-header-menu-item" href="/">Home</a>
-      </nav>
-      <p>I am a Backend Software Engineer focusing on system design and algorithm. ^_^　　Progress one percent per day...</p>
-      <div class="app-header-social">
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
         
-          <a target="_blank" href="https://github.com/mingzhi198" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
-  <title>github</title>
-  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-</svg></a>
-        
-          <a target="_blank" href="https://www.jianshu.com/u/f9f3adb6764a" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-link">
-  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-</svg></a>
-        
-          <a target="_blank" href="https://twitter.com/mingzhi198" rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
-  <title>twitter</title>
-  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-</svg></a>
-        
-      </div>
+        <h1 class="site-name"><a href="limingzhi618.com">Li. Mingzhi</a></h1>
+        <h2 class="site-description">Hi. I am a Backend Software Engineer focusing on system design and algorithm. ^_^ 
+Progress one percent per day...
+I&#39;m the best!</h2>
     </header>
-    <main class="app-container">
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class ="post-title">AL: 4. Quicksort</h1>
-      <div class="post-meta">
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
-  <title>calendar</title>
-  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/limingzhi618.com/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
 </svg>
-          Dec 9, 2020
-        </div>
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
-  <title>clock</title>
-  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/limingzhi618.com/posts'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
 </svg>
-          7 min read
-        </div>
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
-  <title>tag</title>
-  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
-</svg>
-              <a class="tag" href="/tags/algorithm/">algorithm</a>
-              <a class="tag" href="/tags/sort/">sort</a>
-        </div>
-      </div>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            
+                <a href="limingzhi618.com/categories/algorithm_illustration/">algorithm_illustration</a>
+            
+        
     </header>
-    <div class="post-content">
-      <blockquote>
+    
+
+    <h2 class="article-title">
+        <a href="limingzhi618.com/posts/algorithm_illustration/cp4_quick_sort/">AL: 4. Quicksort</a>
+    </h2>
+
+    <footer class="article-time">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <time class="article-time--published">Dec 09, 2020</time>
+    </footer></div>
+</header>
+
+    <section class="article-content">
+    <blockquote>
 <p>This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.</p>
 </blockquote>
 <h3 id="1-divide--conquer">1. Divide &amp; Conquer</h3>
@@ -111,18 +153,18 @@ Then we are left with a land of 10 * 10, which is the answer.</p>
 <ul>
 <li>Golang</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">findMaxEvenSquareR</span>(<span style="color:#a6e22e">width</span>, <span style="color:#a6e22e">height</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
-	<span style="color:#66d9ef">if</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">height</span> <span style="color:#f92672">||</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">width</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">height</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">width</span>
-	}
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kd">func</span> <span class="nf">findMaxEvenSquareR</span><span class="p">(</span><span class="nx">width</span><span class="p">,</span> <span class="nx">height</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="mi">0</span> <span class="o">==</span> <span class="nx">height</span> <span class="o">||</span> <span class="mi">0</span> <span class="o">==</span> <span class="nx">width</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">height</span> <span class="o">+</span> <span class="nx">width</span>
+	<span class="p">}</span>
 
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">height</span> &gt; <span style="color:#a6e22e">width</span> {
-		<span style="color:#a6e22e">height</span> = <span style="color:#a6e22e">height</span> <span style="color:#f92672">%</span> <span style="color:#a6e22e">width</span>
-	} <span style="color:#66d9ef">else</span> {
-		<span style="color:#a6e22e">width</span> = <span style="color:#a6e22e">width</span> <span style="color:#f92672">%</span> <span style="color:#a6e22e">height</span>
-	}
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">findMaxEvenSquareR</span>(<span style="color:#a6e22e">width</span>, <span style="color:#a6e22e">height</span>)
-}
+	<span class="k">if</span> <span class="nx">height</span> <span class="p">&gt;</span> <span class="nx">width</span> <span class="p">{</span>
+		<span class="nx">height</span> <span class="p">=</span> <span class="nx">height</span> <span class="o">%</span> <span class="nx">width</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">width</span> <span class="p">=</span> <span class="nx">width</span> <span class="o">%</span> <span class="nx">height</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nf">findMaxEvenSquareR</span><span class="p">(</span><span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre></div><h3 id="2-exercises">2. Exercises:</h3>
 <ol>
 <li>Add up all numbers and return the total.</li>
@@ -130,82 +172,82 @@ Then we are left with a land of 10 * 10, which is the answer.</p>
 <ul>
 <li>Python</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sumR</span>(arr):
-    <span style="color:#66d9ef">if</span> len(arr) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
-        <span style="color:#66d9ef">return</span> arr[<span style="color:#ae81ff">0</span>] 
-    <span style="color:#66d9ef">return</span> arr[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> sumR(arr[<span style="color:#ae81ff">1</span>:])
+<div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="k">def</span> <span class="nf">sumR</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+    <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">sumR</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 </code></pre></div><ul>
 <li>Golang</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">sumR</span>(<span style="color:#a6e22e">arr</span> []<span style="color:#66d9ef">int</span>) (<span style="color:#a6e22e">total</span> <span style="color:#66d9ef">int</span>) {
-	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">arr</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">0</span>]
-	}
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> <span style="color:#a6e22e">sumR</span>(<span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">1</span>:])
-}
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kd">func</span> <span class="nf">sumR</span><span class="p">(</span><span class="nx">arr</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nx">total</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nf">sumR</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+<span class="p">}</span>
 </code></pre></div><ol start="2">
 <li>Write a recursive function to count the number of elements in a list</li>
 </ol>
 <ul>
 <li>Python</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">countEleR</span>(arr): 
-    <span style="color:#66d9ef">if</span> len(arr) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> 
-    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> countEleR(arr[<span style="color:#ae81ff">1</span>:])
+<div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="k">def</span> <span class="nf">countEleR</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span> 
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">countEleR</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 </code></pre></div><ol start="3">
 <li>Find the maximum number in a list</li>
 </ol>
 <ul>
 <li>Python</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">findMaxR</span>(arr): 
-    <span style="color:#66d9ef">if</span> len(arr) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
-        <span style="color:#66d9ef">return</span> arr[<span style="color:#ae81ff">0</span>]
-    ret <span style="color:#f92672">=</span> findMaxR(arr[<span style="color:#ae81ff">1</span>:])
-    <span style="color:#66d9ef">if</span> arr[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">&gt;</span> ret:
-        <span style="color:#66d9ef">return</span> arr[<span style="color:#ae81ff">0</span>] 
-    <span style="color:#66d9ef">else</span>:
-        <span style="color:#66d9ef">return</span> ret 
+<div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="k">def</span> <span class="nf">findMaxR</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">findMaxR</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">if</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">ret</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ret</span> 
 </code></pre></div><ol start="4">
 <li>Write the D&amp;C code for Binary Search</li>
 </ol>
 <ul>
 <li>Python</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">binarySearchR</span>(list, item, low, high):
-    <span style="color:#66d9ef">if</span> low <span style="color:#f92672">&gt;</span> high:
-        <span style="color:#66d9ef">return</span> None 
+<div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="k">def</span> <span class="nf">binarySearchR</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">low</span> <span class="o">&gt;</span> <span class="n">high</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span> 
 
-    mid <span style="color:#f92672">=</span> (low <span style="color:#f92672">+</span> high) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
-    guess <span style="color:#f92672">=</span> list[mid]
-    <span style="color:#66d9ef">if</span> guess <span style="color:#f92672">&gt;</span> item: 
-        high <span style="color:#f92672">=</span> mid <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> 
-    <span style="color:#66d9ef">else</span>: 
-        low <span style="color:#f92672">=</span> mid <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
-    <span style="color:#66d9ef">return</span> binarySearchR(list, item, low, high)
+    <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">guess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">guess</span> <span class="o">&gt;</span> <span class="n">item</span><span class="p">:</span> 
+        <span class="n">high</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span><span class="mi">1</span> 
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="n">low</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">binarySearchR</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
 </code></pre></div><ul>
 <li>Golang</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">binarySearchR</span>(<span style="color:#a6e22e">list</span> []<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">item</span>, <span style="color:#a6e22e">low</span>, <span style="color:#a6e22e">high</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
-	<span style="color:#75715e">// 1. figure out the base case
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">low</span> &gt; <span style="color:#a6e22e">high</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
-	}
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kd">func</span> <span class="nf">binarySearchR</span><span class="p">(</span><span class="nx">list</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">item</span><span class="p">,</span> <span class="nx">low</span><span class="p">,</span> <span class="nx">high</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="c1">// 1. figure out the base case
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">low</span> <span class="p">&gt;</span> <span class="nx">high</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+	<span class="p">}</span>
 
-	<span style="color:#75715e">//. 2. reduce the problem and get to the base case
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">mid</span> <span style="color:#f92672">:=</span> (<span style="color:#a6e22e">low</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">high</span>) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
-	<span style="color:#a6e22e">guess</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">list</span>[<span style="color:#a6e22e">mid</span>]
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">guess</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">item</span> {
-		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">mid</span>
-	}
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">guess</span> &gt; <span style="color:#a6e22e">item</span> {
-		<span style="color:#a6e22e">high</span> = <span style="color:#a6e22e">mid</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
-	} <span style="color:#66d9ef">else</span> {
-		<span style="color:#a6e22e">low</span> = <span style="color:#a6e22e">mid</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
-	}
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">binarySearchR</span>(<span style="color:#a6e22e">list</span>, <span style="color:#a6e22e">item</span>, <span style="color:#a6e22e">low</span>, <span style="color:#a6e22e">high</span>)
-}
+	<span class="c1">//. 2. reduce the problem and get to the base case
+</span><span class="c1"></span>	<span class="nx">mid</span> <span class="o">:=</span> <span class="p">(</span><span class="nx">low</span> <span class="o">+</span> <span class="nx">high</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+	<span class="nx">guess</span> <span class="o">:=</span> <span class="nx">list</span><span class="p">[</span><span class="nx">mid</span><span class="p">]</span>
+	<span class="k">if</span> <span class="nx">guess</span> <span class="o">==</span> <span class="nx">item</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">mid</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">guess</span> <span class="p">&gt;</span> <span class="nx">item</span> <span class="p">{</span>
+		<span class="nx">high</span> <span class="p">=</span> <span class="nx">mid</span> <span class="o">-</span> <span class="mi">1</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">low</span> <span class="p">=</span> <span class="nx">mid</span> <span class="o">+</span> <span class="mi">1</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nf">binarySearchR</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">item</span><span class="p">,</span> <span class="nx">low</span><span class="p">,</span> <span class="nx">high</span><span class="p">)</span>
+<span class="p">}</span>
 </code></pre></div><blockquote>
 <p>Tip: When we got a recursive function involving an array, the base case is often an empty array or an array with one element.</p>
 </blockquote>
@@ -226,9 +268,9 @@ Using D&amp;C, we can break down a array until we get the base case.</p>
 </blockquote>
 <p>3.2  Here we can see one example from the book.</p>
 <p>After partitioning, we get three parts: numbers less than the pivot, the pivot and numbers greater than the pivot.</p>
-<p><img src="/posts/algorithm_illustration/images/quick_sort_1.png" alt="alt quick_sort_1"></p>
+<p><img src="/posts/algorithm_illustration/images/quick_sort_1.png" alt="alt quick_sort_1"  /></p>
 <p>Next, we&rsquo;ll quick sort the two sub-arrays.</p>
-<p><img src="/posts/algorithm_illustration/images/quick_sort_2.png" alt="alt quick_sort_2"></p>
+<p><img src="/posts/algorithm_illustration/images/quick_sort_2.png" alt="alt quick_sort_2"  /></p>
 <p>Even though the two sub-arrays are not sorted, they&rsquo;re partitioned.
 However, sorting the whole array would be pretty easy, if they were sorted.</p>
 <p>Then, we can combine the whole thing together, like this: left array + pivot + right array.
@@ -237,84 +279,84 @@ Here is the code, which would be easy to understand(In order to save space, We p
 <ul>
 <li>Golang</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">quickSort</span>(<span style="color:#a6e22e">arr</span> []<span style="color:#66d9ef">int</span>) (<span style="color:#a6e22e">ret</span> []<span style="color:#66d9ef">int</span>) {
-	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">arr</span>) &lt; <span style="color:#ae81ff">2</span> {
-		<span style="color:#a6e22e">ret</span> = append(<span style="color:#a6e22e">ret</span>, <span style="color:#a6e22e">arr</span><span style="color:#f92672">...</span>)
-		<span style="color:#66d9ef">return</span>
-	}
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kd">func</span> <span class="nf">quickSort</span><span class="p">(</span><span class="nx">arr</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nx">ret</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="p">&lt;</span> <span class="mi">2</span> <span class="p">{</span>
+		<span class="nx">ret</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">arr</span><span class="o">...</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
 
-	<span style="color:#a6e22e">pivot</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">0</span>]
-	<span style="color:#a6e22e">less</span>, <span style="color:#a6e22e">greater</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}, []<span style="color:#66d9ef">int</span>{}
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">1</span>:] {
-		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">&lt;=</span> <span style="color:#a6e22e">pivot</span> {
-			<span style="color:#a6e22e">less</span> = append(<span style="color:#a6e22e">less</span>, <span style="color:#a6e22e">v</span>)
-		} <span style="color:#66d9ef">else</span> {
-			<span style="color:#a6e22e">greater</span> = append(<span style="color:#a6e22e">greater</span>, <span style="color:#a6e22e">v</span>)
-		}
-	}
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;less: &#34;</span>, <span style="color:#a6e22e">less</span>, <span style="color:#e6db74">&#34;, pivot: &#34;</span>, <span style="color:#a6e22e">pivot</span>, <span style="color:#e6db74">&#34;, greater: &#34;</span>, <span style="color:#a6e22e">greater</span>)
-	<span style="color:#a6e22e">lessRet</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">quickSort</span>(<span style="color:#a6e22e">less</span>)
-	<span style="color:#a6e22e">greaterRet</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">quickSort</span>(<span style="color:#a6e22e">greater</span>)
+	<span class="nx">pivot</span> <span class="o">:=</span> <span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="nx">less</span><span class="p">,</span> <span class="nx">greater</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{},</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{}</span>
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">v</span> <span class="o">&lt;=</span> <span class="nx">pivot</span> <span class="p">{</span>
+			<span class="nx">less</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">less</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="nx">greater</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">greater</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;less: &#34;</span><span class="p">,</span> <span class="nx">less</span><span class="p">,</span> <span class="s">&#34;, pivot: &#34;</span><span class="p">,</span> <span class="nx">pivot</span><span class="p">,</span> <span class="s">&#34;, greater: &#34;</span><span class="p">,</span> <span class="nx">greater</span><span class="p">)</span>
+	<span class="nx">lessRet</span> <span class="o">:=</span> <span class="nf">quickSort</span><span class="p">(</span><span class="nx">less</span><span class="p">)</span>
+	<span class="nx">greaterRet</span> <span class="o">:=</span> <span class="nf">quickSort</span><span class="p">(</span><span class="nx">greater</span><span class="p">)</span>
 
-	<span style="color:#a6e22e">ret</span> = append(<span style="color:#a6e22e">ret</span>, <span style="color:#a6e22e">lessRet</span><span style="color:#f92672">...</span>)
-	<span style="color:#a6e22e">ret</span> = append(<span style="color:#a6e22e">ret</span>, <span style="color:#a6e22e">pivot</span>)
-	<span style="color:#a6e22e">ret</span> = append(<span style="color:#a6e22e">ret</span>, <span style="color:#a6e22e">greaterRet</span><span style="color:#f92672">...</span>)
-	<span style="color:#66d9ef">return</span>
-}
+	<span class="nx">ret</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">lessRet</span><span class="o">...</span><span class="p">)</span>
+	<span class="nx">ret</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">pivot</span><span class="p">)</span>
+	<span class="nx">ret</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">greaterRet</span><span class="o">...</span><span class="p">)</span>
+	<span class="k">return</span>
+<span class="p">}</span>
 </code></pre></div><p>If you&rsquo;d come through the explanation above, you would find this code easy to understand.
 Nevertheless, it&rsquo;s not efficent in memory.
 Here you can see codes optimized by using no extra memory space.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">quickSortE</span>(<span style="color:#a6e22e">arr</span> []<span style="color:#66d9ef">int</span>) {
-	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">arr</span>) &lt; <span style="color:#ae81ff">2</span> {
-		<span style="color:#66d9ef">return</span>
-	}
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kd">func</span> <span class="nf">quickSortE</span><span class="p">(</span><span class="nx">arr</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="p">&lt;</span> <span class="mi">2</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
 
-	<span style="color:#a6e22e">l</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">arr</span>)
-	<span style="color:#a6e22e">pivot</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
-	<span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span> <span style="color:#75715e">// idx of element bigger than pivot
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
-		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">i</span>] &gt; <span style="color:#a6e22e">pivot</span> {
-			<span style="color:#66d9ef">continue</span>
-		}
-		<span style="color:#a6e22e">swap</span>(<span style="color:#a6e22e">arr</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span>)
-		<span style="color:#a6e22e">j</span><span style="color:#f92672">++</span>
-	}
-	<span style="color:#a6e22e">swap</span>(<span style="color:#a6e22e">arr</span>, <span style="color:#a6e22e">j</span>, <span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
-	<span style="color:#a6e22e">quickSortE</span>(<span style="color:#a6e22e">arr</span>[:<span style="color:#a6e22e">j</span>])
-	<span style="color:#a6e22e">quickSortE</span>(<span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:])
-	<span style="color:#66d9ef">return</span>
-}
+	<span class="nx">l</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span>
+	<span class="nx">pivot</span> <span class="o">:=</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">l</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="nx">j</span> <span class="o">:=</span> <span class="mi">0</span> <span class="c1">// idx of element bigger than pivot
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">l</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">&gt;</span> <span class="nx">pivot</span> <span class="p">{</span>
+			<span class="k">continue</span>
+		<span class="p">}</span>
+		<span class="nf">swap</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">)</span>
+		<span class="nx">j</span><span class="o">++</span>
+	<span class="p">}</span>
+	<span class="nf">swap</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="nx">j</span><span class="p">,</span> <span class="nx">l</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+	<span class="nf">quickSortE</span><span class="p">(</span><span class="nx">arr</span><span class="p">[:</span><span class="nx">j</span><span class="p">])</span>
+	<span class="nf">quickSortE</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+	<span class="k">return</span>
+<span class="p">}</span>
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">swap</span>(<span style="color:#a6e22e">arr</span> []<span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>) {
-	<span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">i</span>]
-}
+<span class="kd">func</span> <span class="nf">swap</span><span class="p">(</span><span class="nx">arr</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">=</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="p">],</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div><p>In order to have better performance, we use random element as the pivot:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Golang" data-lang="Golang"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">quickSortERand</span>(<span style="color:#a6e22e">arr</span> []<span style="color:#66d9ef">int</span>) {
-	<span style="color:#66d9ef">if</span> len(<span style="color:#a6e22e">arr</span>) &lt; <span style="color:#ae81ff">2</span> {
-		<span style="color:#66d9ef">return</span>
-	}
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kd">func</span> <span class="nf">quickSortERand</span><span class="p">(</span><span class="nx">arr</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="p">&lt;</span> <span class="mi">2</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
 
-	<span style="color:#a6e22e">l</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">arr</span>)
-	<span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Seed</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">UnixNano</span>())
-	<span style="color:#a6e22e">pIdx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rand</span>.<span style="color:#a6e22e">Intn</span>(<span style="color:#a6e22e">l</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
-	<span style="color:#a6e22e">pivot</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">pIdx</span>]
-	<span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span> <span style="color:#75715e">// idx of element bigger than pivot
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
-		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">i</span>] &gt; <span style="color:#a6e22e">pivot</span> {
-			<span style="color:#66d9ef">continue</span>
-		}
-		<span style="color:#a6e22e">swap</span>(<span style="color:#a6e22e">arr</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span>)
-		<span style="color:#a6e22e">j</span><span style="color:#f92672">++</span>
-	}
-	<span style="color:#a6e22e">swap</span>(<span style="color:#a6e22e">arr</span>, <span style="color:#a6e22e">j</span>, <span style="color:#a6e22e">l</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
-	<span style="color:#a6e22e">quickSortERand</span>(<span style="color:#a6e22e">arr</span>[:<span style="color:#a6e22e">j</span>])
-	<span style="color:#a6e22e">quickSortERand</span>(<span style="color:#a6e22e">arr</span>[<span style="color:#a6e22e">j</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>:])
-	<span style="color:#66d9ef">return</span>
-}
+	<span class="nx">l</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span>
+	<span class="nx">rand</span><span class="p">.</span><span class="nf">Seed</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">UnixNano</span><span class="p">())</span>
+	<span class="nx">pIdx</span> <span class="o">:=</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">Intn</span><span class="p">(</span><span class="nx">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="nx">pivot</span> <span class="o">:=</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">pIdx</span><span class="p">]</span>
+	<span class="nx">j</span> <span class="o">:=</span> <span class="mi">0</span> <span class="c1">// idx of element bigger than pivot
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">l</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">&gt;</span> <span class="nx">pivot</span> <span class="p">{</span>
+			<span class="k">continue</span>
+		<span class="p">}</span>
+		<span class="nf">swap</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">)</span>
+		<span class="nx">j</span><span class="o">++</span>
+	<span class="p">}</span>
+	<span class="nf">swap</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span> <span class="nx">j</span><span class="p">,</span> <span class="nx">l</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+	<span class="nf">quickSortERand</span><span class="p">(</span><span class="nx">arr</span><span class="p">[:</span><span class="nx">j</span><span class="p">])</span>
+	<span class="nf">quickSortERand</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+	<span class="k">return</span>
+<span class="p">}</span>
 </code></pre></div><h3 id="4-big-o-notation">4. Big O notation</h3>
 <p>Quicksort is unique since its speed depends on the pivot we use.<br>
 Here we can see the most common Big O run times.<br>
-<img src="/posts/algorithm_illustration/images/big_o_times.png" alt="alt Big_O_Times"></p>
+<img src="/posts/algorithm_illustration/images/big_o_times.png" alt="alt Big_O_Times"  /></p>
 <p>Please pay attention to the example times in the chart because they are estimates of seconds per operation.<br>
 Compared with Merged Sort, which is O(nlogn) and faster, quicksort is different:<br>
 In the worst case, quicksorts takes O(n^2)time, which is as slow as selection sort.
@@ -334,13 +376,13 @@ Besides, quicksort is faster in practice since it hits the average case way more
 Suppose we always choose the first element as the pivot, and call quick with an sorted array.
 Since quicksort doesn&rsquo;t to see whether the input array is already sorted, it will still try to sort it.</p>
 <p>As we can see in the following figure:<br>
-<img src="/posts/algorithm_illustration/images/quick_sort_worst_case.png" alt="quick_sort_worst_case"></p>
+<img src="/posts/algorithm_illustration/images/quick_sort_worst_case.png" alt="quick_sort_worst_case"  /></p>
 <p>Since we&rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.
 As we always get O(n) in every level of the stack, we finally get O(n)*O(n)O(n^2)time.<br>
 Therefore, the call stack is so long that it takes O(n^2) time.</p>
 <p>On the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).<br>
 Therefore, we get operation time O(nlogn).  <br>
-<img src="/posts/algorithm_illustration/images/quick_sort_best_case.png" alt="quick_sort_best_case"></p>
+<img src="/posts/algorithm_illustration/images/quick_sort_best_case.png" alt="quick_sort_best_case"  /></p>
 <ul>
 <li>However, the best case is also the average case.</li>
 <li>If we choose a random element in the array as the pivot, quicksort will have O(nlogn)time on average.</li>
@@ -358,12 +400,164 @@ The author illustrate algorithms with pictures, which make people easily underst
 <li>Since O(log n) is pretty faster than O(n) with a large list, the constant never matters for simple search versus binary search.</li>
 </ul>
 
-    </div>
-    <div class="post-footer">
-      
-    </div>
-  </article>
+</section>
 
-    </main>
-  </body>
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="limingzhi618.com/tags/algorithm/">algorithm</a>
+        
+            <a href="limingzhi618.com/tags/quick-sort/">quick sort</a>
+        
+            <a href="limingzhi618.com/tags/sort/">sort</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+    
+</article>
+
+     
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">&copy; 2020 Li. Mingzhi</section>
+    <section class="powerby">Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="1.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true" style="display:none">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+            </main>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"
+    integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin="anonymous"></script><script type="text/javascript" src="/limingzhi618.com/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<link rel="stylesheet" href="/limingzhi618.com/css/highlight/light.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="/limingzhi618.com/css/highlight/dark.min.css" media="(prefers-color-scheme: dark)">
+
+    </body>
 </html>

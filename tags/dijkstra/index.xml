@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>dijkstra on Li. Mingzhi</title>
+    <link>limingzhi618.com/tags/dijkstra/</link>
+    <description>Recent content in dijkstra on Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 11 Dec 2020 17:58:22 +0800</lastBuildDate><atom:link href="limingzhi618.com/tags/dijkstra/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AL: 7. Dijkstra&#39;s algorithm</title>
+      <link>limingzhi618.com/posts/algorithm_illustration/cp7_dijkstra_algorithm/</link>
+      <pubDate>Fri, 11 Dec 2020 17:58:22 +0800</pubDate>
+      
+      <guid>limingzhi618.com/posts/algorithm_illustration/cp7_dijkstra_algorithm/</guid>
+      <description>1. Dijkstra&amp;rsquo;s algorithm 2. Terminology 3. Negative-weight edges 4. Implementation Summary </description>
+    </item>
+    
+  </channel>
+</rss>

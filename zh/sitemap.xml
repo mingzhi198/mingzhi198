@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>limingzhi618.com/zh/categories/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="limingzhi618.com/en/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="limingzhi618.com/fr/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="limingzhi618.com/zh/categories/"
+                />
+  </url>
+  
+  <url>
+    <loc>limingzhi618.com/zh/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="limingzhi618.com/en/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="limingzhi618.com/fr/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="limingzhi618.com/zh/"
+                />
+  </url>
+  
+  <url>
+    <loc>limingzhi618.com/zh/tags/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="limingzhi618.com/en/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="limingzhi618.com/fr/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="limingzhi618.com/zh/tags/"
+                />
+  </url>
+  
+</urlset>
