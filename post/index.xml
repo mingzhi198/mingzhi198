@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Li. Mingzhi</title>
-    <link>http://limingzhi618.com/post/</link>
-    <description>Recent content in Posts on Li. Mingzhi</description>
+    <title>Posts on I&#39;m Li. Mingzhi</title>
+    <link>/post/</link>
+    <description>Recent content in Posts on I&#39;m Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate><atom:link href="http://limingzhi618.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh_CN</language>
+    <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AL: 6. Breadth-first search</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp6_breadth_first_search/</link>
+      <link>/post/algorithm_illustration/cp6_breadth_first_search/</link>
       <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp6_breadth_first_search/</guid>
+      <guid>/post/algorithm_illustration/cp6_breadth_first_search/</guid>
       <description>From this chapter we get to know graphs, which is a new data structure and can help us model a network. We also get to know a new algorhtim named breadth-first search, which can help us find the shortest path. We review the difference between directed and undirected graphs. We get to know a new sorting algorithm called topological sort, which can help us know dependent relationships between nodes.</description>
     </item>
     
     <item>
       <title>AL: 5. Hash tables</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp5_hash_tables/</link>
+      <link>/post/algorithm_illustration/cp5_hash_tables/</link>
       <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp5_hash_tables/</guid>
+      <guid>/post/algorithm_illustration/cp5_hash_tables/</guid>
       <description>1. Requirements for hash function  It needs to be consistent. It should map different workds to different numbers.  You get a hash table by putting a hash function and an array together. Hash tables use an array to store data since we can get an item from an array instantly(O(1)).
 2. Use cases 2.1 Using hash tables for lookups Hash tables make it easy to model a relationship from one item to another.</description>
     </item>
     
     <item>
       <title>AL: 4. Quicksort</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp4_quick_sort/</link>
+      <link>/post/algorithm_illustration/cp4_quick_sort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp4_quick_sort/</guid>
+      <guid>/post/algorithm_illustration/cp4_quick_sort/</guid>
       <description>This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
  1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.
  Example If you are a farmer with a large land and plan to divide this farmland evenly into square plots.
@@ -40,10 +40,10 @@ Besides, the plots must be as big as possible.</description>
     
     <item>
       <title>AL: 3. Recursion</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp3_recursion/</link>
+      <link>/post/algorithm_illustration/cp3_recursion/</link>
       <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp3_recursion/</guid>
+      <guid>/post/algorithm_illustration/cp3_recursion/</guid>
       <description>In this chapter, I learned about recursion, which is very useful in many algorithms. Also, this chapter shows us how to break down a problem into a base case and a recursive case.
  1. Recursion If you have a box containing more boxes, in which there will be no or more boxes.
 The key is in one of the boxes.
@@ -52,19 +52,19 @@ How can you do to search for the key?</description>
     
     <item>
       <title>Github config for multiple users</title>
-      <link>http://limingzhi618.com/post/github-config-for-multile-users/</link>
+      <link>/post/github-config-for-multile-users/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/github-config-for-multile-users/</guid>
+      <guid>/post/github-config-for-multile-users/</guid>
       <description>1. Background We sometimes use more than one github account to manage different repositories. Even though we&#39;ve set the config file(~/.ssh/config) correctly and test(ssh -T git@github.com) correctly, it will promote &amp;quot;permission denied(public key)&amp;quot; while we hit git push.  The problem is that we need to clarify different hosts for different users. And make the Host of url in you repository config the same as that of ~/.ssh/config  2. Here is the content of my git config file(~/.</description>
     </item>
     
     <item>
       <title>Resume</title>
-      <link>http://limingzhi618.com/post/resume/</link>
+      <link>/post/resume/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/resume/</guid>
+      <guid>/post/resume/</guid>
       <description>Resume     Li. Mingzhi    E-mail: lmingzhi618@gmail.com
 Github: https://github.com/mingzhi198
 Jianshu: https://www.jianshu.com/u/f9f3adb6764a
@@ -73,28 +73,28 @@ Education Background    University Major Period     Shenzhen University Software
     
     <item>
       <title>AL: 2. Selection sort</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp2_selection-search/</link>
+      <link>/post/algorithm_illustration/cp2_selection-search/</link>
       <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp2_selection-search/</guid>
+      <guid>/post/algorithm_illustration/cp2_selection-search/</guid>
       <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list. With an array, all your elements are stored right next to each other. With a list, elements are strewn all over, and one element stores the address of the next one.</description>
     </item>
     
     <item>
       <title>AL: 1. Binary search</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp1_binary-search/</link>
+      <link>/post/algorithm_illustration/cp1_binary-search/</link>
       <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp1_binary-search/</guid>
+      <guid>/post/algorithm_illustration/cp1_binary-search/</guid>
       <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows. * Algorithm speed isn’t measured in seconds. * Algorithm times are measured in terms of growth of an algorithm.</description>
     </item>
     
     <item>
       <title>TOEFL W2: Job performance and mood</title>
-      <link>http://limingzhi618.com/post/toefl/writings/job_performance_and_mood/</link>
+      <link>/post/toefl/writings/job_performance_and_mood/</link>
       <pubDate>Sat, 10 Oct 2020 17:16:02 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/toefl/writings/job_performance_and_mood/</guid>
+      <guid>/post/toefl/writings/job_performance_and_mood/</guid>
       <description>Some people may think that they can do a better job and make fewer mistakes if they deal with things in a serious mood.
 However, I believe that people should work out solutions with a light mood since it can bring them many benefits.
 Taking things easy can help people relax and perform better.
@@ -103,10 +103,10 @@ According to a psychological report from China Daily, stress can have adverse ef
     
     <item>
       <title>TOEFL W2: Money spent on arts or sports</title>
-      <link>http://limingzhi618.com/post/toefl/writings/money_support_for_arts_or_sports/</link>
+      <link>/post/toefl/writings/money_support_for_arts_or_sports/</link>
       <pubDate>Fri, 09 Oct 2020 10:09:03 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/toefl/writings/money_support_for_arts_or_sports/</guid>
+      <guid>/post/toefl/writings/money_support_for_arts_or_sports/</guid>
       <description>A/D: Governments should spend more money supporting the arts than supporting athletics such as an Olympic team.  [Opening Sentence] Even though there are limited government resources for arts and sports funding, money is often misspent on athletics and Olympic teams.
 [Thesis statement] However, I believe that governments should put more resources and money on art projects since it will bring a lot more benefits to society and people.
 [Topic 1] Through their creation of the arts, some people become larger-than-life inspirations to everyone.</description>
@@ -114,10 +114,10 @@ According to a psychological report from China Daily, stress can have adverse ef
     
     <item>
       <title>TOEFL W2: Rural areas or cities</title>
-      <link>http://limingzhi618.com/post/toefl/writings/rural_areas_or_cities/</link>
+      <link>/post/toefl/writings/rural_areas_or_cities/</link>
       <pubDate>Sat, 15 Aug 2020 17:37:19 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/toefl/writings/rural_areas_or_cities/</guid>
+      <guid>/post/toefl/writings/rural_areas_or_cities/</guid>
       <description>DO you agree or disagree with the following statement?
 People who live in small villages or farm areas are more satisfied with their lives than people who live in cities.
  Some people may think that people living in rural areas, such as villages and farms, are more contented with their lives since there is a better environment in Villages and farms.
@@ -126,10 +126,10 @@ In my opinion, however, most people are satisfied with living in cities because 
     
     <item>
       <title>TOEFL W2: New tech affect study</title>
-      <link>http://limingzhi618.com/post/toefl/writings/new_tech_affect_study/</link>
+      <link>/post/toefl/writings/new_tech_affect_study/</link>
       <pubDate>Mon, 10 Aug 2020 17:33:30 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/toefl/writings/new_tech_affect_study/</guid>
+      <guid>/post/toefl/writings/new_tech_affect_study/</guid>
       <description>Some people may think that young children should not use new technology and limit their use of technology because it is harmful to young children.
 In my opinion, however, new technology can be useful for children&amp;rsquo;s studies and bring them a lot more benefits.
 Using technology can help young students improve their study.
@@ -138,10 +138,10 @@ Today, computers and the Internet are beneficial to students because there are m
     
     <item>
       <title>TOEFL W2: A/D: Teachers should assign students more tasks</title>
-      <link>http://limingzhi618.com/post/toefl/writings/ad_teachers_should_assign_more_tasks/</link>
+      <link>/post/toefl/writings/ad_teachers_should_assign_more_tasks/</link>
       <pubDate>Sun, 09 Aug 2020 19:09:27 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/toefl/writings/ad_teachers_should_assign_more_tasks/</guid>
+      <guid>/post/toefl/writings/ad_teachers_should_assign_more_tasks/</guid>
       <description>Many people may think that young students can learn a lot by doing a great deal of homework. However, teachers should assign their students with tasks that can be finished within thirty minutes since it will bring young students a lot more benefits.
 Fewer assignments with crucial elements can help young students study more efficiently. People commonly held that the more assignments to do, the more young students could learn. Many students are frustrated with the burden tasks and thus tend to finish the tasks quickly.</description>
     </item>

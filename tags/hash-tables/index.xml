@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>hash tables on Li. Mingzhi</title>
-    <link>http://limingzhi618.com/tags/hash-tables/</link>
-    <description>Recent content in hash tables on Li. Mingzhi</description>
+    <title>hash tables on I&#39;m Li. Mingzhi</title>
+    <link>/tags/hash-tables/</link>
+    <description>Recent content in hash tables on I&#39;m Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Wed, 09 Dec 2020 23:09:04 +0800</lastBuildDate><atom:link href="http://limingzhi618.com/tags/hash-tables/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh_CN</language>
+    <lastBuildDate>Wed, 09 Dec 2020 23:09:04 +0800</lastBuildDate><atom:link href="/tags/hash-tables/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AL: 5. Hash tables</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp5_hash_tables/</link>
+      <link>/post/algorithm_illustration/cp5_hash_tables/</link>
       <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp5_hash_tables/</guid>
+      <guid>/post/algorithm_illustration/cp5_hash_tables/</guid>
       <description>1. Requirements for hash function  It needs to be consistent. It should map different workds to different numbers.  You get a hash table by putting a hash function and an array together. Hash tables use an array to store data since we can get an item from an array instantly(O(1)).
 2. Use cases 2.1 Using hash tables for lookups Hash tables make it easy to model a relationship from one item to another.</description>
     </item>
