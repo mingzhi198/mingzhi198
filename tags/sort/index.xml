@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>sort on I&#39;m Li. Mingzhi</title>
-    <link>/tags/sort/</link>
-    <description>Recent content in sort on I&#39;m Li. Mingzhi</description>
+    <title>sort on Li. Mingzhi</title>
+    <link>http://limingzhi618.com/tags/sort/</link>
+    <description>Recent content in sort on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh_CN</language>
-    <lastBuildDate>Wed, 09 Dec 2020 08:32:27 +0800</lastBuildDate><atom:link href="/tags/sort/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Wed, 09 Dec 2020 08:32:27 +0800</lastBuildDate><atom:link href="http://limingzhi618.com/tags/sort/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AL: 4. Quicksort</title>
-      <link>/post/algorithm_illustration/cp4_quick_sort/</link>
+      <link>http://limingzhi618.com/post/algorithm_illustration/cp4_quick_sort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
-      <guid>/post/algorithm_illustration/cp4_quick_sort/</guid>
+      <guid>http://limingzhi618.com/post/algorithm_illustration/cp4_quick_sort/</guid>
       <description>This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
  1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.
  Example If you are a farmer with a large land and plan to divide this farmland evenly into square plots.
@@ -21,10 +21,10 @@ Besides, the plots must be as big as possible.</description>
     
     <item>
       <title>AL: 2. Selection sort</title>
-      <link>/post/algorithm_illustration/cp2_selection-search/</link>
+      <link>http://limingzhi618.com/post/algorithm_illustration/cp2_selection-search/</link>
       <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>/post/algorithm_illustration/cp2_selection-search/</guid>
+      <guid>http://limingzhi618.com/post/algorithm_illustration/cp2_selection-search/</guid>
       <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list. With an array, all your elements are stored right next to each other. With a list, elements are strewn all over, and one element stores the address of the next one.</description>
     </item>
     

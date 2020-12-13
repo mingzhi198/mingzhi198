@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>binary search on I&#39;m Li. Mingzhi</title>
-    <link>/tags/binary-search/</link>
-    <description>Recent content in binary search on I&#39;m Li. Mingzhi</description>
+    <title>binary search on Li. Mingzhi</title>
+    <link>http://limingzhi618.com/tags/binary-search/</link>
+    <description>Recent content in binary search on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh_CN</language>
-    <lastBuildDate>Thu, 03 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="/tags/binary-search/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Thu, 03 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="http://limingzhi618.com/tags/binary-search/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AL: 1. Binary search</title>
-      <link>/post/algorithm_illustration/cp1_binary-search/</link>
+      <link>http://limingzhi618.com/post/algorithm_illustration/cp1_binary-search/</link>
       <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>/post/algorithm_illustration/cp1_binary-search/</guid>
+      <guid>http://limingzhi618.com/post/algorithm_illustration/cp1_binary-search/</guid>
       <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows. * Algorithm speed isn’t measured in seconds. * Algorithm times are measured in terms of growth of an algorithm.</description>
     </item>
     
