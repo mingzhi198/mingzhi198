@@ -2,36 +2,36 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>algorithm_illustration on Li. Mingzhi</title>
-    <link>http://limingzhi618.com/categories/algorithm_illustration/</link>
+    <link>/categories/algorithm_illustration/</link>
     <description>Recent content in algorithm_illustration on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate><atom:link href="http://limingzhi618.com/categories/algorithm_illustration/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate><atom:link href="/categories/algorithm_illustration/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AL: 6. Breadth-first search</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp6_breadth_first_search/</link>
+      <link>/p/al-6.-breadth-first-search/</link>
       <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp6_breadth_first_search/</guid>
+      <guid>/p/al-6.-breadth-first-search/</guid>
       <description>From this chapter we get to know graphs, which is a new data structure and can help us model a network. We also get to know a new algorhtim named breadth-first search, which can help us find the shortest path. We review the difference between directed and undirected graphs. We get to know a new sorting algorithm called topological sort, which can help us know dependent relationships between nodes.</description>
     </item>
     
     <item>
       <title>AL: 5. Hash tables</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp5_hash_tables/</link>
+      <link>/p/al-5.-hash-tables/</link>
       <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp5_hash_tables/</guid>
+      <guid>/p/al-5.-hash-tables/</guid>
       <description>1. Requirements for hash function  It needs to be consistent. It should map different workds to different numbers.  You get a hash table by putting a hash function and an array together. Hash tables use an array to store data since we can get an item from an array instantly(O(1)).
 2. Use cases 2.1 Using hash tables for lookups Hash tables make it easy to model a relationship from one item to another.</description>
     </item>
     
     <item>
       <title>AL: 4. Quicksort</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp4_quick_sort/</link>
+      <link>/p/al-4.-quicksort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp4_quick_sort/</guid>
+      <guid>/p/al-4.-quicksort/</guid>
       <description>This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
  1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.
  Example If you are a farmer with a large land and plan to divide this farmland evenly into square plots.
@@ -40,10 +40,10 @@ Besides, the plots must be as big as possible.</description>
     
     <item>
       <title>AL: 3. Recursion</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp3_recursion/</link>
+      <link>/p/al-3.-recursion/</link>
       <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp3_recursion/</guid>
+      <guid>/p/al-3.-recursion/</guid>
       <description>In this chapter, I learned about recursion, which is very useful in many algorithms. Also, this chapter shows us how to break down a problem into a base case and a recursive case.
  1. Recursion If you have a box containing more boxes, in which there will be no or more boxes.
 The key is in one of the boxes.
@@ -52,19 +52,19 @@ How can you do to search for the key?</description>
     
     <item>
       <title>AL: 2. Selection sort</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp2_selection-search/</link>
+      <link>/p/al-2.-selection-sort/</link>
       <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp2_selection-search/</guid>
+      <guid>/p/al-2.-selection-sort/</guid>
       <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list. With an array, all your elements are stored right next to each other. With a list, elements are strewn all over, and one element stores the address of the next one.</description>
     </item>
     
     <item>
       <title>AL: 1. Binary search</title>
-      <link>http://limingzhi618.com/post/algorithm_illustration/cp1_binary-search/</link>
+      <link>/p/al-1.-binary-search/</link>
       <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>http://limingzhi618.com/post/algorithm_illustration/cp1_binary-search/</guid>
+      <guid>/p/al-1.-binary-search/</guid>
       <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows. * Algorithm speed isn’t measured in seconds. * Algorithm times are measured in terms of growth of an algorithm.</description>
     </item>
     
