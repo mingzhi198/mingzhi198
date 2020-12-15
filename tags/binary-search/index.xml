@@ -8,12 +8,12 @@
     <language>en-us</language>
     <lastBuildDate>Thu, 03 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="/tags/binary-search/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>AL: 1. Binary search</title>
-      <link>/p/al-1.-binary-search/</link>
+      <title>GA: 1. Binary search</title>
+      <link>/p/ga-1.-binary-search/</link>
       <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>/p/al-1.-binary-search/</guid>
-      <description>This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows. * Algorithm speed isn’t measured in seconds. * Algorithm times are measured in terms of growth of an algorithm.</description>
+      <guid>/p/ga-1.-binary-search/</guid>
+      <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows.</description>
     </item>
     
   </channel>

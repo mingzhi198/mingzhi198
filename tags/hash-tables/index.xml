@@ -8,13 +8,12 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 09 Dec 2020 23:09:04 +0800</lastBuildDate><atom:link href="/tags/hash-tables/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>AL: 5. Hash tables</title>
-      <link>/p/al-5.-hash-tables/</link>
+      <title>GA: 5. Hash tables</title>
+      <link>/p/ga-5.-hash-tables/</link>
       <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
       
-      <guid>/p/al-5.-hash-tables/</guid>
-      <description>1. Requirements for hash function  It needs to be consistent. It should map different workds to different numbers.  You get a hash table by putting a hash function and an array together. Hash tables use an array to store data since we can get an item from an array instantly(O(1)).
-2. Use cases 2.1 Using hash tables for lookups Hash tables make it easy to model a relationship from one item to another.</description>
+      <guid>/p/ga-5.-hash-tables/</guid>
+      <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  1. Requirements for hash function  It needs to be consistent. It should map different workds to different numbers.  You get a hash table by putting a hash function and an array together.</description>
     </item>
     
   </channel>

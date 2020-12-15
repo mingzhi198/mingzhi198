@@ -6,13 +6,37 @@
         <description>Recent content on Li. Mingzhi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>AL: 6. Breadth-first search</title>
-        <link>/p/al-6.-breadth-first-search/</link>
+        <lastBuildDate>Sun, 13 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>GA: 7. Dijkstra&#39;s algorithm</title>
+        <link>/p/ga-7.-dijkstras-algorithm/</link>
+        <pubDate>Sun, 13 Dec 2020 23:44:52 +0800</pubDate>
+        
+        <guid>/p/ga-7.-dijkstras-algorithm/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
+&lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;dijkstras-algorithm&#34;&gt;Dijkstra&amp;rsquo;s algorithm&lt;/h2&gt;
+&lt;h2 id=&#34;trading-for-a-piano&#34;&gt;Trading for a piano&lt;/h2&gt;
+&lt;h2 id=&#34;negative-weight-edges&#34;&gt;Negative-weight edges&lt;/h2&gt;
+&lt;h2 id=&#34;implementation&#34;&gt;Implementation&lt;/h2&gt;
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+</description>
+        </item>
+        <item>
+        <title>GA: 6. Breadth-first search</title>
+        <link>/p/ga-6.-breadth-first-search/</link>
         <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
         
-        <guid>/p/al-6.-breadth-first-search/</guid>
-        <description>&lt;hr&gt;
+        <guid>/p/ga-6.-breadth-first-search/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
+&lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
 &lt;ul&gt;
 &lt;li&gt;From this chapter we get to know graphs, which is a new data structure and can help us model a network.&lt;/li&gt;
 &lt;li&gt;We also get to know a new algorhtim named breadth-first search, which can help us find the shortest path.&lt;/li&gt;
@@ -23,7 +47,7 @@
 &lt;h2 id=&#34;1-graphs&#34;&gt;1. Graphs&lt;/h2&gt;
 &lt;p&gt;Graphs, which can reflect connections between nodes, are made up of nodes and edges.
 And the nodes connected directly to a node are called neghbors.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/post/algorithm_illustration/images/graph_network.png&#34; alt=&#34;hash collision&#34;  /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/grokking_algorithm/images/graph_network.png&#34; alt=&#34;hash collision&#34;  /&gt;&lt;/p&gt;
 &lt;h2 id=&#34;2-bfsbreadth-first-search&#34;&gt;2. BFS(Breadth-first search)&lt;/h2&gt;
 &lt;p&gt;BFS can help us solve two problems:&lt;/p&gt;
 &lt;ul&gt;
@@ -38,8 +62,8 @@ And the nodes connected directly to a node are called neghbors.&lt;/p&gt;
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;If you have a graph like this, and want to find a person whose name ends with character &amp;rsquo;m&#39;.&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;If you have a graph like this, and want to find a person whose name ends with character &amp;rsquo;m&#39;.
+&lt;img src=&#34;/post/grokking_algorithm/images/graph_bfs.png&#34; alt=&#34;hash collision&#34;  /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;ol&gt;
@@ -69,7 +93,7 @@ Thus, we use queue as the data structure to store the list.&lt;/p&gt;
 &lt;h3 id=&#34;22-queues&#34;&gt;2.2 Queues&lt;/h3&gt;
 &lt;p&gt;Compared with stack, which is LIFO(Last in, first out), queue is FIFO(First in, first out).
 It&amp;rsquo;s a very vivid picture, from which we can see this abstract concept.&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;&lt;img src=&#34;/post/grokking_algorithm/images/queue_stack1.png&#34; alt=&#34;hash collision&#34;  /&gt;&lt;/p&gt;
 &lt;h2 id=&#34;3-implementing-the-graph&#34;&gt;3. Implementing the graph&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;We should construct a graph that&amp;rsquo;s made up of nodes, each of which is connected to its neighboring nodes.&lt;/li&gt;
@@ -211,12 +235,17 @@ searching for every node will take O(number of nodes) total.&lt;/p&gt;
 </description>
         </item>
         <item>
-        <title>AL: 5. Hash tables</title>
-        <link>/p/al-5.-hash-tables/</link>
+        <title>GA: 5. Hash tables</title>
+        <link>/p/ga-5.-hash-tables/</link>
         <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
         
-        <guid>/p/al-5.-hash-tables/</guid>
-        <description>&lt;h2 id=&#34;1-requirements-for-hash-function&#34;&gt;1. Requirements for hash function&lt;/h2&gt;
+        <guid>/p/ga-5.-hash-tables/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
+&lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;1-requirements-for-hash-function&#34;&gt;1. Requirements for hash function&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;It needs to be consistent.&lt;/li&gt;
 &lt;li&gt;It should map different workds to different numbers.&lt;/li&gt;
@@ -240,14 +269,47 @@ Thus, caching is a common way to make things faster.&lt;/p&gt;
 &lt;p&gt;Collision: two or more keys have been assigned the same slot.&lt;br&gt;
 Since Collisions are bad, we need to work around them.
 We have many distinct ways to deal with collisions, the simplest one of which is this:&lt;br&gt;
-If multiple keys map to the same slot, start a linked list at that slot.&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
+If multiple keys map to the same slot, start a linked list at that slot.
+&lt;img src=&#34;/post/grokking_algorithm/images/hash_collision.png&#34; alt=&#34;hash collision&#34;  /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;However, if you have many keys startig with the letter A, you will only use one slot with a giant linked list.&lt;/li&gt;
 &lt;li&gt;This will definitely slow down your hash table.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;4-performance&#34;&gt;4. Performance&lt;/h2&gt;
-&lt;!-- raw HTML omitted --&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;Hash(Average)&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;Hash(Worst)&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;Array&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;Linked List&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Search&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(1)&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(n)&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(1)&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(n)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Insert&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(1)&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(n)&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(n)&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(1)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Delete&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(1)&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(n)&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(n)&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;O(1)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 &lt;p&gt;We can see from the figure above that hash tables are as fast as arrays at searching,&lt;br&gt;
 and are as fast as linked lists at inserts and delets.&lt;br&gt;
 Nevertheless, hash tables are slow(O(n)) at all of those operations.
@@ -257,9 +319,9 @@ In order not to hit the worst case performance with hash tables, we need to avoi
 &lt;li&gt;A good hash function&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;41-load-factor&#34;&gt;4.1 Load factor&lt;/h3&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;pre&gt;&lt;code&gt;Load Factor: Number of items in hash table / total number of slots 
-&lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;ul&gt;
+&lt;li&gt;Load Factor: Number of items in hash table / total number of slots&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;For example, if your hash table has 5 slots and 2 of them used, the load factor would be 2/5.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;If the hash table is getting pretty full, we need to resize this table.&lt;/li&gt;
@@ -282,12 +344,17 @@ You can check the SHA function if your curiosity is great enough.&lt;/p&gt;
 </description>
         </item>
         <item>
-        <title>AL: 4. Quicksort</title>
-        <link>/p/al-4.-quicksort/</link>
+        <title>GA: 4. Quicksort</title>
+        <link>/p/ga-4.-quicksort/</link>
         <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
         
-        <guid>/p/al-4.-quicksort/</guid>
-        <description>&lt;blockquote&gt;
+        <guid>/p/ga-4.-quicksort/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
+&lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
 &lt;p&gt;This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id=&#34;1-divide--conquer&#34;&gt;1. Divide &amp;amp; Conquer&lt;/h3&gt;
@@ -423,9 +490,8 @@ Using D&amp;amp;C, we can break down a array until we get the base case.&lt;/p&g
 &lt;/blockquote&gt;
 &lt;p&gt;3.2  Here we can see one example from the book.&lt;/p&gt;
 &lt;p&gt;After partitioning, we get three parts: numbers less than the pivot, the pivot and numbers greater than the pivot.&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;&lt;img src=&#34;/post/grokking_algorithm/images/quick_sort_m1.png&#34; alt=&#34;alt quick_sort_1&#34;  /&gt;&lt;/p&gt;
 &lt;p&gt;Next, we&amp;rsquo;ll quick sort the two sub-arrays.&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
 &lt;p&gt;Even though the two sub-arrays are not sorted, they&amp;rsquo;re partitioned.
 However, sorting the whole array would be pretty easy, if they were sorted.&lt;/p&gt;
 &lt;p&gt;Then, we can combine the whole thing together, like this: left array + pivot + right array.
@@ -510,8 +576,8 @@ Here you can see codes optimized by using no extra memory space.&lt;/p&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;4-big-o-notation&#34;&gt;4. Big O notation&lt;/h3&gt;
 &lt;p&gt;Quicksort is unique since its speed depends on the pivot we use.&lt;br&gt;
-Here we can see the most common Big O run times.&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
+Here we can see the most common Big O run times.&lt;br&gt;
+&lt;img src=&#34;/post/grokking_algorithm/images/search_time_m1.png&#34; alt=&#34;alt Big_O_Times&#34;  /&gt;&lt;/p&gt;
 &lt;p&gt;Please pay attention to the example times in the chart because they are estimates of seconds per operation.&lt;br&gt;
 Compared with Merged Sort, which is O(nlogn) and faster, quicksort is different:&lt;br&gt;
 In the worst case, quicksorts takes O(n^2)time, which is as slow as selection sort.
@@ -530,14 +596,14 @@ Besides, quicksort is faster in practice since it hits the average case way more
 &lt;p&gt;The performance of quicksort is heavily affected by the pivot.
 Suppose we always choose the first element as the pivot, and call quick with an sorted array.
 Since quicksort doesn&amp;rsquo;t to see whether the input array is already sorted, it will still try to sort it.&lt;/p&gt;
-&lt;p&gt;As we can see in the following figure:&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;As we can see in the following figure:&lt;br&gt;
+&lt;img src=&#34;/post/grokking_algorithm/images/quick_sort_worst.png&#34; alt=&#34;quick_sort_worst_case&#34;  /&gt;&lt;/p&gt;
 &lt;p&gt;Since we&amp;rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.
 As we always get O(n) in every level of the stack, we finally get O(n)*O(n)O(n^2)time.&lt;br&gt;
 Therefore, the call stack is so long that it takes O(n^2) time.&lt;/p&gt;
 &lt;p&gt;On the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).&lt;br&gt;
-Therefore, we get operation time O(nlogn).&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
+Therefore, we get operation time O(nlogn).  &lt;br&gt;
+&lt;img src=&#34;/post/grokking_algorithm/images/quick_sort_avg.png&#34; alt=&#34;quick_sort_best_case&#34;  /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;However, the best case is also the average case.&lt;/li&gt;
 &lt;li&gt;If we choose a random element in the array as the pivot, quicksort will have O(nlogn)time on average.&lt;/li&gt;
@@ -557,12 +623,17 @@ The author illustrate algorithms with pictures, which make people easily underst
 </description>
         </item>
         <item>
-        <title>AL: 3. Recursion</title>
-        <link>/p/al-3.-recursion/</link>
+        <title>GA: 3. Recursion</title>
+        <link>/p/ga-3.-recursion/</link>
         <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
         
-        <guid>/p/al-3.-recursion/</guid>
-        <description>&lt;blockquote&gt;
+        <guid>/p/ga-3.-recursion/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
+&lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
 &lt;p&gt;In this chapter, I learned about recursion, which is very useful in many algorithms.
 Also, this chapter shows us how to break down a problem into a base case and a recursive case.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -661,13 +732,15 @@ Host github2
 &lt;/code&gt;&lt;/pre&gt;</description>
         </item>
         <item>
-        <title>AL: 2. Selection sort</title>
-        <link>/p/al-2.-selection-sort/</link>
+        <title>GA: 2. Selection sort</title>
+        <link>/p/ga-2.-selection-sort/</link>
         <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
         
-        <guid>/p/al-2.-selection-sort/</guid>
-        <description>&lt;ul&gt;
-&lt;li&gt;This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;&lt;/li&gt;
+        <guid>/p/ga-2.-selection-sort/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
+&lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;chapter-2-selection-sort&#34;&gt;Chapter 2: Selection Sort&lt;/h2&gt;
 &lt;h3 id=&#34;1-tips-about-selection-sort&#34;&gt;1. Tips About Selection Sort&lt;/h3&gt;
@@ -743,13 +816,15 @@ If you have questions, you can ask them on &lt;a class=&#34;link&#34; href=&#34;
 </description>
         </item>
         <item>
-        <title>AL: 1. Binary search</title>
-        <link>/p/al-1.-binary-search/</link>
+        <title>GA: 1. Binary search</title>
+        <link>/p/ga-1.-binary-search/</link>
         <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
         
-        <guid>/p/al-1.-binary-search/</guid>
-        <description>&lt;ul&gt;
-&lt;li&gt;This blog is used as notes for later reference after reading the book &amp;lsquo;Algorithms an illustrated guide for programmers&amp;rsquo;&lt;/li&gt;
+        <guid>/p/ga-1.-binary-search/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
+&lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;chapter-1-binary-search&#34;&gt;Chapter 1: Binary Search&lt;/h2&gt;
 &lt;h3 id=&#34;1-tips-about-binary-search&#34;&gt;1. Tips About Binary Search&lt;/h3&gt;

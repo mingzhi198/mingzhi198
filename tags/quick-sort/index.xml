@@ -8,15 +8,13 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 09 Dec 2020 08:32:27 +0800</lastBuildDate><atom:link href="/tags/quick-sort/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>AL: 4. Quicksort</title>
-      <link>/p/al-4.-quicksort/</link>
+      <title>GA: 4. Quicksort</title>
+      <link>/p/ga-4.-quicksort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
-      <guid>/p/al-4.-quicksort/</guid>
-      <description>This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
- 1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.
- Example If you are a farmer with a large land and plan to divide this farmland evenly into square plots.
-Besides, the plots must be as big as possible.</description>
+      <guid>/p/ga-4.-quicksort/</guid>
+      <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.   This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
+ 1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.</description>
     </item>
     
   </channel>

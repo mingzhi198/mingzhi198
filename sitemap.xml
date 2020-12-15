@@ -3,18 +3,43 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/p/al-6.-breadth-first-search/</loc>
-    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/algorithm/</loc>
-    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
+    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
   </url>
   
   <url>
-    <loc>/categories/algorithm_illustration/</loc>
-    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
+    <loc>/categories/</loc>
+    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/dijkstra/</loc>
+    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/p/ga-7.-dijkstras-algorithm/</loc>
+    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/grokking_algorithm/</loc>
+    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
   </url>
   
   <url>
@@ -28,7 +53,7 @@
   </url>
   
   <url>
-    <loc>/categories/</loc>
+    <loc>/p/ga-6.-breadth-first-search/</loc>
     <lastmod>2020-12-10T23:02:27+08:00</lastmod>
   </url>
   
@@ -38,27 +63,12 @@
   </url>
   
   <url>
-    <loc>/</loc>
-    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/</loc>
-    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/search/</loc>
     <lastmod>2020-12-10T23:02:27+08:00</lastmod>
   </url>
   
   <url>
-    <loc>/tags/</loc>
-    <lastmod>2020-12-10T23:02:27+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/p/al-5.-hash-tables/</loc>
+    <loc>/p/ga-5.-hash-tables/</loc>
     <lastmod>2020-12-09T23:09:04+08:00</lastmod>
   </url>
   
@@ -73,7 +83,7 @@
   </url>
   
   <url>
-    <loc>/p/al-4.-quicksort/</loc>
+    <loc>/p/ga-4.-quicksort/</loc>
     <lastmod>2020-12-09T08:32:27+08:00</lastmod>
   </url>
   
@@ -88,7 +98,7 @@
   </url>
   
   <url>
-    <loc>/p/al-3.-recursion/</loc>
+    <loc>/p/ga-3.-recursion/</loc>
     <lastmod>2020-12-08T18:36:08+08:00</lastmod>
   </url>
   
@@ -118,17 +128,17 @@
   </url>
   
   <url>
-    <loc>/p/al-2.-selection-sort/</loc>
+    <loc>/p/ga-2.-selection-sort/</loc>
     <lastmod>2020-12-04T23:44:52+08:00</lastmod>
   </url>
   
   <url>
-    <loc>/p/al-1.-binary-search/</loc>
+    <loc>/tags/binary-search/</loc>
     <lastmod>2020-12-03T23:44:52+08:00</lastmod>
   </url>
   
   <url>
-    <loc>/tags/binary-search/</loc>
+    <loc>/p/ga-1.-binary-search/</loc>
     <lastmod>2020-12-03T23:44:52+08:00</lastmod>
   </url>
   
