@@ -653,7 +653,7 @@ Host github2
 	fetch = +refs/heads/*:refs/remotes/origin/*
 
 &lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;Please pay attention the the format of url: git@Host:user/project.git&lt;/li&gt;
+&lt;li&gt;Please pay attention to the format of url: git@Host:user/project.git&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;4-finally-there-will-be-no-error-with-git-push&#34;&gt;4. Finally, there will be no error with &amp;lsquo;git push&amp;rsquo;&lt;/h3&gt;
 &lt;h4 id=&#34;references&#34;&gt;References&lt;/h4&gt;
