@@ -226,8 +226,219 @@ Step B: Update the costs of neighbors of Node A.
 <li>Remember that Dijkstra&rsquo;s algorithm can only be used in directed acyclic graphs, which is called DAGs.</li>
 </ul>
 <h2 id="trading-for-a-piano">Trading for a piano</h2>
-<h2 id="negative-weight-edges">Negative-weight edges</h2>
-<h2 id="implementation">Implementation</h2>
+<p>Here, the author provide an example to further illustrate Dijkstra&rsquo;s algorithm.</p>
+<figure>
+    <img src="/post/grokking_algorithm/images/trade_graph.jpg" width="50%"/> 
+</figure>
+
+<p>You have a book, and other people have other items, the relationship of which you can see from the figure above.<br>
+In the figure, you want trade your book for the piano.<br>
+To solve this problem, we should follow the steps of Dijkstra&rsquo;s algorithm.</p>
+<ul>
+<li>Step 1: Find the node with the least cost.<br>
+We can see from the figure that it costs you 0 to get to poster, which is our target.</li>
+<li>Step 2: Find the costs of it&rsquo;s neighbors
+We compare the costs to it&rsquo;s neighbors, and update the costs with smaller values and their parents(from which node we get to these neighbors).</li>
+</ul>
+<figure>
+    <img src="/post/grokking_algorithm/images/trade_poster.jpg" width="50%"/> 
+</figure>
+
+<ul>
+<li>Repeat:</li>
+<li>Step 1: The node LP is the next one with the least cost.</li>
+<li>Step 2: Update the costs and parent of LP&rsquo;s neighbors.</li>
+</ul>
+<figure>
+    <img src="/post/grokking_algorithm/images/trade_lp_neighbors.jpg" width="50%"/> 
+</figure>
+
+<ul>
+<li>Repeat:</li>
+<li>Step 1: The node Guitar is the next one with the least cost.</li>
+<li>Step 2: Update the costs and parent of Guitar&rsquo;s neighbors.</li>
+</ul>
+<figure>
+    <img src="/post/grokking_algorithm/images/trade_guitar_neighbors.jpg" width="50%"/> 
+</figure>
+
+<ul>
+<li>Repeat:</li>
+<li>Step 1: the node Drum is the last one to be processed.</li>
+<li>Step 2: Update the costs and parent of Drum&rsquo;s neighbors.</li>
+</ul>
+<figure>
+    <img src="/post/grokking_algorithm/images/trade_final_path.jpg" width="50%"/> 
+</figure>
+
+<p>Finally, we get the cheapest path: Book-&gt;LP-&gt;Drum-&gt;Piano</p>
+<h3 id="implementation">Implementation</h3>
+<ul>
+<li>Golang</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;math&#34;</span>
+	<span class="s">&#34;util&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span> <span class="nx">Node</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">Name</span> <span class="kt">string</span>
+	<span class="nx">Cost</span> <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">Table</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">Name</span>   <span class="kt">string</span>
+	<span class="nx">Parent</span> <span class="kt">string</span>
+	<span class="nx">Cost</span>   <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="p">(</span>
+	<span class="nx">graph</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="o">*</span><span class="nx">Node</span>
+	<span class="nx">table</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="nx">Table</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">graph</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="o">*</span><span class="nx">Node</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+	<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;book&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="o">*</span><span class="nx">Node</span><span class="p">{</span>
+		<span class="o">&amp;</span><span class="nx">Node</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;lp&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
+		<span class="o">&amp;</span><span class="nx">Node</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;poster&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+	<span class="p">}</span>
+	<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;poster&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="o">*</span><span class="nx">Node</span><span class="p">{</span>
+		<span class="o">&amp;</span><span class="nx">Node</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;guitar&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
+		<span class="o">&amp;</span><span class="nx">Node</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;drum&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="mi">35</span><span class="p">},</span>
+	<span class="p">}</span>
+	<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;lp&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="o">*</span><span class="nx">Node</span><span class="p">{</span>
+		<span class="o">&amp;</span><span class="nx">Node</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;guitar&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="mi">15</span><span class="p">},</span>
+		<span class="o">&amp;</span><span class="nx">Node</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;drum&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span>
+	<span class="p">}</span>
+	<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;guitar&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="o">*</span><span class="nx">Node</span><span class="p">{</span>
+		<span class="o">&amp;</span><span class="nx">Node</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;piano&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span>
+	<span class="p">}</span>
+	<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;drum&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="o">*</span><span class="nx">Node</span><span class="p">{</span>
+		<span class="o">&amp;</span><span class="nx">Node</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;piano&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+	<span class="p">}</span>
+	<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;piano&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="o">*</span><span class="nx">Node</span><span class="p">{}</span>
+
+	<span class="nx">table</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="nx">Table</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+	<span class="nx">table</span><span class="p">[</span><span class="s">&#34;lp&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">Table</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;lp&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nx">Parent</span><span class="p">:</span> <span class="s">&#34;book&#34;</span><span class="p">}</span>
+	<span class="nx">table</span><span class="p">[</span><span class="s">&#34;poster&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">Table</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;poster&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">Parent</span><span class="p">:</span> <span class="s">&#34;book&#34;</span><span class="p">}</span>
+	<span class="nx">table</span><span class="p">[</span><span class="s">&#34;guitar&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">Table</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;guitar&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="nx">math</span><span class="p">.</span><span class="nx">MaxUint32</span><span class="p">,</span> <span class="nx">Parent</span><span class="p">:</span> <span class="s">&#34;&#34;</span><span class="p">}</span>
+	<span class="nx">table</span><span class="p">[</span><span class="s">&#34;drum&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">Table</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;drum&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="nx">math</span><span class="p">.</span><span class="nx">MaxUint32</span><span class="p">,</span> <span class="nx">Parent</span><span class="p">:</span> <span class="s">&#34;&#34;</span><span class="p">}</span>
+	<span class="nx">table</span><span class="p">[</span><span class="s">&#34;piano&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">Table</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;piano&#34;</span><span class="p">,</span> <span class="nx">Cost</span><span class="p">:</span> <span class="nx">math</span><span class="p">.</span><span class="nx">MaxUint32</span><span class="p">,</span> <span class="nx">Parent</span><span class="p">:</span> <span class="s">&#34;&#34;</span><span class="p">}</span>
+	<span class="k">return</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">GetDijkstraPath</span><span class="p">(</span><span class="nx">table</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="nx">Table</span><span class="p">,</span> <span class="nx">name</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">ret</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">ret</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="nx">nodeT</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">table</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+		<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+		<span class="nx">ret</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">nodeT</span><span class="p">.</span><span class="nx">Parent</span><span class="p">)</span>
+		<span class="nx">name</span> <span class="p">=</span> <span class="nx">nodeT</span><span class="p">.</span><span class="nx">Parent</span>
+	<span class="p">}</span>
+	<span class="nx">n</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">ret</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">ret</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">ret</span><span class="p">[</span><span class="nx">n</span><span class="o">-</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="nx">ret</span><span class="p">[</span><span class="nx">n</span><span class="o">-</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nx">ret</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+	<span class="p">}</span>
+	<span class="k">return</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">FindCheapestNode</span><span class="p">(</span><span class="nx">list</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="nx">Table</span><span class="p">,</span> <span class="nx">lastMinCost</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nx">min</span> <span class="o">*</span><span class="nx">Table</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">list</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">tab</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">list</span> <span class="p">{</span>
+		<span class="c1">// Be careful that the minimal value we want must be bigger than the last minimal value.
+</span><span class="c1"></span>		<span class="c1">// And there will be no cheaper node than the last minimal cost
+</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">tab</span><span class="p">.</span><span class="nx">Cost</span> <span class="o">&lt;=</span> <span class="nx">lastMinCost</span> <span class="p">{</span>
+			<span class="k">continue</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="kc">nil</span> <span class="o">==</span> <span class="nx">min</span> <span class="p">{</span>
+			<span class="nx">min</span> <span class="p">=</span> <span class="nx">tab</span>
+			<span class="k">continue</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">tab</span><span class="p">.</span><span class="nx">Cost</span> <span class="p">&lt;</span> <span class="nx">min</span><span class="p">.</span><span class="nx">Cost</span> <span class="p">{</span>
+			<span class="nx">min</span> <span class="p">=</span> <span class="nx">tab</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">return</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">Dijkstra</span><span class="p">(</span><span class="nx">graph</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="o">*</span><span class="nx">Node</span><span class="p">,</span> <span class="nx">name</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">finalPath</span> <span class="p">[]</span><span class="kt">string</span><span class="p">,</span> <span class="nx">totalCost</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">lastMinCost</span> <span class="o">:=</span> <span class="o">-</span><span class="mi">1</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">table</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="c1">// 1. find the cheapst node
+</span><span class="c1"></span>		<span class="nx">node</span> <span class="o">:=</span> <span class="nf">FindCheapestNode</span><span class="p">(</span><span class="nx">table</span><span class="p">,</span> <span class="nx">lastMinCost</span><span class="p">)</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;cheapest node: &#34;</span><span class="p">,</span> <span class="nx">util</span><span class="p">.</span><span class="nf">ToString</span><span class="p">(</span><span class="nx">node</span><span class="p">))</span>
+		<span class="nx">lastMinCost</span> <span class="p">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">Cost</span>
+
+		<span class="c1">// 2. update it&#39;s neighbors&#39; cost and parent
+</span><span class="c1"></span>		<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">neighbor</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">graph</span><span class="p">[</span><span class="nx">node</span><span class="p">.</span><span class="nx">Name</span><span class="p">]</span> <span class="p">{</span>
+			<span class="nx">neighborT</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">table</span><span class="p">[</span><span class="nx">neighbor</span><span class="p">.</span><span class="nx">Name</span><span class="p">]</span>
+			<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+				<span class="nx">table</span><span class="p">[</span><span class="nx">neighbor</span><span class="p">.</span><span class="nx">Name</span><span class="p">]</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">Table</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="nx">neighbor</span><span class="p">.</span><span class="nx">Name</span><span class="p">}</span>
+			<span class="p">}</span>
+			<span class="nx">neighborT</span><span class="p">.</span><span class="nx">Cost</span> <span class="p">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">Cost</span> <span class="o">+</span> <span class="nx">neighbor</span><span class="p">.</span><span class="nx">Cost</span> <span class="c1">// update cost
+</span><span class="c1"></span>			<span class="nx">neighborT</span><span class="p">.</span><span class="nx">Parent</span> <span class="p">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">Name</span>               <span class="c1">// update parent
+</span><span class="c1"></span>		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">util</span><span class="p">.</span><span class="nf">ToStringIndent</span><span class="p">(</span><span class="nx">table</span><span class="p">))</span>
+
+	<span class="nx">finalPath</span> <span class="p">=</span> <span class="nf">GetDijkstraPath</span><span class="p">(</span><span class="nx">table</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span>
+	<span class="nx">totalCost</span> <span class="p">=</span> <span class="nx">table</span><span class="p">[</span><span class="nx">name</span><span class="p">].</span><span class="nx">Cost</span>
+	<span class="k">return</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">path</span><span class="p">,</span> <span class="nx">cost</span> <span class="o">:=</span> <span class="nf">Dijkstra</span><span class="p">(</span><span class="nx">graph</span><span class="p">,</span> <span class="s">&#34;piano&#34;</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Dijkstra path: %s, cost: %d\n&#34;</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">cost</span><span class="p">)</span>
+<span class="p">}</span>
+
+</code></pre></div><ul>
+<li>Output</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-Shell" data-lang="Shell">cheapest node:  <span class="o">{</span><span class="s2">&#34;Name&#34;</span>:<span class="s2">&#34;poster&#34;</span>,<span class="s2">&#34;Parent&#34;</span>:<span class="s2">&#34;book&#34;</span>,<span class="s2">&#34;Cost&#34;</span>:0<span class="o">}</span>
+cheapest node:  <span class="o">{</span><span class="s2">&#34;Name&#34;</span>:<span class="s2">&#34;lp&#34;</span>,<span class="s2">&#34;Parent&#34;</span>:<span class="s2">&#34;book&#34;</span>,<span class="s2">&#34;Cost&#34;</span>:5<span class="o">}</span>
+cheapest node:  <span class="o">{</span><span class="s2">&#34;Name&#34;</span>:<span class="s2">&#34;guitar&#34;</span>,<span class="s2">&#34;Parent&#34;</span>:<span class="s2">&#34;lp&#34;</span>,<span class="s2">&#34;Cost&#34;</span>:20<span class="o">}</span>
+cheapest node:  <span class="o">{</span><span class="s2">&#34;Name&#34;</span>:<span class="s2">&#34;drum&#34;</span>,<span class="s2">&#34;Parent&#34;</span>:<span class="s2">&#34;lp&#34;</span>,<span class="s2">&#34;Cost&#34;</span>:25<span class="o">}</span>
+cheapest node:  <span class="o">{</span><span class="s2">&#34;Name&#34;</span>:<span class="s2">&#34;piano&#34;</span>,<span class="s2">&#34;Parent&#34;</span>:<span class="s2">&#34;drum&#34;</span>,<span class="s2">&#34;Cost&#34;</span>:35<span class="o">}</span>
+<span class="o">{</span>
+  <span class="s2">&#34;drum&#34;</span>: <span class="o">{</span>
+    <span class="s2">&#34;Name&#34;</span>: <span class="s2">&#34;drum&#34;</span>,
+    <span class="s2">&#34;Parent&#34;</span>: <span class="s2">&#34;lp&#34;</span>,
+    <span class="s2">&#34;Cost&#34;</span>: <span class="m">25</span>
+  <span class="o">}</span>,
+  <span class="s2">&#34;guitar&#34;</span>: <span class="o">{</span>
+    <span class="s2">&#34;Name&#34;</span>: <span class="s2">&#34;guitar&#34;</span>,
+    <span class="s2">&#34;Parent&#34;</span>: <span class="s2">&#34;lp&#34;</span>,
+    <span class="s2">&#34;Cost&#34;</span>: <span class="m">20</span>
+  <span class="o">}</span>,
+  <span class="s2">&#34;lp&#34;</span>: <span class="o">{</span>
+    <span class="s2">&#34;Name&#34;</span>: <span class="s2">&#34;lp&#34;</span>,
+    <span class="s2">&#34;Parent&#34;</span>: <span class="s2">&#34;book&#34;</span>,
+    <span class="s2">&#34;Cost&#34;</span>: <span class="m">5</span>
+  <span class="o">}</span>,
+  <span class="s2">&#34;piano&#34;</span>: <span class="o">{</span>
+    <span class="s2">&#34;Name&#34;</span>: <span class="s2">&#34;piano&#34;</span>,
+    <span class="s2">&#34;Parent&#34;</span>: <span class="s2">&#34;drum&#34;</span>,
+    <span class="s2">&#34;Cost&#34;</span>: <span class="m">35</span>
+  <span class="o">}</span>,
+  <span class="s2">&#34;poster&#34;</span>: <span class="o">{</span>
+    <span class="s2">&#34;Name&#34;</span>: <span class="s2">&#34;poster&#34;</span>,
+    <span class="s2">&#34;Parent&#34;</span>: <span class="s2">&#34;book&#34;</span>,
+    <span class="s2">&#34;Cost&#34;</span>: <span class="m">0</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+Dijkstra path: <span class="o">[</span>book lp drum piano<span class="o">]</span>, cost: <span class="m">35</span>
+
+</code></pre></div><h2 id="negative-weight-edges">Negative-weight edges</h2>
+<h2 id="implementation-1">Implementation</h2>
 <h2 id="summary">Summary</h2>
 
 </section>

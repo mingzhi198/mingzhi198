@@ -199,7 +199,10 @@ Thus, caching is a common way to make things faster.</p>
 Since Collisions are bad, we need to work around them.
 We have many distinct ways to deal with collisions, the simplest one of which is this:<br>
 If multiple keys map to the same slot, start a linked list at that slot.
-<img src="/post/grokking_algorithm/images/hash_collision.png" alt="hash collision"  /></p>
+<figure>
+    <img src="/post/grokking_algorithm/images/hash_collision.png" width="50%"/> 
+</figure>
+</p>
 <ul>
 <li>However, if you have many keys startig with the letter A, you will only use one slot with a giant linked list.</li>
 <li>This will definitely slow down your hash table.</li>
@@ -208,7 +211,7 @@ If multiple keys map to the same slot, start a linked list at that slot.
 <table>
 <thead>
 <tr>
-<th style="text-align:center"></th>
+<th style="text-align:center">Action</th>
 <th style="text-align:center">Hash(Average)</th>
 <th style="text-align:center">Hash(Worst)</th>
 <th style="text-align:center">Array</th>
