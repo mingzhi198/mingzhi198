@@ -39,8 +39,8 @@
             </figure>
         
         <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
-        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 　　
-Progress one percent per day...</h2>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
     </header>
 
     <ol class="menu" id="main-menu">
@@ -179,26 +179,26 @@ Progress one percent per day...</h2>
 <li>It needs to be consistent.</li>
 <li>It should map different workds to different numbers.</li>
 </ul>
-<p>You get a hash table by putting a hash function and an array together.
+<p>You get a hash table by putting a hash function and an array together.<br>
 Hash tables use an array to store data since we can get an item from an array instantly(O(1)).</p>
 <h2 id="2-use-cases">2. Use cases</h2>
 <h3 id="21--using-hash-tables-for-lookups">2.1  Using hash tables for lookups</h3>
-<p>Hash tables make it easy to model a relationship from one item to another.
+<p>Hash tables make it easy to model a relationship from one item to another.<br>
 Hash tables are used for lookups on a much larger scale.</p>
 <h3 id="22-preventing-duplicate-entries">2.2 Preventing duplicate entries</h3>
 <p>Keep in mind that the hash function would be really slow if you were storing elements in a array,<br>
 since it would have to run a simple search(O(n)) over the entire list.<br>
-However, you can get the value instantly if you store them in a hash table.
+However, you can get the value instantly if you store them in a hash table.<br>
 Thus, checking for duplicates is very fast with a hash table.</p>
 <h3 id="23-using-hash-tables-as">2.3 Using hash tables as</h3>
 <p>Caching is One of the final use of hash tables.<br>
-Caching is widely used in websites, since the servers don&rsquo;t have to do much work to find the requested data.
+Caching is widely used in websites, since the servers don&rsquo;t have to do much work to find the requested data.<br>
 Thus, caching is a common way to make things faster.</p>
 <h2 id="3-collisions">3. Collisions</h2>
 <p>Collision: two or more keys have been assigned the same slot.<br>
-Since Collisions are bad, we need to work around them.
+Since Collisions are bad, we need to work around them.<br>
 We have many distinct ways to deal with collisions, the simplest one of which is this:<br>
-If multiple keys map to the same slot, start a linked list at that slot.
+If multiple keys map to the same slot, start a linked list at that slot.<br>
 <figure>
     <img src="/post/grokking_algorithm/images/hash_collision.png" width="50%"/> 
 </figure>
@@ -244,7 +244,7 @@ If multiple keys map to the same slot, start a linked list at that slot.
 </table>
 <p>We can see from the figure above that hash tables are as fast as arrays at searching,<br>
 and are as fast as linked lists at inserts and delets.<br>
-Nevertheless, hash tables are slow(O(n)) at all of those operations.
+Nevertheless, hash tables are slow(O(n)) at all of those operations.<br>
 In order not to hit the worst case performance with hash tables, we need to avoid collisions.</p>
 <ul>
 <li>A low load factor</li>
@@ -261,7 +261,7 @@ In order not to hit the worst case performance with hash tables, we need to avoi
 <li>Even though, the resizing takes some time, hash tables take O(1) on average.</li>
 </ul>
 <h3 id="42-a-good-hash-function">4.2 A good hash function</h3>
-<p>A good hash function districutes values in the array evenly.
+<p>A good hash function districutes values in the array evenly.<br>
 You can check the SHA function if your curiosity is great enough.</p>
 <h2 id="summary">Summary</h2>
 <ul>
@@ -385,7 +385,7 @@ You can check the SHA function if your curiosity is great enough.</p>
     
 
     <footer class="site-footer">
-    <section class="copyright">&copy; 2020 Li. Mingzhi</section>
+    <section class="copyright">&copy; 2021 Li. Mingzhi</section>
     <section class="powerby">Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
         Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="1.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>

@@ -42,8 +42,8 @@
             </figure>
         
         <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
-        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 　　
-Progress one percent per day...</h2>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
     </header>
 
     <ol class="menu" id="main-menu">
@@ -186,14 +186,14 @@ Progress one percent per day...</h2>
 </blockquote>
 <h4 id="example">Example</h4>
 <p>If you are a farmer with a large land and plan to divide this farmland evenly into square plots.<br>
-Besides, the plots must be as big as possible.
+Besides, the plots must be as big as possible.<br>
 Before continuing your reading, think about how can you solve this problem?</p>
 <p>We can use D&amp;C(Divde &amp; Conquer) to solve this problem.<br>
 To solve a problem using D&amp;C, we should follow two steps:</p>
 <pre><code>1. Figure out the base case, which should be the simplest possible case.
 2. Divide or decrease you problem until it becomes the base case.
 </code></pre><p>Suppose you have a land of 30 * 50, now you have the largest square with side of 30.<br>
-We have the rest of the land(20 * 30) and have the largest square of 20 * 20.
+We have the rest of the land(20 * 30) and have the largest square of 20 * 20.<br>
 Then we are left with a land of 10 * 10, which is the answer.</p>
 <ul>
 <li>Golang</li>
@@ -297,8 +297,8 @@ Then we are left with a land of 10 * 10, which is the answer.</p>
 <p>Tip: When we got a recursive function involving an array, the base case is often an empty array or an array with one element.</p>
 </blockquote>
 <h2 id="3-quick-sort">3. Quick Sort</h2>
-<p>3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life.
-The base case for quicksort are arrays that are empty and arrays with just one element.
+<p>3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life.<br>
+The base case for quicksort are arrays that are empty and arrays with just one element.<br>
 Using D&amp;C, we can break down a array until we get the base case.</p>
 <ul>
 <li>Here are the steps for quick sort:</li>
@@ -318,9 +318,9 @@ Using D&amp;C, we can break down a array until we get the base case.</p>
 </figure>
 
 <p>Next, we&rsquo;ll quick sort the two sub-arrays.</p>
-<p>Even though the two sub-arrays are not sorted, they&rsquo;re partitioned.
+<p>Even though the two sub-arrays are not sorted, they&rsquo;re partitioned.<br>
 However, sorting the whole array would be pretty easy, if they were sorted.</p>
-<p>Then, we can combine the whole thing together, like this: left array + pivot + right array.
+<p>Then, we can combine the whole thing together, like this: left array + pivot + right array.<br>
 We do this recursively and will get a sorted array.<br>
 Here is the code, which would be easy to understand(In order to save space, We provide only the Golang code).</p>
 <ul>
@@ -350,8 +350,8 @@ Here is the code, which would be easy to understand(In order to save space, We p
 	<span class="nx">ret</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">greaterRet</span><span class="o">...</span><span class="p">)</span>
 	<span class="k">return</span>
 <span class="p">}</span>
-</code></pre></div><p>If you&rsquo;d come through the explanation above, you would find this code easy to understand.
-Nevertheless, it&rsquo;s not efficent in memory.
+</code></pre></div><p>If you&rsquo;d come through the explanation above, you would find this code easy to understand.<br>
+Nevertheless, it&rsquo;s not efficent in memory.<br>
 Here you can see codes optimized by using no extra memory space.</p>
 <div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kd">func</span> <span class="nf">quickSortE</span><span class="p">(</span><span class="nx">arr</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
 	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="p">&lt;</span> <span class="mi">2</span> <span class="p">{</span>
@@ -409,7 +409,7 @@ Here we can see the most common Big O run times.<br>
 </p>
 <p>Please pay attention to the example times in the chart because they are estimates of seconds per operation.<br>
 Compared with Merged Sort, which is O(nlogn) and faster, quicksort is different:<br>
-In the worst case, quicksorts takes O(n^2)time, which is as slow as selection sort.
+In the worst case, quicksorts takes O(n^2)time, which is as slow as selection sort.<br>
 In the average case, quicksorts takes O(nlogn)time.</p>
 <h3 id="5-merge-sort-vs-quicksort">5. Merge Sort vs. Quicksort</h3>
 <p>For algorithms with O(n), there are a constant for every operation.<br>
@@ -418,19 +418,19 @@ Commonly, the constant is ignored, however, it&rsquo;ll make a difference in som
 <li>Quick sort has a smaller constant than merge sort.</li>
 </ul>
 <blockquote>
-<p>Therefore, if they&rsquo;re both O(nlogn)time, quicksort will be faster.
+<p>Therefore, if they&rsquo;re both O(nlogn)time, quicksort will be faster.<br>
 Besides, quicksort is faster in practice since it hits the average case way more often than the worst case.</p>
 </blockquote>
 <h3 id="6-averge-case-vs-worst-case">6. Averge case vs. Worst case</h3>
-<p>The performance of quicksort is heavily affected by the pivot.
-Suppose we always choose the first element as the pivot, and call quick with an sorted array.
+<p>The performance of quicksort is heavily affected by the pivot.<br>
+Suppose we always choose the first element as the pivot, and call quick with an sorted array.<br>
 Since quicksort doesn&rsquo;t to see whether the input array is already sorted, it will still try to sort it.</p>
 <p>As we can see in the following figure:<br>
 <figure>
     <img src="/post/grokking_algorithm/images/quick_sort_worst.png" width="70%"/> 
 </figure>
 </p>
-<p>Since we&rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.
+<p>Since we&rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.<br>
 As we always get O(n) in every level of the stack, we finally get O(n)*O(n)O(n^2)time.<br>
 Therefore, the call stack is so long that it takes O(n^2) time.</p>
 <p>On the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).<br>
@@ -567,7 +567,7 @@ The author illustrate algorithms with pictures, which make people easily underst
     
 
     <footer class="site-footer">
-    <section class="copyright">&copy; 2020 Li. Mingzhi</section>
+    <section class="copyright">&copy; 2021 Li. Mingzhi</section>
     <section class="powerby">Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
         Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="1.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>

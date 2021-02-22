@@ -39,8 +39,8 @@
             </figure>
         
         <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
-        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 　　
-Progress one percent per day...</h2>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
     </header>
 
     <ol class="menu" id="main-menu">
@@ -185,13 +185,13 @@ Progress one percent per day...</h2>
 <p><figure>
     <img src="/post/grokking_algorithm/images/short_path.png" width="70%"/> 
 </figure>
-
+<br>
 <figure>
     <img src="/post/grokking_algorithm/images/fast_path.png" width="70%"/> 
 </figure>
 </p>
 <p>In the figures above, you are going to walk from home to shool.<br>
-By using BFS, we will find the shortest path A, while Dijkstra&rsquo;s algorithm is better for us to find the fastest path.
+By using BFS, we will find the shortest path A, while Dijkstra&rsquo;s algorithm is better for us to find the fastest path.<br>
 Therefore, you will choose path B instead of path A, since it will take you less time from home to school.</p>
 <h2 id="four-steps-of-dijkstras-algorithm">Four steps of Dijkstra&rsquo;s algorithm</h2>
 <ul>
@@ -216,7 +216,7 @@ Step A: It will take you 6 minutes from Begin to A and 2 minutes from Begin to B
 </ul>
 <p>Step C: Repeat steps above.</p>
 <p>Step A: Now, we find that Node A will take you less time to get to.<br>
-Step B: Update the costs of neighbors of Node A.
+Step B: Update the costs of neighbors of Node A.<br>
 <figure>
     <img src="/post/grokking_algorithm/images/dijkstra_step3.jpg" width="50%&#34;"/> 
 </figure>
@@ -237,7 +237,7 @@ To solve this problem, we should follow the steps of Dijkstra&rsquo;s algorithm.
 <ul>
 <li>Step 1: Find the node with the least cost.<br>
 We can see from the figure that it costs you 0 to get to poster, which is our target.</li>
-<li>Step 2: Find the costs of it&rsquo;s neighbors
+<li>Step 2: Find the costs of it&rsquo;s neighbors<br>
 We compare the costs to it&rsquo;s neighbors, and update the costs with smaller values and their parents(from which node we get to these neighbors).</li>
 </ul>
 <figure>
@@ -550,7 +550,7 @@ Dijkstra path: <span class="o">[</span>book lp drum piano<span class="o">]</span
     
 
     <footer class="site-footer">
-    <section class="copyright">&copy; 2020 Li. Mingzhi</section>
+    <section class="copyright">&copy; 2021 Li. Mingzhi</section>
     <section class="powerby">Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
         Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="1.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>

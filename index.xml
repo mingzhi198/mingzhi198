@@ -28,13 +28,13 @@
 &lt;p&gt;&lt;figure&gt;
     &lt;img src=&#34;/post/grokking_algorithm/images/short_path.png&#34; width=&#34;70%&#34;/&gt; 
 &lt;/figure&gt;
-
+&lt;br&gt;
 &lt;figure&gt;
     &lt;img src=&#34;/post/grokking_algorithm/images/fast_path.png&#34; width=&#34;70%&#34;/&gt; 
 &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;In the figures above, you are going to walk from home to shool.&lt;br&gt;
-By using BFS, we will find the shortest path A, while Dijkstra&amp;rsquo;s algorithm is better for us to find the fastest path.
+By using BFS, we will find the shortest path A, while Dijkstra&amp;rsquo;s algorithm is better for us to find the fastest path.&lt;br&gt;
 Therefore, you will choose path B instead of path A, since it will take you less time from home to school.&lt;/p&gt;
 &lt;h2 id=&#34;four-steps-of-dijkstras-algorithm&#34;&gt;Four steps of Dijkstra&amp;rsquo;s algorithm&lt;/h2&gt;
 &lt;ul&gt;
@@ -59,7 +59,7 @@ Step A: It will take you 6 minutes from Begin to A and 2 minutes from Begin to B
 &lt;/ul&gt;
 &lt;p&gt;Step C: Repeat steps above.&lt;/p&gt;
 &lt;p&gt;Step A: Now, we find that Node A will take you less time to get to.&lt;br&gt;
-Step B: Update the costs of neighbors of Node A.
+Step B: Update the costs of neighbors of Node A.&lt;br&gt;
 &lt;figure&gt;
     &lt;img src=&#34;/post/grokking_algorithm/images/dijkstra_step3.jpg&#34; width=&#34;50%&amp;#34;&#34;/&gt; 
 &lt;/figure&gt;
@@ -80,7 +80,7 @@ To solve this problem, we should follow the steps of Dijkstra&amp;rsquo;s algori
 &lt;ul&gt;
 &lt;li&gt;Step 1: Find the node with the least cost.&lt;br&gt;
 We can see from the figure that it costs you 0 to get to poster, which is our target.&lt;/li&gt;
-&lt;li&gt;Step 2: Find the costs of it&amp;rsquo;s neighbors
+&lt;li&gt;Step 2: Find the costs of it&amp;rsquo;s neighbors&lt;br&gt;
 We compare the costs to it&amp;rsquo;s neighbors, and update the costs with smaller values and their parents(from which node we get to these neighbors).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure&gt;
@@ -305,7 +305,7 @@ Dijkstra path: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;book lp drum piano&lt
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;1-graphs&#34;&gt;1. Graphs&lt;/h2&gt;
-&lt;p&gt;Graphs, which can reflect connections between nodes, are made up of nodes and edges.
+&lt;p&gt;Graphs, which can reflect connections between nodes, are made up of nodes and edges.&lt;br&gt;
 And the nodes connected directly to a node are called neghbors.&lt;/p&gt;
 &lt;figure&gt;
     &lt;img src=&#34;/post/grokking_algorithm/images/graph_network.png&#34; width=&#34;70%&#34;/&gt; 
@@ -353,11 +353,11 @@ And the nodes connected directly to a node are called neghbors.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;21-get-the-shortest-path&#34;&gt;2.1 Get the shortest path&lt;/h3&gt;
-&lt;p&gt;As we can see from the graph, your friends are first-degree connections, and friends of them are second-degree connections.
-We should always search the first-degree connections before searching the second-degree connections, and so on.
+&lt;p&gt;As we can see from the graph, your friends are first-degree connections, and friends of them are second-degree connections.&lt;br&gt;
+We should always search the first-degree connections before searching the second-degree connections, and so on.&lt;br&gt;
 Thus, we use queue as the data structure to store the list.&lt;/p&gt;
 &lt;h3 id=&#34;22-queues&#34;&gt;2.2 Queues&lt;/h3&gt;
-&lt;p&gt;Compared with stack, which is LIFO(Last in, first out), queue is FIFO(First in, first out).
+&lt;p&gt;Compared with stack, which is LIFO(Last in, first out), queue is FIFO(First in, first out).&lt;br&gt;
 It&amp;rsquo;s a very vivid picture, from which we can see this abstract concept.&lt;/p&gt;
 &lt;figure&gt;
     &lt;img src=&#34;/post/grokking_algorithm/images/queue_stack1.png&#34; width=&#34;50%&#34;/&gt; 
@@ -519,26 +519,26 @@ searching for every node will take O(number of nodes) total.&lt;/p&gt;
 &lt;li&gt;It needs to be consistent.&lt;/li&gt;
 &lt;li&gt;It should map different workds to different numbers.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;You get a hash table by putting a hash function and an array together.
+&lt;p&gt;You get a hash table by putting a hash function and an array together.&lt;br&gt;
 Hash tables use an array to store data since we can get an item from an array instantly(O(1)).&lt;/p&gt;
 &lt;h2 id=&#34;2-use-cases&#34;&gt;2. Use cases&lt;/h2&gt;
 &lt;h3 id=&#34;21--using-hash-tables-for-lookups&#34;&gt;2.1  Using hash tables for lookups&lt;/h3&gt;
-&lt;p&gt;Hash tables make it easy to model a relationship from one item to another.
+&lt;p&gt;Hash tables make it easy to model a relationship from one item to another.&lt;br&gt;
 Hash tables are used for lookups on a much larger scale.&lt;/p&gt;
 &lt;h3 id=&#34;22-preventing-duplicate-entries&#34;&gt;2.2 Preventing duplicate entries&lt;/h3&gt;
 &lt;p&gt;Keep in mind that the hash function would be really slow if you were storing elements in a array,&lt;br&gt;
 since it would have to run a simple search(O(n)) over the entire list.&lt;br&gt;
-However, you can get the value instantly if you store them in a hash table.
+However, you can get the value instantly if you store them in a hash table.&lt;br&gt;
 Thus, checking for duplicates is very fast with a hash table.&lt;/p&gt;
 &lt;h3 id=&#34;23-using-hash-tables-as&#34;&gt;2.3 Using hash tables as&lt;/h3&gt;
 &lt;p&gt;Caching is One of the final use of hash tables.&lt;br&gt;
-Caching is widely used in websites, since the servers don&amp;rsquo;t have to do much work to find the requested data.
+Caching is widely used in websites, since the servers don&amp;rsquo;t have to do much work to find the requested data.&lt;br&gt;
 Thus, caching is a common way to make things faster.&lt;/p&gt;
 &lt;h2 id=&#34;3-collisions&#34;&gt;3. Collisions&lt;/h2&gt;
 &lt;p&gt;Collision: two or more keys have been assigned the same slot.&lt;br&gt;
-Since Collisions are bad, we need to work around them.
+Since Collisions are bad, we need to work around them.&lt;br&gt;
 We have many distinct ways to deal with collisions, the simplest one of which is this:&lt;br&gt;
-If multiple keys map to the same slot, start a linked list at that slot.
+If multiple keys map to the same slot, start a linked list at that slot.&lt;br&gt;
 &lt;figure&gt;
     &lt;img src=&#34;/post/grokking_algorithm/images/hash_collision.png&#34; width=&#34;50%&#34;/&gt; 
 &lt;/figure&gt;
@@ -584,7 +584,7 @@ If multiple keys map to the same slot, start a linked list at that slot.
 &lt;/table&gt;
 &lt;p&gt;We can see from the figure above that hash tables are as fast as arrays at searching,&lt;br&gt;
 and are as fast as linked lists at inserts and delets.&lt;br&gt;
-Nevertheless, hash tables are slow(O(n)) at all of those operations.
+Nevertheless, hash tables are slow(O(n)) at all of those operations.&lt;br&gt;
 In order not to hit the worst case performance with hash tables, we need to avoid collisions.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;A low load factor&lt;/li&gt;
@@ -601,7 +601,7 @@ In order not to hit the worst case performance with hash tables, we need to avoi
 &lt;li&gt;Even though, the resizing takes some time, hash tables take O(1) on average.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;42-a-good-hash-function&#34;&gt;4.2 A good hash function&lt;/h3&gt;
-&lt;p&gt;A good hash function districutes values in the array evenly.
+&lt;p&gt;A good hash function districutes values in the array evenly.&lt;br&gt;
 You can check the SHA function if your curiosity is great enough.&lt;/p&gt;
 &lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
 &lt;ul&gt;
@@ -635,14 +635,14 @@ You can check the SHA function if your curiosity is great enough.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h4 id=&#34;example&#34;&gt;Example&lt;/h4&gt;
 &lt;p&gt;If you are a farmer with a large land and plan to divide this farmland evenly into square plots.&lt;br&gt;
-Besides, the plots must be as big as possible.
+Besides, the plots must be as big as possible.&lt;br&gt;
 Before continuing your reading, think about how can you solve this problem?&lt;/p&gt;
 &lt;p&gt;We can use D&amp;amp;C(Divde &amp;amp; Conquer) to solve this problem.&lt;br&gt;
 To solve a problem using D&amp;amp;C, we should follow two steps:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;1. Figure out the base case, which should be the simplest possible case.
 2. Divide or decrease you problem until it becomes the base case.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Suppose you have a land of 30 * 50, now you have the largest square with side of 30.&lt;br&gt;
-We have the rest of the land(20 * 30) and have the largest square of 20 * 20.
+We have the rest of the land(20 * 30) and have the largest square of 20 * 20.&lt;br&gt;
 Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Golang&lt;/li&gt;
@@ -746,8 +746,8 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;p&gt;Tip: When we got a recursive function involving an array, the base case is often an empty array or an array with one element.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2 id=&#34;3-quick-sort&#34;&gt;3. Quick Sort&lt;/h2&gt;
-&lt;p&gt;3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life.
-The base case for quicksort are arrays that are empty and arrays with just one element.
+&lt;p&gt;3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life.&lt;br&gt;
+The base case for quicksort are arrays that are empty and arrays with just one element.&lt;br&gt;
 Using D&amp;amp;C, we can break down a array until we get the base case.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Here are the steps for quick sort:&lt;/li&gt;
@@ -767,9 +767,9 @@ Using D&amp;amp;C, we can break down a array until we get the base case.&lt;/p&g
 &lt;/figure&gt;
 
 &lt;p&gt;Next, we&amp;rsquo;ll quick sort the two sub-arrays.&lt;/p&gt;
-&lt;p&gt;Even though the two sub-arrays are not sorted, they&amp;rsquo;re partitioned.
+&lt;p&gt;Even though the two sub-arrays are not sorted, they&amp;rsquo;re partitioned.&lt;br&gt;
 However, sorting the whole array would be pretty easy, if they were sorted.&lt;/p&gt;
-&lt;p&gt;Then, we can combine the whole thing together, like this: left array + pivot + right array.
+&lt;p&gt;Then, we can combine the whole thing together, like this: left array + pivot + right array.&lt;br&gt;
 We do this recursively and will get a sorted array.&lt;br&gt;
 Here is the code, which would be easy to understand(In order to save space, We provide only the Golang code).&lt;/p&gt;
 &lt;ul&gt;
@@ -799,8 +799,8 @@ Here is the code, which would be easy to understand(In order to save space, We p
 	&lt;span class=&#34;nx&#34;&gt;ret&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;append&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ret&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;greaterRet&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 	&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If you&amp;rsquo;d come through the explanation above, you would find this code easy to understand.
-Nevertheless, it&amp;rsquo;s not efficent in memory.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If you&amp;rsquo;d come through the explanation above, you would find this code easy to understand.&lt;br&gt;
+Nevertheless, it&amp;rsquo;s not efficent in memory.&lt;br&gt;
 Here you can see codes optimized by using no extra memory space.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Golang&#34; data-lang=&#34;Golang&#34;&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;quickSortE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;arr&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 	&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
@@ -858,7 +858,7 @@ Here we can see the most common Big O run times.&lt;br&gt;
 &lt;/p&gt;
 &lt;p&gt;Please pay attention to the example times in the chart because they are estimates of seconds per operation.&lt;br&gt;
 Compared with Merged Sort, which is O(nlogn) and faster, quicksort is different:&lt;br&gt;
-In the worst case, quicksorts takes O(n^2)time, which is as slow as selection sort.
+In the worst case, quicksorts takes O(n^2)time, which is as slow as selection sort.&lt;br&gt;
 In the average case, quicksorts takes O(nlogn)time.&lt;/p&gt;
 &lt;h3 id=&#34;5-merge-sort-vs-quicksort&#34;&gt;5. Merge Sort vs. Quicksort&lt;/h3&gt;
 &lt;p&gt;For algorithms with O(n), there are a constant for every operation.&lt;br&gt;
@@ -867,19 +867,19 @@ Commonly, the constant is ignored, however, it&amp;rsquo;ll make a difference in
 &lt;li&gt;Quick sort has a smaller constant than merge sort.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;blockquote&gt;
-&lt;p&gt;Therefore, if they&amp;rsquo;re both O(nlogn)time, quicksort will be faster.
+&lt;p&gt;Therefore, if they&amp;rsquo;re both O(nlogn)time, quicksort will be faster.&lt;br&gt;
 Besides, quicksort is faster in practice since it hits the average case way more often than the worst case.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id=&#34;6-averge-case-vs-worst-case&#34;&gt;6. Averge case vs. Worst case&lt;/h3&gt;
-&lt;p&gt;The performance of quicksort is heavily affected by the pivot.
-Suppose we always choose the first element as the pivot, and call quick with an sorted array.
+&lt;p&gt;The performance of quicksort is heavily affected by the pivot.&lt;br&gt;
+Suppose we always choose the first element as the pivot, and call quick with an sorted array.&lt;br&gt;
 Since quicksort doesn&amp;rsquo;t to see whether the input array is already sorted, it will still try to sort it.&lt;/p&gt;
 &lt;p&gt;As we can see in the following figure:&lt;br&gt;
 &lt;figure&gt;
     &lt;img src=&#34;/post/grokking_algorithm/images/quick_sort_worst.png&#34; width=&#34;70%&#34;/&gt; 
 &lt;/figure&gt;
 &lt;/p&gt;
-&lt;p&gt;Since we&amp;rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.
+&lt;p&gt;Since we&amp;rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.&lt;br&gt;
 As we always get O(n) in every level of the stack, we finally get O(n)*O(n)O(n^2)time.&lt;br&gt;
 Therefore, the call stack is so long that it takes O(n^2) time.&lt;/p&gt;
 &lt;p&gt;On the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).&lt;br&gt;
@@ -918,7 +918,7 @@ The author illustrate algorithms with pictures, which make people easily underst
 &lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;blockquote&gt;
-&lt;p&gt;In this chapter, I learned about recursion, which is very useful in many algorithms.
+&lt;p&gt;In this chapter, I learned about recursion, which is very useful in many algorithms.&lt;br&gt;
 Also, this chapter shows us how to break down a problem into a base case and a recursive case.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2 id=&#34;1-recursion&#34;&gt;1. Recursion&lt;/h2&gt;
@@ -957,7 +957,7 @@ Thus, every recursive function has two parts: the base case, and the recurive ca
   &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;       &lt;span class=&#34;c1&#34;&gt;# &amp;lt;----- Recursive case&lt;/span&gt;
     &lt;span class=&#34;n&#34;&gt;countdown&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;3-stack&#34;&gt;3. Stack&lt;/h2&gt;
-&lt;p&gt;Our computers also uses a stack internally named call stack.
+&lt;p&gt;Our computers also uses a stack internally named call stack.&lt;br&gt;
 Here we use an example of factor to illustrate this concept:&lt;br&gt;
 5! = 5 * 4 * 3 * 2 * 1 ==&amp;gt; 5! = 5 * 4!&lt;br&gt;
 4! = 4 * 3!&lt;br&gt;
@@ -1191,7 +1191,7 @@ If you have questions, you can ask them on &lt;a class=&#34;link&#34; href=&#34;
 However, I believe that people should work out solutions with a light mood since it can bring them many benefits.&lt;/p&gt;
 &lt;p&gt;Taking things easy can help people relax and perform better.&lt;br&gt;
 According to a psychological report from China Daily, stress can have adverse effects on their jobs.&lt;br&gt;
-For example, I was an engineer five years ago and often got lots of work every day. Sometimes, there would be at least ten machines with issues that need repair. The machines&#39; intricate system makes it challenging work since there were numerous electric lines and various equipment. And some of them are very sensitive to static electricity, so we must be careful and patient.
+For example, I was an engineer five years ago and often got lots of work every day. Sometimes, there would be at least ten machines with issues that need repair. The machines&#39; intricate system makes it challenging work since there were numerous electric lines and various equipment. And some of them are very sensitive to static electricity, so we must be careful and patient.&lt;br&gt;
 Lots of people would be frustrated after hours of work. However, I found that I could do better and finish my job with high efficiency after drinking coffee and relaxation.&lt;br&gt;
 Indeed, doing a job with relaxation can us improve work efficiency.&lt;/p&gt;
 &lt;p&gt;Being happy can help people make friends more easily.&lt;br&gt;
@@ -1220,7 +1220,7 @@ It can help people work more efficiently, make new friends relatively quickly, a
 &lt;p&gt;[Topic 1] Through their creation of the arts, some people become larger-than-life inspirations to everyone.&lt;br&gt;
 Hence, governments need to support these people as much as possible.&lt;br&gt;
 [General Statement] Artists often serve as representatives of a nation’s culture.&lt;br&gt;
-[Example] For example, great composers and other artists, such as Beethoven, Mozart, Van Gogh, and Rembrandt, are cultural icons in their home countries. Their genius is recognized worldwide.
+[Example] For example, great composers and other artists, such as Beethoven, Mozart, Van Gogh, and Rembrandt, are cultural icons in their home countries. Their genius is recognized worldwide.&lt;br&gt;
 Without funding for art schools, orchestras, operas, and plays, future artists would have nowhere to improve their work.&lt;br&gt;
 [Closing sentence] By providing funding for arts, governments can ensure a steady flow of cultural icons.&lt;/p&gt;
 &lt;p&gt;[Topic 2] By enjoying artworks, people can relieve pressure in life and feel peaceful.&lt;br&gt;
@@ -1235,7 +1235,7 @@ Without funding for art schools, orchestras, operas, and plays, future artists w
 [Final Comment] By funding the development of art, people can get inspired, feel less stressed, and have opportunities to study art.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Tip&lt;br&gt;
-If you follow the format above and get enough specific ideas and examples to support your points and practice a lot,
+If you follow the format above and get enough specific ideas and examples to support your points and practice a lot,&lt;br&gt;
 you&amp;rsquo;ll get at least 25+ in your TOEFL writing.&lt;br&gt;
 Of course, it&amp;rsquo;s based on large vocabulary of at least 8000+ and basic grammar knowledge.&lt;/li&gt;
 &lt;/ul&gt;
@@ -1287,7 +1287,7 @@ With the help of new technology, it saved Tom a lot of trouble to study and broa
 &lt;p&gt;Moreover, young students can also take online courses under some conditions.&lt;br&gt;
 It&amp;rsquo;s not always convenient and efficient for students and teachers to meet in classrooms.&lt;br&gt;
 Instead, studying and teaching online would be an excellent solution to this problem.&lt;br&gt;
-Take the current world as an instance. After breaking a dangerous virus, many people are limited to their communities and keep a safe social distance.
+Take the current world as an instance. After breaking a dangerous virus, many people are limited to their communities and keep a safe social distance.&lt;br&gt;
 To limit the spread of the virus, governments closed many, and thus students can go nowhere buy stay at home. However, many teachers now teach their students through online programs. By studying online, children can continue their classes.&lt;br&gt;
 Yet, children&amp;rsquo;s study would be affected without the help of technology.&lt;/p&gt;
 &lt;p&gt;In conclusion, new technology is essential for young children and can benefit them a lot.&lt;br&gt;
@@ -1300,19 +1300,19 @@ With the assistance of modern technology, it can help young students improve the
         <pubDate>Sun, 09 Aug 2020 19:09:27 +0800</pubDate>
         
         <guid>/p/toefl-w2-a/d-teachers-should-assign-students-more-tasks/</guid>
-        <description>&lt;p&gt;Many people may think that young students can learn a lot by doing a great deal of homework.
+        <description>&lt;p&gt;Many people may think that young students can learn a lot by doing a great deal of homework.&lt;br&gt;
 However, teachers should assign their students with tasks that can be finished within thirty minutes since it will bring young students a lot more benefits.&lt;/p&gt;
-&lt;p&gt;Fewer assignments with crucial elements can help young students study more efficiently.
-People commonly held that the more assignments to do, the more young students could learn.
-Many students are frustrated with the burden tasks and thus tend to finish the tasks quickly. Therefore, they don’t think deeply about the topics or get much improvement.
-Nevertheless, Tasks of high quality can be easy to be finished and help students learning things positively.
-For example, I once was a young student in the local primary school. And our teachers often gave us assignments that can we could finish in a short time. And students are often motivated because of the sense of achievement. Therefore, all students there have a positive attitude toward school and study.
+&lt;p&gt;Fewer assignments with crucial elements can help young students study more efficiently.&lt;br&gt;
+People commonly held that the more assignments to do, the more young students could learn.&lt;br&gt;
+Many students are frustrated with the burden tasks and thus tend to finish the tasks quickly. Therefore, they don’t think deeply about the topics or get much improvement.&lt;br&gt;
+Nevertheless, Tasks of high quality can be easy to be finished and help students learning things positively.&lt;br&gt;
+For example, I once was a young student in the local primary school. And our teachers often gave us assignments that can we could finish in a short time. And students are often motivated because of the sense of achievement. Therefore, all students there have a positive attitude toward school and study.&lt;br&gt;
 Even though we didn’t do many assignments, many students in our class get high scores in the final exams.&lt;/p&gt;
-&lt;p&gt;Besides, fewer assignments can give students chances to make some friends.
-With fewer tasks to do, students will have more time to play with other young kids and know some people.
+&lt;p&gt;Besides, fewer assignments can give students chances to make some friends.&lt;br&gt;
+With fewer tasks to do, students will have more time to play with other young kids and know some people.&lt;br&gt;
 Take My brother Tom as an instance. He was a timid boy who didn’t like talking much and had no friends when our family moved to a new community. However, he was fond of playing basketball and always do it in the playground with other kids. He has more time to play because he was able to finish the assignments in a short time. After years of practicing, he not only become more robust but also have lots of good friends.&lt;/p&gt;
-&lt;p&gt;Moreover, fewer tasks also can help students find their interests and broaden their horizons.
-After they finish their jobs, young kids must be curious about other activities, such as music, painting, etc. which would be beneficial for their future development.
+&lt;p&gt;Moreover, fewer tasks also can help students find their interests and broaden their horizons.&lt;br&gt;
+After they finish their jobs, young kids must be curious about other activities, such as music, painting, etc. which would be beneficial for their future development.&lt;br&gt;
 According to a statistic report from China daily, young kids who spent most of their time doing homework usually didn’t perform well in their future careers. Whereas those students assigned fewer tasks at their young age are more likely to do well in their jobs and more content with their lives. Since these students often have more time to develop their interests in various fields, they usually have broader horizons and know better about what career they like.&lt;/p&gt;
 &lt;p&gt;In conclusion, it will benefit children a lot; if teachers assign fewer tasks to their students. With less work to do, young students can work more efficiently in their studies, make more friends, and be more satisfied with their future lives.&lt;/p&gt;
 &lt;hr&gt;
