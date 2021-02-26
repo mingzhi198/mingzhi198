@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Li. Mingzhi</title>
-        <link>https://limingzhi618.com/</link>
+        <link>/</link>
         <description>Recent content on Li. Mingzhi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 13 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="https://limingzhi618.com/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 13 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>GA: 7. Dijkstra&#39;s algorithm</title>
-        <link>https://limingzhi618.com/p/ga-7.-dijkstras-algorithm/</link>
+        <link>/p/ga-7.-dijkstras-algorithm/</link>
         <pubDate>Sun, 13 Dec 2020 23:44:52 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/ga-7.-dijkstras-algorithm/</guid>
+        <guid>/p/ga-7.-dijkstras-algorithm/</guid>
         <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
@@ -26,11 +26,11 @@
 &lt;h2 id=&#34;dijkstras-algorithm&#34;&gt;Dijkstra&amp;rsquo;s algorithm&lt;/h2&gt;
 &lt;p&gt;Sometimes the shortest path is not the fastest path, since there are different weights with various edges.&lt;/p&gt;
 &lt;p&gt;&lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/short_path.png&#34; width=&#34;70%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/short_path.png&#34; width=&#34;70%&#34;/&gt; 
 &lt;/figure&gt;
 &lt;br&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/fast_path.png&#34; width=&#34;70%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/fast_path.png&#34; width=&#34;70%&#34;/&gt; 
 &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;In the figures above, you are going to walk from home to shool.&lt;br&gt;
@@ -44,7 +44,7 @@ Therefore, you will choose path B instead of path A, since it will take you less
 &lt;li&gt;D. Get the final path.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/dijkstra_step1.jpg&#34; width=&#34;50%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/dijkstra_step1.jpg&#34; width=&#34;50%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;p&gt;In the figure above, we want to walk from Begin to the End.&lt;br&gt;
@@ -53,7 +53,7 @@ Step A: It will take you 6 minutes from Begin to A and 2 minutes from Begin to B
 &lt;ul&gt;
 &lt;li&gt;You find that it will take less time to get to A and 7 minutes to get to End. Then, we update the costs.&lt;br&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/dijkstra_step2.jpg&#34; width=&#34;60%&amp;#34;&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/dijkstra_step2.jpg&#34; width=&#34;60%&amp;#34;&#34;/&gt; 
 &lt;/figure&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -61,7 +61,7 @@ Step A: It will take you 6 minutes from Begin to A and 2 minutes from Begin to B
 &lt;p&gt;Step A: Now, we find that Node A will take you less time to get to.&lt;br&gt;
 Step B: Update the costs of neighbors of Node A.&lt;br&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/dijkstra_step3.jpg&#34; width=&#34;50%&amp;#34;&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/dijkstra_step3.jpg&#34; width=&#34;50%&amp;#34;&#34;/&gt; 
 &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;Finally, we find that it only take us 6 minutes to get to the End.&lt;/p&gt;
@@ -71,7 +71,7 @@ Step B: Update the costs of neighbors of Node A.&lt;br&gt;
 &lt;h2 id=&#34;trading-for-a-piano&#34;&gt;Trading for a piano&lt;/h2&gt;
 &lt;p&gt;Here, the author provide an example to further illustrate Dijkstra&amp;rsquo;s algorithm.&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/trade_graph.jpg&#34; width=&#34;50%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/trade_graph.jpg&#34; width=&#34;50%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;p&gt;You have a book, and other people have other items, the relationship of which you can see from the figure above.&lt;br&gt;
@@ -84,7 +84,7 @@ We can see from the figure that it costs you 0 to get to poster, which is our ta
 We compare the costs to it&amp;rsquo;s neighbors, and update the costs with smaller values and their parents(from which node we get to these neighbors).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/trade_poster.jpg&#34; width=&#34;50%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/trade_poster.jpg&#34; width=&#34;50%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;ul&gt;
@@ -93,7 +93,7 @@ We compare the costs to it&amp;rsquo;s neighbors, and update the costs with smal
 &lt;li&gt;Step 2: Update the costs and parent of LP&amp;rsquo;s neighbors.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/trade_lp_neighbors.jpg&#34; width=&#34;50%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/trade_lp_neighbors.jpg&#34; width=&#34;50%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;ul&gt;
@@ -102,7 +102,7 @@ We compare the costs to it&amp;rsquo;s neighbors, and update the costs with smal
 &lt;li&gt;Step 2: Update the costs and parent of Guitar&amp;rsquo;s neighbors.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/trade_guitar_neighbors.jpg&#34; width=&#34;50%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/trade_guitar_neighbors.jpg&#34; width=&#34;50%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;ul&gt;
@@ -111,7 +111,7 @@ We compare the costs to it&amp;rsquo;s neighbors, and update the costs with smal
 &lt;li&gt;Step 2: Update the costs and parent of Drum&amp;rsquo;s neighbors.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/trade_final_path.jpg&#34; width=&#34;50%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/trade_final_path.jpg&#34; width=&#34;50%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;p&gt;Finally, we get the cheapest path: Book-&amp;gt;LP-&amp;gt;Drum-&amp;gt;Piano&lt;/p&gt;
@@ -287,10 +287,10 @@ Dijkstra path: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;book lp drum piano&lt
         </item>
         <item>
         <title>GA: 6. Breadth-first search</title>
-        <link>https://limingzhi618.com/p/ga-6.-breadth-first-search/</link>
+        <link>/p/ga-6.-breadth-first-search/</link>
         <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/ga-6.-breadth-first-search/</guid>
+        <guid>/p/ga-6.-breadth-first-search/</guid>
         <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
@@ -308,7 +308,7 @@ Dijkstra path: &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;book lp drum piano&lt
 &lt;p&gt;Graphs, which can reflect connections between nodes, are made up of nodes and edges.&lt;br&gt;
 And the nodes connected directly to a node are called neghbors.&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/graph_network.png&#34; width=&#34;70%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/graph_network.png&#34; width=&#34;70%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;h2 id=&#34;2-bfsbreadth-first-search&#34;&gt;2. BFS(Breadth-first search)&lt;/h2&gt;
@@ -327,7 +327,7 @@ And the nodes connected directly to a node are called neghbors.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;p&gt;If you have a graph like this, and want to find a person whose name ends with character &amp;rsquo;m&#39;.&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/graph_bfs.png&#34; width=&#34;60%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/graph_bfs.png&#34; width=&#34;60%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;ul&gt;
@@ -360,7 +360,7 @@ Thus, we use queue as the data structure to store the list.&lt;/p&gt;
 &lt;p&gt;Compared with stack, which is LIFO(Last in, first out), queue is FIFO(First in, first out).&lt;br&gt;
 It&amp;rsquo;s a very vivid picture, from which we can see this abstract concept.&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/queue_stack1.png&#34; width=&#34;50%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/queue_stack1.png&#34; width=&#34;50%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;h2 id=&#34;3-implementing-the-graph&#34;&gt;3. Implementing the graph&lt;/h2&gt;
@@ -505,10 +505,10 @@ searching for every node will take O(number of nodes) total.&lt;/p&gt;
         </item>
         <item>
         <title>GA: 5. Hash tables</title>
-        <link>https://limingzhi618.com/p/ga-5.-hash-tables/</link>
+        <link>/p/ga-5.-hash-tables/</link>
         <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/ga-5.-hash-tables/</guid>
+        <guid>/p/ga-5.-hash-tables/</guid>
         <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
@@ -540,7 +540,7 @@ Since Collisions are bad, we need to work around them.&lt;br&gt;
 We have many distinct ways to deal with collisions, the simplest one of which is this:&lt;br&gt;
 If multiple keys map to the same slot, start a linked list at that slot.&lt;br&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/hash_collision.png&#34; width=&#34;50%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/hash_collision.png&#34; width=&#34;50%&#34;/&gt; 
 &lt;/figure&gt;
 &lt;/p&gt;
 &lt;ul&gt;
@@ -617,10 +617,10 @@ You can check the SHA function if your curiosity is great enough.&lt;/p&gt;
         </item>
         <item>
         <title>GA: 4. Quicksort</title>
-        <link>https://limingzhi618.com/p/ga-4.-quicksort/</link>
+        <link>/p/ga-4.-quicksort/</link>
         <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/ga-4.-quicksort/</guid>
+        <guid>/p/ga-4.-quicksort/</guid>
         <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
@@ -763,7 +763,7 @@ Using D&amp;amp;C, we can break down a array until we get the base case.&lt;/p&g
 &lt;p&gt;3.2  Here we can see one example from the book.&lt;/p&gt;
 &lt;p&gt;After partitioning, we get three parts: numbers less than the pivot, the pivot and numbers greater than the pivot.&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/quick_sort_m1.png&#34; width=&#34;50%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/quick_sort_m1.png&#34; width=&#34;50%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;p&gt;Next, we&amp;rsquo;ll quick sort the two sub-arrays.&lt;/p&gt;
@@ -853,7 +853,7 @@ Here you can see codes optimized by using no extra memory space.&lt;/p&gt;
 &lt;p&gt;Quicksort is unique since its speed depends on the pivot we use.&lt;br&gt;
 Here we can see the most common Big O run times.&lt;br&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/search_time_m1.png&#34; width=&#34;100%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/search_time_m1.png&#34; width=&#34;100%&#34;/&gt; 
 &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;Please pay attention to the example times in the chart because they are estimates of seconds per operation.&lt;br&gt;
@@ -876,7 +876,7 @@ Suppose we always choose the first element as the pivot, and call quick with an 
 Since quicksort doesn&amp;rsquo;t to see whether the input array is already sorted, it will still try to sort it.&lt;/p&gt;
 &lt;p&gt;As we can see in the following figure:&lt;br&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/quick_sort_worst.png&#34; width=&#34;70%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/quick_sort_worst.png&#34; width=&#34;70%&#34;/&gt; 
 &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;Since we&amp;rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.&lt;br&gt;
@@ -885,7 +885,7 @@ Therefore, the call stack is so long that it takes O(n^2) time.&lt;/p&gt;
 &lt;p&gt;On the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).&lt;br&gt;
 Therefore, we get operation time O(nlogn).&lt;/p&gt;
 &lt;figure&gt;
-    &lt;img src=&#34;https://limingzhi618.com/post/grokking_algorithm/images/quick_sort_avg.png&#34; width=&#34;70%&#34;/&gt; 
+    &lt;img src=&#34;/post/grokking_algorithm/images/quick_sort_avg.png&#34; width=&#34;70%&#34;/&gt; 
 &lt;/figure&gt;
 
 &lt;ul&gt;
@@ -908,10 +908,10 @@ The author illustrate algorithms with pictures, which make people easily underst
         </item>
         <item>
         <title>GA: 3. Recursion</title>
-        <link>https://limingzhi618.com/p/ga-3.-recursion/</link>
+        <link>/p/ga-3.-recursion/</link>
         <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/ga-3.-recursion/</guid>
+        <guid>/p/ga-3.-recursion/</guid>
         <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
@@ -980,10 +980,10 @@ Here we use an example of factor to illustrate this concept:&lt;br&gt;
         </item>
         <item>
         <title>Github config for multiple users</title>
-        <link>https://limingzhi618.com/p/github-config-for-multiple-users/</link>
+        <link>/p/github-config-for-multiple-users/</link>
         <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/github-config-for-multiple-users/</guid>
+        <guid>/p/github-config-for-multiple-users/</guid>
         <description>&lt;h3 id=&#34;1-background&#34;&gt;1. Background&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;We sometimes use more than one github account to manage different repositories.
 Even though we&#39;ve set the config file(~/.ssh/config) correctly and test(ssh -T git@github.com) correctly, 
@@ -1017,10 +1017,10 @@ Host github2
         </item>
         <item>
         <title>GA: 2. Selection sort</title>
-        <link>https://limingzhi618.com/p/ga-2.-selection-sort/</link>
+        <link>/p/ga-2.-selection-sort/</link>
         <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/ga-2.-selection-sort/</guid>
+        <guid>/p/ga-2.-selection-sort/</guid>
         <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
@@ -1101,10 +1101,10 @@ If you have questions, you can ask them on &lt;a class=&#34;link&#34; href=&#34;
         </item>
         <item>
         <title>GA: 1. Binary search</title>
-        <link>https://limingzhi618.com/p/ga-1.-binary-search/</link>
+        <link>/p/ga-1.-binary-search/</link>
         <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/ga-1.-binary-search/</guid>
+        <guid>/p/ga-1.-binary-search/</guid>
         <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people.&lt;/li&gt;
@@ -1183,10 +1183,10 @@ If you have questions, you can ask them on &lt;a class=&#34;link&#34; href=&#34;
         </item>
         <item>
         <title>TOEFL W2: Job performance and mood</title>
-        <link>https://limingzhi618.com/p/toefl-w2-job-performance-and-mood/</link>
+        <link>/p/toefl-w2-job-performance-and-mood/</link>
         <pubDate>Sat, 10 Oct 2020 17:16:02 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/toefl-w2-job-performance-and-mood/</guid>
+        <guid>/p/toefl-w2-job-performance-and-mood/</guid>
         <description>&lt;p&gt;Some people may think that they can do a better job and make fewer mistakes if they deal with things in a serious mood.&lt;br&gt;
 However, I believe that people should work out solutions with a light mood since it can bring them many benefits.&lt;/p&gt;
 &lt;p&gt;Taking things easy can help people relax and perform better.&lt;br&gt;
@@ -1209,10 +1209,10 @@ It can help people work more efficiently, make new friends relatively quickly, a
         </item>
         <item>
         <title>TOEFL W2: Money spent on arts or sports</title>
-        <link>https://limingzhi618.com/p/toefl-w2-money-spent-on-arts-or-sports/</link>
+        <link>/p/toefl-w2-money-spent-on-arts-or-sports/</link>
         <pubDate>Fri, 09 Oct 2020 10:09:03 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/toefl-w2-money-spent-on-arts-or-sports/</guid>
+        <guid>/p/toefl-w2-money-spent-on-arts-or-sports/</guid>
         <description>&lt;h3 id=&#34;ad-governments-should-spend-more-money-supporting-the-arts-than-supporting-athletics-such-as-an-olympic-team&#34;&gt;A/D: Governments should spend more money supporting the arts than supporting athletics such as an Olympic team.&lt;/h3&gt;
 &lt;hr&gt;
 &lt;p&gt;[Opening Sentence] Even though there are limited government resources for arts and sports funding, money is often misspent on athletics and Olympic teams.&lt;br&gt;
@@ -1243,10 +1243,10 @@ Of course, it&amp;rsquo;s based on large vocabulary of at least 8000+ and basic 
         </item>
         <item>
         <title>TOEFL W2: Rural areas or cities</title>
-        <link>https://limingzhi618.com/p/toefl-w2-rural-areas-or-cities/</link>
+        <link>/p/toefl-w2-rural-areas-or-cities/</link>
         <pubDate>Sat, 15 Aug 2020 17:37:19 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/toefl-w2-rural-areas-or-cities/</guid>
+        <guid>/p/toefl-w2-rural-areas-or-cities/</guid>
         <description>&lt;p&gt;DO you agree or disagree with the following statement?&lt;br&gt;
 People who live in small villages or farm areas are more satisfied with their lives than people who live in cities.&lt;/p&gt;
 &lt;hr&gt;
@@ -1270,10 +1270,10 @@ Living in cities can help people make more friends, be more convenient, and prov
         </item>
         <item>
         <title>TOEFL W2: New tech affect study</title>
-        <link>https://limingzhi618.com/p/toefl-w2-new-tech-affect-study/</link>
+        <link>/p/toefl-w2-new-tech-affect-study/</link>
         <pubDate>Mon, 10 Aug 2020 17:33:30 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/toefl-w2-new-tech-affect-study/</guid>
+        <guid>/p/toefl-w2-new-tech-affect-study/</guid>
         <description>&lt;p&gt;Some people may think that young children should not use new technology and limit their use of technology because it is harmful to young children.&lt;br&gt;
 In my opinion, however, new technology can be useful for children&amp;rsquo;s studies and bring them a lot more benefits.&lt;/p&gt;
 &lt;p&gt;Using technology can help young students improve their study.&lt;br&gt;
@@ -1296,10 +1296,10 @@ With the assistance of modern technology, it can help young students improve the
         </item>
         <item>
         <title>TOEFL W2: A/D: Teachers should assign students more tasks</title>
-        <link>https://limingzhi618.com/p/toefl-w2-a/d-teachers-should-assign-students-more-tasks/</link>
+        <link>/p/toefl-w2-a/d-teachers-should-assign-students-more-tasks/</link>
         <pubDate>Sun, 09 Aug 2020 19:09:27 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/toefl-w2-a/d-teachers-should-assign-students-more-tasks/</guid>
+        <guid>/p/toefl-w2-a/d-teachers-should-assign-students-more-tasks/</guid>
         <description>&lt;p&gt;Many people may think that young students can learn a lot by doing a great deal of homework.&lt;br&gt;
 However, teachers should assign their students with tasks that can be finished within thirty minutes since it will bring young students a lot more benefits.&lt;/p&gt;
 &lt;p&gt;Fewer assignments with crucial elements can help young students study more efficiently.&lt;br&gt;
@@ -1325,10 +1325,10 @@ Otherwise, you were risking yourself and wouldn&amp;rsquo;t have a good score in
         </item>
         <item>
         <title>Resume</title>
-        <link>https://limingzhi618.com/p/resume/</link>
+        <link>/p/resume/</link>
         <pubDate>Fri, 06 Dec 2019 11:44:52 +0800</pubDate>
         
-        <guid>https://limingzhi618.com/p/resume/</guid>
+        <guid>/p/resume/</guid>
         <description>&lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;

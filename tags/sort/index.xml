@@ -2,27 +2,27 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>sort on Li. Mingzhi</title>
-    <link>https://limingzhi618.com/tags/sort/</link>
+    <link>/tags/sort/</link>
     <description>Recent content in sort on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 09 Dec 2020 08:32:27 +0800</lastBuildDate><atom:link href="https://limingzhi618.com/tags/sort/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 09 Dec 2020 08:32:27 +0800</lastBuildDate><atom:link href="/tags/sort/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GA: 4. Quicksort</title>
-      <link>https://limingzhi618.com/p/ga-4.-quicksort/</link>
+      <link>/p/ga-4.-quicksort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/p/ga-4.-quicksort/</guid>
+      <guid>/p/ga-4.-quicksort/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.   This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
  1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.</description>
     </item>
     
     <item>
       <title>GA: 2. Selection sort</title>
-      <link>https://limingzhi618.com/p/ga-2.-selection-sort/</link>
+      <link>/p/ga-2.-selection-sort/</link>
       <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/p/ga-2.-selection-sort/</guid>
+      <guid>/p/ga-2.-selection-sort/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list.</description>
     </item>
     

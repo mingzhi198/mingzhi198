@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>recursion on Li. Mingzhi</title>
-    <link>https://limingzhi618.com/tags/recursion/</link>
+    <link>/tags/recursion/</link>
     <description>Recent content in recursion on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 08 Dec 2020 18:36:08 +0800</lastBuildDate><atom:link href="https://limingzhi618.com/tags/recursion/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 08 Dec 2020 18:36:08 +0800</lastBuildDate><atom:link href="/tags/recursion/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GA: 3. Recursion</title>
-      <link>https://limingzhi618.com/p/ga-3.-recursion/</link>
+      <link>/p/ga-3.-recursion/</link>
       <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/p/ga-3.-recursion/</guid>
+      <guid>/p/ga-3.-recursion/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.   In this chapter, I learned about recursion, which is very useful in many algorithms.
 Also, this chapter shows us how to break down a problem into a base case and a recursive case.</description>
     </item>

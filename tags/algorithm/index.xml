@@ -2,73 +2,73 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>algorithm on Li. Mingzhi</title>
-    <link>https://limingzhi618.com/tags/algorithm/</link>
+    <link>/tags/algorithm/</link>
     <description>Recent content in algorithm on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 13 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="https://limingzhi618.com/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 13 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GA: 7. Dijkstra&#39;s algorithm</title>
-      <link>https://limingzhi618.com/p/ga-7.-dijkstras-algorithm/</link>
+      <link>/p/ga-7.-dijkstras-algorithm/</link>
       <pubDate>Sun, 13 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/p/ga-7.-dijkstras-algorithm/</guid>
+      <guid>/p/ga-7.-dijkstras-algorithm/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.    Weighted graphs: assigning weight to some edges. Dijkstra&amp;rsquo;s algorithm: What&amp;rsquo;s the shortest path to X? Cycles in graphs will make Dijkstra&amp;rsquo;s algorithm not work.  Dijkstra&amp;rsquo;s algorithm Sometimes the shortest path is not the fastest path, since there are different weights with various edges.</description>
     </item>
     
     <item>
       <title>GA: 6. Breadth-first search</title>
-      <link>https://limingzhi618.com/p/ga-6.-breadth-first-search/</link>
+      <link>/p/ga-6.-breadth-first-search/</link>
       <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/p/ga-6.-breadth-first-search/</guid>
+      <guid>/p/ga-6.-breadth-first-search/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.    From this chapter we get to know graphs, which is a new data structure and can help us model a network. We also get to know a new algorhtim named breadth-first search, which can help us find the shortest path.</description>
     </item>
     
     <item>
       <title>GA: 5. Hash tables</title>
-      <link>https://limingzhi618.com/p/ga-5.-hash-tables/</link>
+      <link>/p/ga-5.-hash-tables/</link>
       <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/p/ga-5.-hash-tables/</guid>
+      <guid>/p/ga-5.-hash-tables/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  1. Requirements for hash function  It needs to be consistent. It should map different workds to different numbers.  You get a hash table by putting a hash function and an array together.</description>
     </item>
     
     <item>
       <title>GA: 4. Quicksort</title>
-      <link>https://limingzhi618.com/p/ga-4.-quicksort/</link>
+      <link>/p/ga-4.-quicksort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/p/ga-4.-quicksort/</guid>
+      <guid>/p/ga-4.-quicksort/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.   This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
  1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.</description>
     </item>
     
     <item>
       <title>GA: 3. Recursion</title>
-      <link>https://limingzhi618.com/p/ga-3.-recursion/</link>
+      <link>/p/ga-3.-recursion/</link>
       <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/p/ga-3.-recursion/</guid>
+      <guid>/p/ga-3.-recursion/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.   In this chapter, I learned about recursion, which is very useful in many algorithms.
 Also, this chapter shows us how to break down a problem into a base case and a recursive case.</description>
     </item>
     
     <item>
       <title>GA: 2. Selection sort</title>
-      <link>https://limingzhi618.com/p/ga-2.-selection-sort/</link>
+      <link>/p/ga-2.-selection-sort/</link>
       <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/p/ga-2.-selection-sort/</guid>
+      <guid>/p/ga-2.-selection-sort/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list.</description>
     </item>
     
     <item>
       <title>GA: 1. Binary search</title>
-      <link>https://limingzhi618.com/p/ga-1.-binary-search/</link>
+      <link>/p/ga-1.-binary-search/</link>
       <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>https://limingzhi618.com/p/ga-1.-binary-search/</guid>
+      <guid>/p/ga-1.-binary-search/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows.</description>
     </item>
     
