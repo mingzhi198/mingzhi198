@@ -3,11 +3,11 @@
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.    Weighted graphs: assigning weight to some edges. Dijkstra&amp;rsquo;s algorithm: What&amp;rsquo;s the shortest path to X? Cycles in graphs will make Dijkstra&amp;rsquo;s algorithm not work.  Dijkstra&amp;rsquo;s algorithm Sometimes the shortest path is not the fastest path, since there are different weights with various edges.'><title>GA: 7. Dijkstra&#39;s algorithm</title>
 
-<link rel='canonical' href='limingzhi618.com/p/ga-7.-dijkstras-algorithm/'>
+<link rel='canonical' href='https://limingzhi618.com/p/ga-7.-dijkstras-algorithm/'>
 
-<link rel="stylesheet" href="/limingzhi618.com/scss/style.min.css"><meta property='og:title' content='GA: 7. Dijkstra&#39;s algorithm'>
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='GA: 7. Dijkstra&#39;s algorithm'>
 <meta property='og:description' content='Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.    Weighted graphs: assigning weight to some edges. Dijkstra&amp;rsquo;s algorithm: What&amp;rsquo;s the shortest path to X? Cycles in graphs will make Dijkstra&amp;rsquo;s algorithm not work.  Dijkstra&amp;rsquo;s algorithm Sometimes the shortest path is not the fastest path, since there are different weights with various edges.'>
-<meta property='og:url' content='limingzhi618.com/p/ga-7.-dijkstras-algorithm/'>
+<meta property='og:url' content='https://limingzhi618.com/p/ga-7.-dijkstras-algorithm/'>
 <meta property='og:site_name' content='Li. Mingzhi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='algorithm' /><meta property='article:tag' content='dijkstra' /><meta property='article:tag' content='Dijkstra' /><meta property='article:published_time' content='2020-12-13T23:44:52&#43;08:00'/><meta property='article:modified_time' content='2020-12-13T23:44:52&#43;08:00'/>
 <meta name="twitter:title" content="GA: 7. Dijkstra&#39;s algorithm">
@@ -49,7 +49,7 @@
                     
                     
                         
-                        <img src="/limingzhi618.com/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                        <img src="/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -57,7 +57,7 @@
                 
             </figure>
         
-        <h1 class="site-name"><a href="limingzhi618.com">Li. Mingzhi</a></h1>
+        <h1 class="site-name"><a href="https://limingzhi618.com/">Li. Mingzhi</a></h1>
         <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
         Progress one percent per day...</h2>
     </header>
@@ -68,7 +68,7 @@
         
 
         <li >
-            <a href='/limingzhi618.com/'>
+            <a href='/'>
                 
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
@@ -87,7 +87,7 @@
         
 
         <li >
-            <a href='/limingzhi618.com/p/resume/'>
+            <a href='/p/resume/'>
                 
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
@@ -105,7 +105,7 @@
         
 
         <li >
-            <a href='/limingzhi618.com/archives/'>
+            <a href='/archives/'>
                 
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
@@ -124,7 +124,7 @@
         
 
         <li >
-            <a href='/limingzhi618.com/search/index.html'>
+            <a href='/search/index.html'>
                 
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
@@ -146,7 +146,7 @@
 
             <main class="main full-width">
     <div id="article-toolbar">
-        <a href="limingzhi618.com" class="back-home">
+        <a href="https://limingzhi618.com/" class="back-home">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <polyline points="15 6 9 12 15 18" />
@@ -165,7 +165,7 @@
     
     <header class="article-category">
         
-            <a href="limingzhi618.com/categories/grokking_algorithm/" >
+            <a href="/categories/grokking_algorithm/" >
                 grokking_algorithm
             </a>
         
@@ -173,7 +173,7 @@
     
 
     <h2 class="article-title">
-        <a href="limingzhi618.com/p/ga-7.-dijkstras-algorithm/">GA: 7. Dijkstra&#39;s algorithm</a>
+        <a href="/p/ga-7.-dijkstras-algorithm/">GA: 7. Dijkstra&#39;s algorithm</a>
     </h2>
 
     <footer class="article-time">
@@ -469,9 +469,9 @@ Dijkstra path: <span class="o">[</span>book lp drum piano<span class="o">]</span
     
     <section class="article-tags">
         
-            <a href="limingzhi618.com/tags/algorithm/">algorithm</a>
+            <a href="/tags/algorithm/">algorithm</a>
         
-            <a href="limingzhi618.com/tags/dijkstra/">Dijkstra</a>
+            <a href="/tags/dijkstra/">Dijkstra</a>
         
     </section>
 
@@ -502,7 +502,7 @@ Dijkstra path: <span class="o">[</span>book lp drum piano<span class="o">]</span
                 
                     
 <article class="">
-    <a href="limingzhi618.com/p/ga-6.-breadth-first-search/">
+    <a href="/p/ga-6.-breadth-first-search/">
         
         
 
@@ -514,7 +514,7 @@ Dijkstra path: <span class="o">[</span>book lp drum piano<span class="o">]</span
                 
                     
 <article class="">
-    <a href="limingzhi618.com/p/ga-5.-hash-tables/">
+    <a href="/p/ga-5.-hash-tables/">
         
         
 
@@ -526,7 +526,7 @@ Dijkstra path: <span class="o">[</span>book lp drum piano<span class="o">]</span
                 
                     
 <article class="">
-    <a href="limingzhi618.com/p/ga-4.-quicksort/">
+    <a href="/p/ga-4.-quicksort/">
         
         
 
@@ -538,7 +538,7 @@ Dijkstra path: <span class="o">[</span>book lp drum piano<span class="o">]</span
                 
                     
 <article class="">
-    <a href="limingzhi618.com/p/ga-3.-recursion/">
+    <a href="/p/ga-3.-recursion/">
         
         
 
@@ -550,7 +550,7 @@ Dijkstra path: <span class="o">[</span>book lp drum piano<span class="o">]</span
                 
                     
 <article class="">
-    <a href="limingzhi618.com/p/ga-2.-selection-sort/">
+    <a href="/p/ga-2.-selection-sort/">
         
         
 
@@ -664,7 +664,7 @@ Dijkstra path: <span class="o">[</span>book lp drum piano<span class="o">]</span
                 src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
                 defer="false"
                 >
-            </script><script type="text/javascript" src="/limingzhi618.com/ts/main.js" defer></script>
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');

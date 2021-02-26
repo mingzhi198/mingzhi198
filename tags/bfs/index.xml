@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>bfs on Li. Mingzhi</title>
-    <link>limingzhi618.com/tags/bfs/</link>
+    <link>https://limingzhi618.com/tags/bfs/</link>
     <description>Recent content in bfs on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate><atom:link href="limingzhi618.com/tags/bfs/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 10 Dec 2020 23:02:27 +0800</lastBuildDate><atom:link href="https://limingzhi618.com/tags/bfs/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GA: 6. Breadth-first search</title>
-      <link>limingzhi618.com/p/ga-6.-breadth-first-search/</link>
+      <link>https://limingzhi618.com/p/ga-6.-breadth-first-search/</link>
       <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
       
-      <guid>limingzhi618.com/p/ga-6.-breadth-first-search/</guid>
+      <guid>https://limingzhi618.com/p/ga-6.-breadth-first-search/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.    From this chapter we get to know graphs, which is a new data structure and can help us model a network. We also get to know a new algorhtim named breadth-first search, which can help us find the shortest path.</description>
     </item>
     
