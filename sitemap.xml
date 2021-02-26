@@ -2,10 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>/tags/algorithm/</loc>
-    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
-  </url><url>
     <loc>/categories/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/tags/database/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/tags/db/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/p/note-mysql/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/p/note-network/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/p/note-redis/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/p/note-system-and-programming/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/tags/notes/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/categories/notes/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/post/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/tags/</loc>
+    <lastmod>2021-02-26T19:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/tags/algorithm/</loc>
     <lastmod>2020-12-13T23:44:52+08:00</lastmod>
   </url><url>
     <loc>/tags/dijkstra/</loc>
@@ -15,15 +48,6 @@
     <lastmod>2020-12-13T23:44:52+08:00</lastmod>
   </url><url>
     <loc>/categories/grokking_algorithm/</loc>
-    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
-  </url><url>
-    <loc>/</loc>
-    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
-  </url><url>
-    <loc>/post/</loc>
-    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
-  </url><url>
-    <loc>/tags/</loc>
     <lastmod>2020-12-13T23:44:52+08:00</lastmod>
   </url><url>
     <loc>/tags/bfs/</loc>

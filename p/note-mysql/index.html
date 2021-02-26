@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.'><title>Note: MySQL</title>
+
+<link rel='canonical' href='/p/note-mysql/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Note: MySQL'>
+<meta property='og:description' content='1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.'>
+<meta property='og:url' content='/p/note-mysql/'>
+<meta property='og:site_name' content='Li. Mingzhi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='database' /><meta property='article:tag' content='db' /><meta property='article:published_time' content='2021-02-26T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-02-26T19:00:52&#43;08:00'/>
+<meta name="twitter:title" content="Note: MySQL">
+<meta name="twitter:description" content="1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.">
+    </head>
+    <body class="">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "auto");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.body.dataset.scheme = 'dark';
+        } else {
+            document.body.dataset.scheme = 'light';
+        }
+    })();
+</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    
+                    
+                    
+                        
+                        <img src="/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+
+                
+            </figure>
+        
+        <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
+    </header>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/p/resume/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/archives/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/search/index.html'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <div id="article-toolbar">
+        <a href="" class="back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+            <span>Back</span>
+        </a>
+    </div>
+
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/notes/" >
+                notes
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/note-mysql/">Note: MySQL</a>
+    </h2>
+
+    <footer class="article-time">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <time class="article-time--published">Feb 26, 2021</time>
+    </footer></div>
+</header>
+
+    <section class="article-content">
+    <h2 id="1-事务">1. 事务</h2>
+<h3 id="11-事务的四个重要特性acid">1.1 事务的四个重要特性(ACID)：</h3>
+<ul>
+<li>原子性（Atomicity）</li>
+</ul>
+<pre><code>  事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。
+</code></pre><ul>
+<li>一致性（Consistency）</li>
+</ul>
+<pre><code>    指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。
+    例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。
+</code></pre><ul>
+<li>隔离性（Isolation）</li>
+</ul>
+<pre><code>    要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。
+    也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。
+
+    注：MySQL 通过锁机制来保证事务的隔离性。
+</code></pre><ul>
+<li>持久性（Durability）</li>
+</ul>
+<pre><code>    事务一旦提交，则其结果就是永久性的
+</code></pre><h3 id="12-事务的隔离级别">1.2 事务的隔离级别</h3>
+<pre><code>    SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。
+</code></pre><ul>
+<li>READ UNCOMMITTED（读未提交）</li>
+</ul>
+<pre><code>  初始化测试数据库：
+    SET @@session.transaction_isolation = 'READ-UNCOMMITTED';
+    create database test;
+    use test;
+    create table test(id int primary key);
+    insert into test(id) values(1);
+  1. 打开终端1，开启一个事务，修改ID为1的记录更新为2：
+    SET @@session.transaction_isolation = 'READ-UNCOMMITTED';
+    begin;
+    update test set id = 2 where id = 1;
+    select * from test; -- 此时看到一条ID为2的记录
+  2. 打开终端2，开启一个事务后查看表中的数据
+    SET @@session.transaction_isolation = 'READ-UNCOMMITTED';
+    begin;
+    select * from test; -- 此时看到一条 ID 为 2 的记录
+
+最后一步读取到了 mysql 终端 1 中未提交的事务（没有 commit 提交动作），即产生了 脏读 ，大部分业务场景都不允许脏读出现，
+但是此隔离级别下数据库的并发是最好的。
+</code></pre><ul>
+<li>READ COMMITTED（读提交）<br>
+一个事务可以读取另一个已提交的事务，多次读取会造成不一样的结果，此现象称为不可重复读问题，Oracle 和 SQL Server 的默认隔离级别。</li>
+</ul>
+<pre><code>  1. 登录 mysql 终端 1，开启一个事务，将 ID 为 1 的记录更新为 2 ，并确认记录数变更过来。
+    SET @@session.transaction_isolation = 'READ-COMMITTED';
+    begin;
+    update test set id = 2 where id = 1;
+    select * from test; -- 此时看到一条记录为 2
+  2. 登录 mysql 终端 2，开启一个事务后，查看表中的数据。
+    begin;
+    select * from test; -- 此时看一条 ID 为 1 的记录
+  3. 登录 mysql 终端 1，提交事务。
+    commit;
+  4. 切换到 mysql 终端 2。
+    select * from test; -- 此时看到一条 ID 为 2 的记录
+
+mysql 终端 2 在开启了一个事务之后，在第一次读取 test 表（此时 mysql 终端 1 的事务还未提交）时 ID 为 1 ，
+在第二次读取 test 表（此时 mysql 终端 1 的事务已经提交）时 ID 已经变为 2 ，说明在此隔离级别下已经读取到已提交的事务。
+</code></pre><ul>
+<li>REPEATABLE READ（可重复读）<br>
+该隔离级别是 MySQL 默认的隔离级别，<br>
+在同一个事务里， select 的结果是事务开始时时间点的状态，因此，同样的 select 操作读到的结果会是一致的，<br>
+但是，会有 幻读 现象。<br>
+MySQL 的 InnoDB 引擎可以通过 next-key locks 机制（参考下文 行锁的算法 一节）来避免幻读。</li>
+</ul>
+<pre><code>准备测试数据库表：
+    SET @@session.transaction_isolation = 'REPEATABLE-READ';
+    create database test;
+    use test;
+    create table test(id int primary key,name varchar(20));
+
+1. 登录 mysql 终端 1，开启一个事务
+  SET @@session.transaction_isolation = 'REPEATABLE-READ';
+  begin;
+  select * from test; -- 无记录
+2. 登录 mysql 终端 2，开启一个事务。
+  begin;
+  select * from test; -- 无记录
+3. 切换到 mysql 终端 1，增加一条记录并提交。
+  insert into test(id,name) values(1,'a');
+  commit;
+4. 切换到 msyql 终端 2。
+  select * from test; --此时查询还是无记录
+  通过这一步可以证明，在该隔离级别下已经读取不到别的已提交的事务，如果想看到 mysql 终端 1 提交的事务，在 mysql 终端 2 将当前事务提交后再次查询就可以读取到 mysql 终端 1 提交的事务。
+5. 此时接着在 mysql 终端 2 插入一条数据。
+  insert into test(id,name) values(1,'b'); -- 此时报主键冲突的错误
+
+明明在第 5 步没有数据，为什么在这里会报错呢？其实这就是该隔离级别下可能产生的问题，MySQL 称之为 幻读 。注意我在这里强调的是 MySQL 数据库，Oracle 数据库对于幻读的定义可能有所不同。
+</code></pre><ul>
+<li>SERIALIZABLE（序列化）<br>
+在该隔离级别下事务都是串行顺序执行的，MySQL 数据库的 InnoDB 引擎会给读操作隐式加一把读共享锁，<br>
+从而避免了脏读、不可重读复读和幻读问题。</li>
+</ul>
+<pre><code>1. 登录 mysql 终端 1，开启一个事务，并写入一条数据。
+  SET @@session.transaction_isolation = 'SERIALIZABLE';
+  begin;
+  insert into test(id) values(1);
+2. 登录 mysql 终端 2，开启一个事务。
+  begin;
+  select * from test; -- 此时会一直卡住
+3. 立马切换到 mysql 终端 1,提交事务。
+  commit;
+
+一旦事务提交，msyql 终端 2 会立马返回 ID 为 1 的记录，否则会一直卡住，直到超时，其中超时参数是由 innodb_lock_wait_timeout 控制。由于每条 select 语句都会加锁，所以该隔离级别的数据库并发能力最弱，
+</code></pre><h3 id="13-各个隔离级别下产生的一些问题">1.3 各个隔离级别下产生的一些问题</h3>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>读未提交</td>
+<td>可以出现</td>
+<td>可以出现</td>
+<td>可以出现</td>
+</tr>
+<tr>
+<td>读提交</td>
+<td>不允许出现</td>
+<td>可以出现</td>
+<td>可以出现</td>
+</tr>
+<tr>
+<td>可重复读</td>
+<td>不允许出现</td>
+<td>不允许出现</td>
+<td>可以出现</td>
+</tr>
+<tr>
+<td>序列化</td>
+<td>不允许出现</td>
+<td>不允许出现</td>
+<td>不允许出现</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-锁">2. 锁</h2>
+<h3 id="21-锁的类型">2.1 锁的类型</h3>
+<ul>
+<li>共享锁 （也称为 S 锁）：允许事务读取一行数据。</li>
+</ul>
+<pre><code>可以使用 SQL 语句 select * from tableName where... lock in share mode; 手动加 S 锁。
+</code></pre><ul>
+<li>独占锁 （也称为 X 锁）：允许事务删除或更新一行数据。</li>
+</ul>
+<pre><code>可以使用 SQL 语句 select * from tableName where... for update; 手动加 X 锁。
+</code></pre><p>S 锁和 S 锁是 兼容 的（即读共享），X 锁和其它锁都 不兼容</p>
+<pre><code>为了实现多粒度的锁机制，InnoDB 还有两种内部使用的 意向锁 ，由 InnoDB 自动添加，且都是表级别的锁。
+</code></pre><ul>
+<li>意向共享锁 （IS）</li>
+</ul>
+<pre><code>事务即将给表中的各个行设置共享锁，事务给数据行加 S 锁前必须获得该表的 IS 锁。
+</code></pre><ul>
+<li>意向排他锁 （IX）</li>
+</ul>
+<pre><code>事务即将给表中的各个行设置排他锁，事务给数据行加 X 锁前必须获得该表 IX 锁。
+</code></pre><p>意向锁的主要目的是为了使得 行锁 和 表锁 共存。</p>
+<ul>
+<li>行级锁和表级意向锁的兼容性:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>锁类型</th>
+<th>X</th>
+<th>IX</th>
+<th>S</th>
+<th>IS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X</td>
+<td>冲突</td>
+<td>冲突</td>
+<td>冲突</td>
+<td>冲突</td>
+</tr>
+<tr>
+<td>IX</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>冲突</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>S</td>
+<td>冲突</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>IS</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-锁的算法">2.2 锁的算法</h3>
+<p>InnoDB 存储引擎使用三种行锁的算法用来满足相关事务隔离级别的要求。</p>
+<ul>
+<li>Record Locks</li>
+</ul>
+<pre><code> 单个行记录上的锁
+</code></pre><ul>
+<li>Gap Locks</li>
+</ul>
+<pre><code>间隙锁，锁定一个范围，但不包括记录本身。GAP锁的目的，是为了防止同一事务的两次当前读，出现幻读的情况。
+</code></pre><ul>
+<li>Next-key Locks</li>
+</ul>
+<pre><code>1+2，锁定一个范围，并且锁定记录本身。对于行的查询，都是采用该方法，主要目的是解决幻读的问题。
+该锁就是 Record Locks 和 Gap Locks 的组合，即锁定一个范围并且锁定该记录本身。
+InnoDB 使用 Next-key Locks 解决幻读问题。需要注意的是，如果索引有唯一属性，则 InnnoDB 会自动将 Next-key Locks 降级为 Record Locks。
+举个例子，如果一个索引有 1, 3, 5 三个值，则该索引锁定的区间为 (-∞,1], (1,3], (3,5], (5,+ ∞) 。
+</code></pre><h3 id="23-锁的优化建议">2.3 锁的优化建议</h3>
+<pre><code>1. 合理设计索引，让 InnoDB 在索引键上面加锁的时候尽可能准确，尽可能的缩小锁定范围，避免造成不必要的锁定而影响其他 Query 的执行。
+2. 尽可能减少基于范围的数据检索过滤条件，避免因为间隙锁带来的负面影响而锁定了不该锁定的记录。
+3. 尽量控制事务的大小，减少锁定的资源量和锁定时间长度。
+4. 在业务环境允许的情况下，尽量使用较低级别的事务隔离，以减少 MySQL 因为实现事务隔离级别所带来的附加成本
+</code></pre><hr>
+<h2 id="3-索引">3. 索引</h2>
+<p>索引原理及树在其中的应用</p>
+<h2 id="4-分布式和数据同步">4. 分布式和数据同步</h2>
+<p>MySQL读写分享和数据同步原理</p>
+<h2 id="5-数据引擎">5. 数据引擎</h2>
+<p>MySam和innoDB的区别</p>
+<h2 id="6-其它数据库">6. 其它数据库</h2>
+<h4 id="mongodb">MongoDB</h4>
+<h4 id="elasticsearch">ElasticSearch</h4>
+<ul>
+<li>参考<br>
+<a class="link" href="https://www.cnblogs.com/zhoujinyi/p/3435982.html"  target="_blank" rel="noopener"
+    >https://www.cnblogs.com/zhoujinyi/p/3435982.html</a><br>
+<a class="link" href="https://developer.ibm.com/zh/technologies/databases/articles/os-mysql-transaction-isolation-levels-and-locks/"  target="_blank" rel="noopener"
+    >IBM：MySQL事务隔离级别和锁</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/notes/">notes</a>
+        
+            <a href="/tags/database/">database</a>
+        
+            <a href="/tags/db/">db</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/note-network/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: Network</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/note-redis/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: Redis</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/note-system-and-programming/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: System and Programming</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 Li. Mingzhi
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

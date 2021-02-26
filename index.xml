@@ -6,7 +6,513 @@
         <description>Recent content on Li. Mingzhi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 13 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 26 Feb 2021 19:00:52 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Note: MySQL</title>
+        <link>/p/note-mysql/</link>
+        <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+        
+        <guid>/p/note-mysql/</guid>
+        <description>&lt;h2 id=&#34;1-事务&#34;&gt;1. 事务&lt;/h2&gt;
+&lt;h3 id=&#34;11-事务的四个重要特性acid&#34;&gt;1.1 事务的四个重要特性(ACID)：&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;原子性（Atomicity）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;  事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;一致性（Consistency）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;    指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。
+    例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;隔离性（Isolation）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;    要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。
+    也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。
+
+    注：MySQL 通过锁机制来保证事务的隔离性。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;持久性（Durability）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;    事务一旦提交，则其结果就是永久性的
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;12-事务的隔离级别&#34;&gt;1.2 事务的隔离级别&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;    SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;READ UNCOMMITTED（读未提交）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;  初始化测试数据库：
+    SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;;
+    create database test;
+    use test;
+    create table test(id int primary key);
+    insert into test(id) values(1);
+  1. 打开终端1，开启一个事务，修改ID为1的记录更新为2：
+    SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;;
+    begin;
+    update test set id = 2 where id = 1;
+    select * from test; -- 此时看到一条ID为2的记录
+  2. 打开终端2，开启一个事务后查看表中的数据
+    SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;;
+    begin;
+    select * from test; -- 此时看到一条 ID 为 2 的记录
+
+最后一步读取到了 mysql 终端 1 中未提交的事务（没有 commit 提交动作），即产生了 脏读 ，大部分业务场景都不允许脏读出现，
+但是此隔离级别下数据库的并发是最好的。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;READ COMMITTED（读提交）&lt;br&gt;
+一个事务可以读取另一个已提交的事务，多次读取会造成不一样的结果，此现象称为不可重复读问题，Oracle 和 SQL Server 的默认隔离级别。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;  1. 登录 mysql 终端 1，开启一个事务，将 ID 为 1 的记录更新为 2 ，并确认记录数变更过来。
+    SET @@session.transaction_isolation = &#39;READ-COMMITTED&#39;;
+    begin;
+    update test set id = 2 where id = 1;
+    select * from test; -- 此时看到一条记录为 2
+  2. 登录 mysql 终端 2，开启一个事务后，查看表中的数据。
+    begin;
+    select * from test; -- 此时看一条 ID 为 1 的记录
+  3. 登录 mysql 终端 1，提交事务。
+    commit;
+  4. 切换到 mysql 终端 2。
+    select * from test; -- 此时看到一条 ID 为 2 的记录
+
+mysql 终端 2 在开启了一个事务之后，在第一次读取 test 表（此时 mysql 终端 1 的事务还未提交）时 ID 为 1 ，
+在第二次读取 test 表（此时 mysql 终端 1 的事务已经提交）时 ID 已经变为 2 ，说明在此隔离级别下已经读取到已提交的事务。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;REPEATABLE READ（可重复读）&lt;br&gt;
+该隔离级别是 MySQL 默认的隔离级别，&lt;br&gt;
+在同一个事务里， select 的结果是事务开始时时间点的状态，因此，同样的 select 操作读到的结果会是一致的，&lt;br&gt;
+但是，会有 幻读 现象。&lt;br&gt;
+MySQL 的 InnoDB 引擎可以通过 next-key locks 机制（参考下文 行锁的算法 一节）来避免幻读。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;准备测试数据库表：
+    SET @@session.transaction_isolation = &#39;REPEATABLE-READ&#39;;
+    create database test;
+    use test;
+    create table test(id int primary key,name varchar(20));
+
+1. 登录 mysql 终端 1，开启一个事务
+  SET @@session.transaction_isolation = &#39;REPEATABLE-READ&#39;;
+  begin;
+  select * from test; -- 无记录
+2. 登录 mysql 终端 2，开启一个事务。
+  begin;
+  select * from test; -- 无记录
+3. 切换到 mysql 终端 1，增加一条记录并提交。
+  insert into test(id,name) values(1,&#39;a&#39;);
+  commit;
+4. 切换到 msyql 终端 2。
+  select * from test; --此时查询还是无记录
+  通过这一步可以证明，在该隔离级别下已经读取不到别的已提交的事务，如果想看到 mysql 终端 1 提交的事务，在 mysql 终端 2 将当前事务提交后再次查询就可以读取到 mysql 终端 1 提交的事务。
+5. 此时接着在 mysql 终端 2 插入一条数据。
+  insert into test(id,name) values(1,&#39;b&#39;); -- 此时报主键冲突的错误
+
+明明在第 5 步没有数据，为什么在这里会报错呢？其实这就是该隔离级别下可能产生的问题，MySQL 称之为 幻读 。注意我在这里强调的是 MySQL 数据库，Oracle 数据库对于幻读的定义可能有所不同。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;SERIALIZABLE（序列化）&lt;br&gt;
+在该隔离级别下事务都是串行顺序执行的，MySQL 数据库的 InnoDB 引擎会给读操作隐式加一把读共享锁，&lt;br&gt;
+从而避免了脏读、不可重读复读和幻读问题。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;1. 登录 mysql 终端 1，开启一个事务，并写入一条数据。
+  SET @@session.transaction_isolation = &#39;SERIALIZABLE&#39;;
+  begin;
+  insert into test(id) values(1);
+2. 登录 mysql 终端 2，开启一个事务。
+  begin;
+  select * from test; -- 此时会一直卡住
+3. 立马切换到 mysql 终端 1,提交事务。
+  commit;
+
+一旦事务提交，msyql 终端 2 会立马返回 ID 为 1 的记录，否则会一直卡住，直到超时，其中超时参数是由 innodb_lock_wait_timeout 控制。由于每条 select 语句都会加锁，所以该隔离级别的数据库并发能力最弱，
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;13-各个隔离级别下产生的一些问题&#34;&gt;1.3 各个隔离级别下产生的一些问题&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;隔离级别&lt;/th&gt;
+&lt;th&gt;脏读&lt;/th&gt;
+&lt;th&gt;不可重复读&lt;/th&gt;
+&lt;th&gt;幻读&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;读未提交&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;读提交&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;可重复读&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;序列化&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;2-锁&#34;&gt;2. 锁&lt;/h2&gt;
+&lt;h3 id=&#34;21-锁的类型&#34;&gt;2.1 锁的类型&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;共享锁 （也称为 S 锁）：允许事务读取一行数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;可以使用 SQL 语句 select * from tableName where... lock in share mode; 手动加 S 锁。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;独占锁 （也称为 X 锁）：允许事务删除或更新一行数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;可以使用 SQL 语句 select * from tableName where... for update; 手动加 X 锁。
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;S 锁和 S 锁是 兼容 的（即读共享），X 锁和其它锁都 不兼容&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;为了实现多粒度的锁机制，InnoDB 还有两种内部使用的 意向锁 ，由 InnoDB 自动添加，且都是表级别的锁。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;意向共享锁 （IS）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;事务即将给表中的各个行设置共享锁，事务给数据行加 S 锁前必须获得该表的 IS 锁。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;意向排他锁 （IX）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;事务即将给表中的各个行设置排他锁，事务给数据行加 X 锁前必须获得该表 IX 锁。
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;意向锁的主要目的是为了使得 行锁 和 表锁 共存。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;行级锁和表级意向锁的兼容性:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;锁类型&lt;/th&gt;
+&lt;th&gt;X&lt;/th&gt;
+&lt;th&gt;IX&lt;/th&gt;
+&lt;th&gt;S&lt;/th&gt;
+&lt;th&gt;IS&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;X&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IX&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IS&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;22-锁的算法&#34;&gt;2.2 锁的算法&lt;/h3&gt;
+&lt;p&gt;InnoDB 存储引擎使用三种行锁的算法用来满足相关事务隔离级别的要求。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Record Locks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt; 单个行记录上的锁
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Gap Locks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;间隙锁，锁定一个范围，但不包括记录本身。GAP锁的目的，是为了防止同一事务的两次当前读，出现幻读的情况。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Next-key Locks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;1+2，锁定一个范围，并且锁定记录本身。对于行的查询，都是采用该方法，主要目的是解决幻读的问题。
+该锁就是 Record Locks 和 Gap Locks 的组合，即锁定一个范围并且锁定该记录本身。
+InnoDB 使用 Next-key Locks 解决幻读问题。需要注意的是，如果索引有唯一属性，则 InnnoDB 会自动将 Next-key Locks 降级为 Record Locks。
+举个例子，如果一个索引有 1, 3, 5 三个值，则该索引锁定的区间为 (-∞,1], (1,3], (3,5], (5,+ ∞) 。
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;23-锁的优化建议&#34;&gt;2.3 锁的优化建议&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;1. 合理设计索引，让 InnoDB 在索引键上面加锁的时候尽可能准确，尽可能的缩小锁定范围，避免造成不必要的锁定而影响其他 Query 的执行。
+2. 尽可能减少基于范围的数据检索过滤条件，避免因为间隙锁带来的负面影响而锁定了不该锁定的记录。
+3. 尽量控制事务的大小，减少锁定的资源量和锁定时间长度。
+4. 在业务环境允许的情况下，尽量使用较低级别的事务隔离，以减少 MySQL 因为实现事务隔离级别所带来的附加成本
+&lt;/code&gt;&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id=&#34;3-索引&#34;&gt;3. 索引&lt;/h2&gt;
+&lt;p&gt;索引原理及树在其中的应用&lt;/p&gt;
+&lt;h2 id=&#34;4-分布式和数据同步&#34;&gt;4. 分布式和数据同步&lt;/h2&gt;
+&lt;p&gt;MySQL读写分享和数据同步原理&lt;/p&gt;
+&lt;h2 id=&#34;5-数据引擎&#34;&gt;5. 数据引擎&lt;/h2&gt;
+&lt;p&gt;MySam和innoDB的区别&lt;/p&gt;
+&lt;h2 id=&#34;6-其它数据库&#34;&gt;6. 其它数据库&lt;/h2&gt;
+&lt;h4 id=&#34;mongodb&#34;&gt;MongoDB&lt;/h4&gt;
+&lt;h4 id=&#34;elasticsearch&#34;&gt;ElasticSearch&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;参考&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://www.cnblogs.com/zhoujinyi/p/3435982.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.cnblogs.com/zhoujinyi/p/3435982.html&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://developer.ibm.com/zh/technologies/databases/articles/os-mysql-transaction-isolation-levels-and-locks/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;IBM：MySQL事务隔离级别和锁&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>Note: Network</title>
+        <link>/p/note-network/</link>
+        <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+        
+        <guid>/p/note-network/</guid>
+        <description>&lt;ul&gt;
+&lt;li&gt;http各版本的区别(http0.9, http1.0, http1.1, http2.0)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;1-httphttps&#34;&gt;1. HTTP&amp;amp;HTTPS&lt;/h2&gt;
+&lt;h3 id=&#34;1-https证书的申请流程&#34;&gt;1. HTTPS证书的申请流程&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;在服务器上生成CSR文件（证书申请文件，内容包括证书公钥、使用的Hash算法、申请的域名、公司名称、职位等信息）&lt;/li&gt;
+&lt;li&gt;把CSR文件和其他可能的证件上传到CA认证机构&lt;/li&gt;
+&lt;li&gt;CA机构收到证书申请之后，使用申请中的Hash算法，对部分内容进行摘要，然后使用CA机构自己的私钥对这段摘要信息进行签名&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/ca_sign_procedure.png&#34; alt=&#34;ca_sign_procedure&#34;  /&gt;&lt;/p&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;CA机构把签名过的证书通过发送给申请者。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;2-https客户端和服务端的交互流程&#34;&gt;2. HTTPs客户端和服务端的交互流程&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/https_interoperation.png&#34; alt=&#34;https_interoperation&#34;  /&gt;&lt;/p&gt;
+&lt;h4 id=&#34;1-客户端向服务器发出加密通信的请求&#34;&gt;1. 客户端向服务器发出加密通信的请求&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;(1) 支持的协议版本，比如 TLS 1.0
+(2) 客户端生成的随机数 random1, 稍后用于生成 会话密钥
+(3) 支持的加密算法， 比如RSA非对称加密
+(4) 支持的压缩算法
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;2-服务器收到请求然后响应&#34;&gt;2. 服务器收到请求，然后响应&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;(1) 确认使用的加密通信协议，比如 TLS 1.0版本。 若客户端与服务器支持的版本不一致，则服务器关闭加密通信。
+(2) 服务器生成随机数 random2, 稍后用于生成 会话密钥
+(3) 确认使用的加密方法，比如 RSA非对称加密
+(4) 服务器的证书
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;3-客户端验证服务器证书&#34;&gt;3. 客户端验证服务器证书&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;验证流程&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;1. CA机构在签发证书的时候，用签名算法(sha256RSA)对证书内容进行摘要，用自己的私钥对摘要进行签名E
+2. 浏览器用预置在系统中的CA机构的公钥对服务器证书进行验签：用CA机构的公钥解密签名后的摘要E
+3. 验签通过后得到CA机构使用的证书摘要S
+4. 浏览器用相同的签名算法对证书内容进行一次摘要S1，若得到的值S1与验证签之后得到的摘要S相同，则验签通过
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;生成随机密钥 pre-master secret&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;验证通过后，客户端生成一个随机数 pre-master secret, 然后用证书中的公钥进行加密，并传给服务端。
+服务端端用私钥将其解密；
+即客户端和服务端都有一套相同的数据：pre-master secret, random1, random2
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;pre-master secret&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;pre-master secret 前两个字节是TLS版本号。
+在 Client 在第一次请求的时候会明文发送一份加密套件列表和当前支持的SSL/TLS版本号给服务端，
+若服务端对密文中解密出来的pre-master版本号跟之前客户端发送的版本号不一致，则停止通信
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;4-服务端获取对称加密密钥&#34;&gt;4. 服务端获取对称加密密钥&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;服务端收到用公钥加密的内容，用私钥将其解密后，获得pre-master secret, random1, random2,
+然后通过一定的算法生成sesson key和MAC算法密钥。
+客户端也会使用radom1、radom2、pre-master secret，和同样的算法生成session Key和MAC算法的秘钥。
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;5-在后续的交互中用session-key-和-mac-算法密钥对传输的内容进行加解密&#34;&gt;5. 在后续的交互中，用session key 和 MAC 算法密钥对传输的内容进行加解密&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;客户端：
+  1. 用MAC密钥对内容进行摘要
+  2. 用 session key对摘要进行加密
+服务端：
+  1. 用sesion key对收到的数据进行解密
+  2. 用 MAC 密钥验证内容的完整性
+&lt;/code&gt;&lt;/pre&gt;&lt;hr&gt;
+&lt;p&gt;##　2. Tcp&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/tcp_status.png&#34; alt=&#34;tcp_status&#34;  title=&#34;TCP状态图&#34; /&gt;&lt;/p&gt;
+&lt;h3 id=&#34;1-状态演示&#34;&gt;1. 状态演示&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;用nc启动一个服务器&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;nc -l 8080
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;用nc客户端连接服务器&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;nc 127.0.0.2 8080
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;查看网络状态&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;ss -atnp | grep :8080
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/server_client_ports.png&#34; alt=&#34;tcp_ports&#34;  /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;其中0.0.0.0:8080是服务端的监听端口
+127.0.0.2:8080 为服务端与客户端通信的连接
+查看server的文件描述符
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/server_fds.png&#34; alt=&#34;server_fds&#34;  /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;0，1和2: 标准输入，标准输出和标准错误
+3: 为监听文件
+4: 为与客户端的连接文件
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;因为服务端只有一个监听端口，但是每个client都会建立一个fd，&lt;br&gt;
+因此服务端会消耗大量的fd，但服务端的fd数量是有限的。&lt;br&gt;
+4. 断开客户端，客户端连接状态为TIME-WAIT&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/client_time_wait.png&#34; alt=&#34;client_time_wait&#34;  /&gt;&lt;/p&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;若服务端未正确处理断开的客户端连接，则会出现大量的CLOSE-WAIT，同时会占用服务器大量的fd资源&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器能打开的fd数量是有限的，当fd耗尽时，就无法建立新的连接了。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-time_wait状态及其原因&#34;&gt;2. time_wait状态及其原因&lt;/h3&gt;
+&lt;p&gt;主动断开连接的一方在ack对方的fin后，会进入TIME－WAIT状态。&lt;br&gt;
+TIME-WAIT状态:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1. TCP连接中，主动关闭连接的一方收到FIN命令后，会进入TIME-WAIT状态，并返回ACK命令
+2. 保持2MSL时间（120秒）
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;大量TIME-WAIT状态的存在，其原因是：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1. 大量的短连接存在
+2. HTTP请求中，若Connection 取值为close，服务端会主动关闭连接
+3. TCP四次挥手过程中，为了保证ACK和接收延迟数据，设置TIME-WAIT为2倍的MSL。
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;3-解决大量time-wait状态的方法&#34;&gt;3. 解决大量TIME-WAIT状态的方法&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;1. 客户端
+  HTTP请求的头部Connection设置为keep-alive, 这样服务端不会关闭连接，目前大量浏览器是这样处理的
+2. 服务端
+  a. 允许time_wait状态的socket被重用
+  b. 缩短time_wait的时间
+&lt;/code&gt;&lt;/pre&gt;&lt;ol&gt;
+&lt;li&gt;可靠的实现TCP的全双工连接&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;  TCP四次挥手关闭连接时，最后一个ACK是由主动关闭连接的一方发出的；
+  若这个ACK丢失，则对方会重发FIN请求；
+  因此主动关闭方需要维护一个TIME－WAIT状态，处理对方重发的FIN
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;处理延迟到达的报文&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;因为网络的不稳定性，TCP报文可能会迟延到达，
+为了避免延迟到达的报文被误认为是新TCP连接的数据，需要在允许新建TCP连接前，保持一个不可用的状态，等待延迟报文的消失，一般设置为2MSL（Maximum Segment Lifetime：最大生存时间）
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/tcp_fin_timeout.png&#34; alt=&#34;tcp_fin_timeout&#34;  /&gt;&lt;/p&gt;
+&lt;h3 id=&#34;3-tcp协议控制算法&#34;&gt;3. tcp协议控制算法&lt;/h3&gt;
+&lt;p&gt;####　1. 流量控制&lt;/p&gt;
+&lt;h4 id=&#34;2-拥塞控制&#34;&gt;2. 拥塞控制&lt;/h4&gt;
+&lt;p&gt;#####　１.慢启动&lt;br&gt;
+#####　２.拥塞避免&lt;br&gt;
+#####　３.拥塞发生&lt;br&gt;
+#####　４.快恢复&lt;/p&gt;
+&lt;p&gt;###　４. tcp与udp的区别，为什么是可靠连接&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;引用&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://www.cioage.com/art/202008/623158.htm###&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.cioage.com/art/202008/623158.htm###&lt;/a&gt;　&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://www.zhihu.com/question/298214130&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.zhihu.com/question/298214130&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
+        <title>Note: Redis</title>
+        <link>/p/note-redis/</link>
+        <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+        
+        <guid>/p/note-redis/</guid>
+        <description>&lt;h4 id=&#34;redis&#34;&gt;Redis&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Redis数据类型及应用场景&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Redis进程模型及其高效原理&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Redis有序集的实现方式&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
+        <title>Note: System and Programming</title>
+        <link>/p/note-system-and-programming/</link>
+        <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+        
+        <guid>/p/note-system-and-programming/</guid>
+        <description>&lt;h3 id=&#34;programming-language&#34;&gt;Programming Language&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Golang 和 C＋＋的区别及使用场景&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Golang 的协程管理（GOP）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;进程，线程和协程的区别&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;make 和 new 的区别&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;channel 底层实现&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;channel如何唤醒goroutine&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;golang GC 机制&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;系统调用&#34;&gt;系统调用&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;poll, select 和 epoll的区别及其数据结构&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;data-structure&#34;&gt;Data Structure&lt;/h3&gt;
+&lt;h4 id=&#34;b树和b树&#34;&gt;B树和B＋树&lt;/h4&gt;
+&lt;h3 id=&#34;消息队列&#34;&gt;消息队列&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;RabbitMQ和Kafka的区别及优缺点&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;分布式&#34;&gt;分布式&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;分布式锁的应用和实现&lt;br&gt;
+a. Redis&lt;br&gt;
+b. Mysql&lt;br&gt;
+c. zookeeper&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;集群实现原理&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;算法&#34;&gt;算法&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;挂气球&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;小明有一些气球想挂在墙上装饰，他希望相同颜色的气球不要挂在一起，写一个算法帮他得出一种可行的挂气球方式，
+自行定义函数，输入和返回，如果无法做到相同颜色的气球不挂在一起
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;./leetcode.md&#34; &gt;leetcode&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;./newcoder.md&#34; &gt;newcoder&lt;/a&gt;&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;
+&lt;p&gt;单项链接中环的判断&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;固定数组队列读写实现&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;排序&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;冒泡排序&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;归并排序&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;堆排序&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>GA: 7. Dijkstra&#39;s algorithm</title>
         <link>/p/ga-7.-dijkstras-algorithm/</link>
         <pubDate>Sun, 13 Dec 2020 23:44:52 +0800</pubDate>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>notes on Li. Mingzhi</title>
+    <link>/tags/notes/</link>
+    <description>Recent content in notes on Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 26 Feb 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/notes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Note: MySQL</title>
+      <link>/p/note-mysql/</link>
+      <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+      
+      <guid>/p/note-mysql/</guid>
+      <description>1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.</description>
+    </item>
+    
+    <item>
+      <title>Note: Network</title>
+      <link>/p/note-network/</link>
+      <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+      
+      <guid>/p/note-network/</guid>
+      <description>http各版本的区别(http0.9, http1.0, http1.1, http2.0)  1. HTTP&amp;amp;HTTPS 1. HTTPS证书的申请流程  在服务器上生成CSR文件（证书申请文件，内容包括证书公钥、使用的Hash算法、申请的域名、公司名称、职位等信息） 把CSR文件和其他可能的证件上传到CA认证机构 CA机构收到证书申请之后，使用申请中的Hash算法，对部分内容进行摘要，然后使用CA机构自己的私钥对这段摘要信息进行签名  CA机构把签名过的证书通过发送给申请者。  2. HTTPs客户端和服务端的交互流程 1. 客户端向服务器发出加密通信的请求 (1) 支持的协议版本，比如 TLS 1.0 (2) 客户端生成的随机数 random1, 稍后用于生成 会话密钥 (3) 支持的加密算法， 比如RSA非对称加密 (4) 支持的压缩算法 2. 服务器收到请求，然后响应 (1) 确认使用的加密通信协议，比如 TLS 1.0版本。 若客户端与服务器支持的版本不一致，则服务器关闭加密通信。 (2) 服务器生成随机数 random2, 稍后用于生成 会话密钥 (3) 确认使用的加密方法，比如 RSA非对称加密 (4) 服务器的证书 3. 客户端验证服务器证书  验证流程  1. CA机构在签发证书的时候，用签名算法(sha256RSA)对证书内容进行摘要，用自己的私钥对摘要进行签名E 2. 浏览器用预置在系统中的CA机构的公钥对服务器证书进行验签：用CA机构的公钥解密签名后的摘要E 3. 验签通过后得到CA机构使用的证书摘要S 4. 浏览器用相同的签名算法对证书内容进行一次摘要S1，若得到的值S1与验证签之后得到的摘要S相同，则验签通过  生成随机密钥 pre-master secret  验证通过后，客户端生成一个随机数 pre-master secret, 然后用证书中的公钥进行加密，并传给服务端。 服务端端用私钥将其解密； 即客户端和服务端都有一套相同的数据：pre-master secret, random1, random2  pre-master secret  pre-master secret 前两个字节是TLS版本号。 在 Client 在第一次请求的时候会明文发送一份加密套件列表和当前支持的SSL/TLS版本号给服务端， 若服务端对密文中解密出来的pre-master版本号跟之前客户端发送的版本号不一致，则停止通信 4.</description>
+    </item>
+    
+    <item>
+      <title>Note: Redis</title>
+      <link>/p/note-redis/</link>
+      <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+      
+      <guid>/p/note-redis/</guid>
+      <description>Redis   Redis数据类型及应用场景
+  Redis进程模型及其高效原理
+  Redis有序集的实现方式
+  </description>
+    </item>
+    
+    <item>
+      <title>Note: System and Programming</title>
+      <link>/p/note-system-and-programming/</link>
+      <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+      
+      <guid>/p/note-system-and-programming/</guid>
+      <description>Programming Language   Golang 和 C＋＋的区别及使用场景
+  Golang 的协程管理（GOP）
+  进程，线程和协程的区别
+  make 和 new 的区别
+  channel 底层实现
+  channel如何唤醒goroutine
+  golang GC 机制
+   系统调用  poll, select 和 epoll的区别及其数据结构   Data Structure B树和B＋树 消息队列  RabbitMQ和Kafka的区别及优缺点  分布式   分布式锁的应用和实现
+a. Redis
+b. Mysql
+c. zookeeper
+  集群实现原理
+  算法  挂气球  小明有一些气球想挂在墙上装饰，他希望相同颜色的气球不要挂在一起，写一个算法帮他得出一种可行的挂气球方式， 自行定义函数，输入和返回，如果无法做到相同颜色的气球不挂在一起 leetcode</description>
+    </item>
+    
+  </channel>
+</rss>
