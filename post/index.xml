@@ -2,91 +2,91 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Li. Mingzhi</title>
-    <link>/post/</link>
+    <link>limingzhi618.com/post/</link>
     <description>Recent content in Posts on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 13 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 13 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="limingzhi618.com/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GA: 7. Dijkstra&#39;s algorithm</title>
-      <link>/p/ga-7.-dijkstras-algorithm/</link>
+      <link>limingzhi618.com/p/ga-7.-dijkstras-algorithm/</link>
       <pubDate>Sun, 13 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>/p/ga-7.-dijkstras-algorithm/</guid>
+      <guid>limingzhi618.com/p/ga-7.-dijkstras-algorithm/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.    Weighted graphs: assigning weight to some edges. Dijkstra&amp;rsquo;s algorithm: What&amp;rsquo;s the shortest path to X? Cycles in graphs will make Dijkstra&amp;rsquo;s algorithm not work.  Dijkstra&amp;rsquo;s algorithm Sometimes the shortest path is not the fastest path, since there are different weights with various edges.</description>
     </item>
     
     <item>
       <title>GA: 6. Breadth-first search</title>
-      <link>/p/ga-6.-breadth-first-search/</link>
+      <link>limingzhi618.com/p/ga-6.-breadth-first-search/</link>
       <pubDate>Thu, 10 Dec 2020 23:02:27 +0800</pubDate>
       
-      <guid>/p/ga-6.-breadth-first-search/</guid>
+      <guid>limingzhi618.com/p/ga-6.-breadth-first-search/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.    From this chapter we get to know graphs, which is a new data structure and can help us model a network. We also get to know a new algorhtim named breadth-first search, which can help us find the shortest path.</description>
     </item>
     
     <item>
       <title>GA: 5. Hash tables</title>
-      <link>/p/ga-5.-hash-tables/</link>
+      <link>limingzhi618.com/p/ga-5.-hash-tables/</link>
       <pubDate>Wed, 09 Dec 2020 23:09:04 +0800</pubDate>
       
-      <guid>/p/ga-5.-hash-tables/</guid>
+      <guid>limingzhi618.com/p/ga-5.-hash-tables/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  1. Requirements for hash function  It needs to be consistent. It should map different workds to different numbers.  You get a hash table by putting a hash function and an array together.</description>
     </item>
     
     <item>
       <title>GA: 4. Quicksort</title>
-      <link>/p/ga-4.-quicksort/</link>
+      <link>limingzhi618.com/p/ga-4.-quicksort/</link>
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
-      <guid>/p/ga-4.-quicksort/</guid>
+      <guid>limingzhi618.com/p/ga-4.-quicksort/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.   This chapter I learned divide-and-conquer and quicksort, both of which can help me solve problems elegently.
  1. Divide &amp;amp; Conquer  It can take us some time to understand D&amp;amp;C. Therefore, we will see some problems to learn about it.</description>
     </item>
     
     <item>
       <title>GA: 3. Recursion</title>
-      <link>/p/ga-3.-recursion/</link>
+      <link>limingzhi618.com/p/ga-3.-recursion/</link>
       <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
       
-      <guid>/p/ga-3.-recursion/</guid>
+      <guid>limingzhi618.com/p/ga-3.-recursion/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.   In this chapter, I learned about recursion, which is very useful in many algorithms.
 Also, this chapter shows us how to break down a problem into a base case and a recursive case.</description>
     </item>
     
     <item>
       <title>Github config for multiple users</title>
-      <link>/p/github-config-for-multiple-users/</link>
+      <link>limingzhi618.com/p/github-config-for-multiple-users/</link>
       <pubDate>Sun, 06 Dec 2020 11:44:52 +0800</pubDate>
       
-      <guid>/p/github-config-for-multiple-users/</guid>
+      <guid>limingzhi618.com/p/github-config-for-multiple-users/</guid>
       <description>1. Background We sometimes use more than one github account to manage different repositories. Even though we&#39;ve set the config file(~/.ssh/config) correctly and test(ssh -T git@github.com) correctly, it will promote &amp;quot;permission denied(public key)&amp;quot; while we hit git push.  The problem is that we need to clarify different hosts for different users. And make the Host of url in you repository config the same as that of ~/.ssh/config  2. Here is the content of my git config file(~/.</description>
     </item>
     
     <item>
       <title>GA: 2. Selection sort</title>
-      <link>/p/ga-2.-selection-sort/</link>
+      <link>limingzhi618.com/p/ga-2.-selection-sort/</link>
       <pubDate>Fri, 04 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>/p/ga-2.-selection-sort/</guid>
+      <guid>limingzhi618.com/p/ga-2.-selection-sort/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  Chapter 2: Selection Sort 1. Tips About Selection Sort  Your computer’s memory is like a giant set of drawers. When you want to store multiple elements, use an array or a list.</description>
     </item>
     
     <item>
       <title>GA: 1. Binary search</title>
-      <link>/p/ga-1.-binary-search/</link>
+      <link>limingzhi618.com/p/ga-1.-binary-search/</link>
       <pubDate>Thu, 03 Dec 2020 23:44:52 +0800</pubDate>
       
-      <guid>/p/ga-1.-binary-search/</guid>
+      <guid>limingzhi618.com/p/ga-1.-binary-search/</guid>
       <description>Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows.</description>
     </item>
     
     <item>
       <title>TOEFL W2: Job performance and mood</title>
-      <link>/p/toefl-w2-job-performance-and-mood/</link>
+      <link>limingzhi618.com/p/toefl-w2-job-performance-and-mood/</link>
       <pubDate>Sat, 10 Oct 2020 17:16:02 +0800</pubDate>
       
-      <guid>/p/toefl-w2-job-performance-and-mood/</guid>
+      <guid>limingzhi618.com/p/toefl-w2-job-performance-and-mood/</guid>
       <description>Some people may think that they can do a better job and make fewer mistakes if they deal with things in a serious mood.
 However, I believe that people should work out solutions with a light mood since it can bring them many benefits.
 Taking things easy can help people relax and perform better.
@@ -95,10 +95,10 @@ According to a psychological report from China Daily, stress can have adverse ef
     
     <item>
       <title>TOEFL W2: Money spent on arts or sports</title>
-      <link>/p/toefl-w2-money-spent-on-arts-or-sports/</link>
+      <link>limingzhi618.com/p/toefl-w2-money-spent-on-arts-or-sports/</link>
       <pubDate>Fri, 09 Oct 2020 10:09:03 +0800</pubDate>
       
-      <guid>/p/toefl-w2-money-spent-on-arts-or-sports/</guid>
+      <guid>limingzhi618.com/p/toefl-w2-money-spent-on-arts-or-sports/</guid>
       <description>A/D: Governments should spend more money supporting the arts than supporting athletics such as an Olympic team.  [Opening Sentence] Even though there are limited government resources for arts and sports funding, money is often misspent on athletics and Olympic teams.
 [Thesis statement] However, I believe that governments should put more resources and money on art projects since it will bring a lot more benefits to society and people.
 [Topic 1] Through their creation of the arts, some people become larger-than-life inspirations to everyone.</description>
@@ -106,10 +106,10 @@ According to a psychological report from China Daily, stress can have adverse ef
     
     <item>
       <title>TOEFL W2: Rural areas or cities</title>
-      <link>/p/toefl-w2-rural-areas-or-cities/</link>
+      <link>limingzhi618.com/p/toefl-w2-rural-areas-or-cities/</link>
       <pubDate>Sat, 15 Aug 2020 17:37:19 +0800</pubDate>
       
-      <guid>/p/toefl-w2-rural-areas-or-cities/</guid>
+      <guid>limingzhi618.com/p/toefl-w2-rural-areas-or-cities/</guid>
       <description>DO you agree or disagree with the following statement?
 People who live in small villages or farm areas are more satisfied with their lives than people who live in cities.
  Some people may think that people living in rural areas, such as villages and farms, are more contented with their lives since there is a better environment in Villages and farms.
@@ -118,10 +118,10 @@ In my opinion, however, most people are satisfied with living in cities because 
     
     <item>
       <title>TOEFL W2: New tech affect study</title>
-      <link>/p/toefl-w2-new-tech-affect-study/</link>
+      <link>limingzhi618.com/p/toefl-w2-new-tech-affect-study/</link>
       <pubDate>Mon, 10 Aug 2020 17:33:30 +0800</pubDate>
       
-      <guid>/p/toefl-w2-new-tech-affect-study/</guid>
+      <guid>limingzhi618.com/p/toefl-w2-new-tech-affect-study/</guid>
       <description>Some people may think that young children should not use new technology and limit their use of technology because it is harmful to young children.
 In my opinion, however, new technology can be useful for children&amp;rsquo;s studies and bring them a lot more benefits.
 Using technology can help young students improve their study.
@@ -130,10 +130,10 @@ Today, computers and the Internet are beneficial to students because there are m
     
     <item>
       <title>TOEFL W2: A/D: Teachers should assign students more tasks</title>
-      <link>/p/toefl-w2-a/d-teachers-should-assign-students-more-tasks/</link>
+      <link>limingzhi618.com/p/toefl-w2-a/d-teachers-should-assign-students-more-tasks/</link>
       <pubDate>Sun, 09 Aug 2020 19:09:27 +0800</pubDate>
       
-      <guid>/p/toefl-w2-a/d-teachers-should-assign-students-more-tasks/</guid>
+      <guid>limingzhi618.com/p/toefl-w2-a/d-teachers-should-assign-students-more-tasks/</guid>
       <description>Many people may think that young students can learn a lot by doing a great deal of homework.
 However, teachers should assign their students with tasks that can be finished within thirty minutes since it will bring young students a lot more benefits.
 Fewer assignments with crucial elements can help young students study more efficiently.
@@ -142,19 +142,19 @@ People commonly held that the more assignments to do, the more young students co
     
     <item>
       <title>Resume</title>
-      <link>/p/resume/</link>
+      <link>limingzhi618.com/p/resume/</link>
       <pubDate>Fri, 06 Dec 2019 11:44:52 +0800</pubDate>
       
-      <guid>/p/resume/</guid>
+      <guid>limingzhi618.com/p/resume/</guid>
       <description>Name E-mail Github     Li. Mingzhi lmingzhi618@gmail.com https://github.com/mingzhi198    Education Background    University Major Period     Shenzhen University Software Engineering 2016.3~2019.1   Henan Institute of Technology Mechanical Manufacture and Automation 2005.9~2008.7    Language Skills    Language Level     Chinese Fluent   English TOEFL: 102 (MyBest107), GRE:322    Special Skills Good at troubleshooting, analyzing and solving problems.</description>
     </item>
     
     <item>
       <title>archives</title>
-      <link>/archives/</link>
+      <link>limingzhi618.com/archives/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/archives/</guid>
+      <guid>limingzhi618.com/archives/</guid>
       <description>历史文章按照年月归档.</description>
     </item>
     

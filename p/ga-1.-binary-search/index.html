@@ -3,18 +3,37 @@
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows.'><title>GA: 1. Binary search</title>
 
-<link rel='canonical' href='/p/ga-1.-binary-search/'>
+<link rel='canonical' href='limingzhi618.com/p/ga-1.-binary-search/'>
 
-<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='GA: 1. Binary search'>
+<link rel="stylesheet" href="/limingzhi618.com/scss/style.min.css"><meta property='og:title' content='GA: 1. Binary search'>
 <meta property='og:description' content='Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows.'>
-<meta property='og:url' content='/p/ga-1.-binary-search/'>
+<meta property='og:url' content='limingzhi618.com/p/ga-1.-binary-search/'>
 <meta property='og:site_name' content='Li. Mingzhi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='algorithm' /><meta property='article:tag' content='binary search' /><meta property='article:published_time' content='2020-12-03T23:44:52&#43;08:00'/><meta property='article:modified_time' content='2020-12-03T23:44:52&#43;08:00'/>
 <meta name="twitter:title" content="GA: 1. Binary search">
 <meta name="twitter:description" content="Statement  This article is my study notes from the book: grokking algorithm: an illustrated guide for programmers and other curious people. Please refer to the original work for more details and indicate the source for reprinting.  Chapter 1: Binary Search 1. Tips About Binary Search * Binary search is a lot faster than simple search. * O(log n) is faster than O(n), but it gets a lot faster once the list of items you’re searching through grows.">
     </head>
     <body class="">
-        <div class="container flex on-phone--column align-items--flex-start extended article-page with-toolbar">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "auto");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.body.dataset.scheme = 'dark';
+        } else {
+            document.body.dataset.scheme = 'light';
+        }
+    })();
+</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
             <aside class="sidebar left-sidebar sticky">
     <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
         <span class="hamburger-box">
@@ -30,7 +49,7 @@
                     
                     
                         
-                        <img src="/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                        <img src="/limingzhi618.com/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -38,7 +57,7 @@
                 
             </figure>
         
-        <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
+        <h1 class="site-name"><a href="limingzhi618.com">Li. Mingzhi</a></h1>
         <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
         Progress one percent per day...</h2>
     </header>
@@ -49,7 +68,7 @@
         
 
         <li >
-            <a href='/'>
+            <a href='/limingzhi618.com/'>
                 
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
@@ -68,7 +87,7 @@
         
 
         <li >
-            <a href='/p/resume/'>
+            <a href='/limingzhi618.com/p/resume/'>
                 
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
@@ -86,7 +105,7 @@
         
 
         <li >
-            <a href='/archives/'>
+            <a href='/limingzhi618.com/archives/'>
                 
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
@@ -105,7 +124,7 @@
         
 
         <li >
-            <a href='/search/index.html'>
+            <a href='/limingzhi618.com/search/index.html'>
                 
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
@@ -120,12 +139,14 @@
             </a>
         </li>
         
+
+        
     </ol>
 </aside>
 
             <main class="main full-width">
     <div id="article-toolbar">
-        <a href="" class="back-home">
+        <a href="limingzhi618.com" class="back-home">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <polyline points="15 6 9 12 15 18" />
@@ -144,15 +165,15 @@
     
     <header class="article-category">
         
-            
-                <a href="/categories/grokking_algorithm/">grokking_algorithm</a>
-            
+            <a href="limingzhi618.com/categories/grokking_algorithm/" >
+                grokking_algorithm
+            </a>
         
     </header>
     
 
     <h2 class="article-title">
-        <a href="/p/ga-1.-binary-search/">GA: 1. Binary search</a>
+        <a href="limingzhi618.com/p/ga-1.-binary-search/">GA: 1. Binary search</a>
     </h2>
 
     <footer class="article-time">
@@ -251,9 +272,9 @@
     
     <section class="article-tags">
         
-            <a href="/tags/algorithm/">algorithm</a>
+            <a href="limingzhi618.com/tags/algorithm/">algorithm</a>
         
-            <a href="/tags/binary-search/">binary search</a>
+            <a href="limingzhi618.com/tags/binary-search/">binary search</a>
         
     </section>
 
@@ -284,7 +305,7 @@
                 
                     
 <article class="">
-    <a href="/p/ga-7.-dijkstras-algorithm/">
+    <a href="limingzhi618.com/p/ga-7.-dijkstras-algorithm/">
         
         
 
@@ -296,7 +317,7 @@
                 
                     
 <article class="">
-    <a href="/p/ga-6.-breadth-first-search/">
+    <a href="limingzhi618.com/p/ga-6.-breadth-first-search/">
         
         
 
@@ -308,7 +329,7 @@
                 
                     
 <article class="">
-    <a href="/p/ga-5.-hash-tables/">
+    <a href="limingzhi618.com/p/ga-5.-hash-tables/">
         
         
 
@@ -320,7 +341,7 @@
                 
                     
 <article class="">
-    <a href="/p/ga-4.-quicksort/">
+    <a href="limingzhi618.com/p/ga-4.-quicksort/">
         
         
 
@@ -332,7 +353,7 @@
                 
                     
 <article class="">
-    <a href="/p/ga-3.-recursion/">
+    <a href="limingzhi618.com/p/ga-3.-recursion/">
         
         
 
@@ -353,12 +374,18 @@
     
 
     <footer class="site-footer">
-    <section class="copyright">&copy; 2021 Li. Mingzhi</section>
-    <section class="powerby">Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="1.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    <section class="copyright">
+        &copy; 
+        
+        2021 Li. Mingzhi
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true" style="display:none">
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 
     
     <div class="pswp__bg"></div>
@@ -419,11 +446,28 @@
 
     </div>
 
-</div>
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
             </main>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"
-    integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin="anonymous"></script><script type="text/javascript" src="/ts/main.js" defer></script>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/limingzhi618.com/ts/main.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');
@@ -435,8 +479,6 @@
         document.head.appendChild(customFont);
     }());
 </script>
-<link rel="stylesheet" href="/css/highlight/light.min.css" media="(prefers-color-scheme: light)">
-<link rel="stylesheet" href="/css/highlight/dark.min.css" media="(prefers-color-scheme: dark)">
 
     </body>
 </html>
