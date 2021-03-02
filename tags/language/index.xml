@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>language on Li. Mingzhi</title>
+    <link>/tags/language/</link>
+    <description>Recent content in language on Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 26 Feb 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/language/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Note: System and Programming</title>
+      <link>/p/note-system-and-programming/</link>
+      <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+      
+      <guid>/p/note-system-and-programming/</guid>
+      <description>Programming Language   Golang 和 C＋＋的区别及使用场景
+  Golang 的协程管理（GOP）
+  进程，线程和协程的区别
+  make 和 new 的区别
+  channel 底层实现
+  channel如何唤醒goroutine
+  golang GC 机制
+   系统调用  poll, select 和 epoll的区别及其数据结构   Data Structure B树和B＋树 消息队列  RabbitMQ和Kafka的区别及优缺点  分布式   分布式锁的应用和实现
+a. Redis
+b. Mysql
+c. zookeeper
+  集群实现原理
+  算法  挂气球  小明有一些气球想挂在墙上装饰，他希望相同颜色的气球不要挂在一起，写一个算法帮他得出一种可行的挂气球方式， 自行定义函数，输入和返回，如果无法做到相同颜色的气球不挂在一起 leetcode</description>
+    </item>
+    
+  </channel>
+</rss>
