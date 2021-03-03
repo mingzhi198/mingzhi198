@@ -9,7 +9,7 @@
 <meta property='og:description' content='http各版本的区别(http0.9, http1.0, http1.1, http2.0)  1. HTTP&amp;amp;HTTPS 1. HTTPS证书的申请流程  在服务器上生成CSR文件（证书申请文件，内容包括证书公钥、使用的Hash算法、申请的域名、公司名称、职位等信息） 把CSR文件和其他可能的证件上传到CA认证机构 CA机构收到证书申请之后，使用申请中的Hash算法，对部分内容进行摘要，然后使用CA机构自己的私钥对这段摘要信息进行签名  CA机构把签名过的证书通过发送给申请者。  2. HTTPs客户端和服务端的交互流程 1. 客户端向服务器发出加密通信的请求 (1) 支持的协议版本，比如 TLS 1.0 (2) 客户端生成的随机数 random1, 稍后用于生成 会话密钥 (3) 支持的加密算法， 比如RSA非对称加密 (4) 支持的压缩算法 2. 服务器收到请求，然后响应 (1) 确认使用的加密通信协议，比如 TLS 1.0版本。 若客户端与服务器支持的版本不一致，则服务器关闭加密通信。 (2) 服务器生成随机数 random2, 稍后用于生成 会话密钥 (3) 确认使用的加密方法，比如 RSA非对称加密 (4) 服务器的证书 3. 客户端验证服务器证书  验证流程  1. CA机构在签发证书的时候，用签名算法(sha256RSA)对证书内容进行摘要，用自己的私钥对摘要进行签名E 2. 浏览器用预置在系统中的CA机构的公钥对服务器证书进行验签：用CA机构的公钥解密签名后的摘要E 3. 验签通过后得到CA机构使用的证书摘要S 4. 浏览器用相同的签名算法对证书内容进行一次摘要S1，若得到的值S1与验证签之后得到的摘要S相同，则验签通过  生成随机密钥 pre-master secret  验证通过后，客户端生成一个随机数 pre-master secret, 然后用证书中的公钥进行加密，并传给服务端。 服务端端用私钥将其解密； 即客户端和服务端都有一套相同的数据：pre-master secret, random1, random2  pre-master secret  pre-master secret 前两个字节是TLS版本号。 在 Client 在第一次请求的时候会明文发送一份加密套件列表和当前支持的SSL/TLS版本号给服务端， 若服务端对密文中解密出来的pre-master版本号跟之前客户端发送的版本号不一致，则停止通信 4.'>
 <meta property='og:url' content='/p/note-network/'>
 <meta property='og:site_name' content='Li. Mingzhi'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='database' /><meta property='article:tag' content='db' /><meta property='article:published_time' content='2021-02-26T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-02-26T19:00:52&#43;08:00'/>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='database' /><meta property='article:tag' content='db' /><meta property='article:published_time' content='2021-03-01T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-03-01T19:00:52&#43;08:00'/>
 <meta name="twitter:title" content="Note: Network">
 <meta name="twitter:description" content="http各版本的区别(http0.9, http1.0, http1.1, http2.0)  1. HTTP&amp;amp;HTTPS 1. HTTPS证书的申请流程  在服务器上生成CSR文件（证书申请文件，内容包括证书公钥、使用的Hash算法、申请的域名、公司名称、职位等信息） 把CSR文件和其他可能的证件上传到CA认证机构 CA机构收到证书申请之后，使用申请中的Hash算法，对部分内容进行摘要，然后使用CA机构自己的私钥对这段摘要信息进行签名  CA机构把签名过的证书通过发送给申请者。  2. HTTPs客户端和服务端的交互流程 1. 客户端向服务器发出加密通信的请求 (1) 支持的协议版本，比如 TLS 1.0 (2) 客户端生成的随机数 random1, 稍后用于生成 会话密钥 (3) 支持的加密算法， 比如RSA非对称加密 (4) 支持的压缩算法 2. 服务器收到请求，然后响应 (1) 确认使用的加密通信协议，比如 TLS 1.0版本。 若客户端与服务器支持的版本不一致，则服务器关闭加密通信。 (2) 服务器生成随机数 random2, 稍后用于生成 会话密钥 (3) 确认使用的加密方法，比如 RSA非对称加密 (4) 服务器的证书 3. 客户端验证服务器证书  验证流程  1. CA机构在签发证书的时候，用签名算法(sha256RSA)对证书内容进行摘要，用自己的私钥对摘要进行签名E 2. 浏览器用预置在系统中的CA机构的公钥对服务器证书进行验签：用CA机构的公钥解密签名后的摘要E 3. 验签通过后得到CA机构使用的证书摘要S 4. 浏览器用相同的签名算法对证书内容进行一次摘要S1，若得到的值S1与验证签之后得到的摘要S相同，则验签通过  生成随机密钥 pre-master secret  验证通过后，客户端生成一个随机数 pre-master secret, 然后用证书中的公钥进行加密，并传给服务端。 服务端端用私钥将其解密； 即客户端和服务端都有一套相同的数据：pre-master secret, random1, random2  pre-master secret  pre-master secret 前两个字节是TLS版本号。 在 Client 在第一次请求的时候会明文发送一份加密套件列表和当前支持的SSL/TLS版本号给服务端， 若服务端对密文中解密出来的pre-master版本号跟之前客户端发送的版本号不一致，则停止通信 4.">
     </head>
@@ -185,7 +185,7 @@
 
 
 
-        <time class="article-time--published">Feb 26, 2021</time>
+        <time class="article-time--published">Mar 01, 2021</time>
     </footer></div>
 </header>
 

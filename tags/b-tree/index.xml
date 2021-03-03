@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>B-Tree on Li. Mingzhi</title>
+    <link>/tags/b-tree/</link>
+    <description>Recent content in B-Tree on Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 26 Feb 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/b-tree/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Note: Trees</title>
+      <link>/p/note-trees/</link>
+      <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+      
+      <guid>/p/note-trees/</guid>
+      <description>二叉树, 二叉搜索树(BST), 平衡二叉树(AVL), 红黑树, B树,B+树  二叉树 无序插入, 当需要查找的时候，还是得一个一个挨着去遍历查找
+二叉搜索树(BST) 插入的数据有序，左子树必须小于根节点，右子树必须大于根节点;
+使用二分查找来提高效率
+但是如果插入的顺序是升序或者降序的话，树的形状会变成如下：
+此时二叉搜索树就会退化成链表，时间复杂度又会变成O(n)
+平衡二叉树(AVL) 为了解决上述问题，通过左旋转或右旋转让树平衡
+最短子树跟最长子树高度只差不能超过1
+由图我们可以看到，当顺序插入的时候，会自动的进行旋转，以达到平衡
+但是会通过插入性能的损失来弥补查询性能的提升
+ 当我们插入的数据很多时候，而查询很少的时候，由于插入数据会旋转同样会消耗很多时间  4. 红黑树 同样是经过左右旋让树平衡起来，还要变色的行为
+最长子树只要不超过最短子树的两倍即可
+查询性能和插入性能近似取得平衡
+ 但是随着数据的插入、发现树的深度会变深，树的深度会越来越深，意味着IO次数越多，影响数据读取的效率  5. B树 为了解决上述数据插入过多，树深度变深的问题，我们采用B树
+把原来的有序二叉树变成有序多叉树
+举例： 如果要查询select * from table where id=14？ 第一步，将磁盘一加载到内存中，发现14&amp;lt;16,寻找地址磁盘2 第二步，将磁盘二加载到内存中，发现14&amp;gt;11,寻找地址磁盘7 第三步，将磁盘七加载到内存中，发现14=14，读取data，取出data，结束  问题   B树不支持范围查询的快速查找  如果我们查询一个范围的数据，查找到范围一个边界时，需要回到根节点重新遍历查找，需要从根节点进行多次遍历，即便找到范围的另一个边界，查询效率会降低。 如果data存储的是行记录，行的大小随着列数的增多，所占空间会变大。  这时，一个页中可存储的数据量就会变少，树相应就会变高，磁盘IO次数就会变大。 6. B+树 B+树对B树进行了改进，把数据全放在了叶子节点中，叶子节点之间使用双向指针连接，最底层的叶子节点形成了一个双向有序链表。
+例如： 查询范围 select * from table where id between 11 and 35？ 第一步，将磁盘一加载到内存中，发现11&amp;lt;28,寻找地址磁盘2 第二步，将磁盘二加载到内存中，发现10&amp;gt;11&amp;gt;17,寻找地址磁盘5 第三步，将磁盘五加载到内存中，发现11=11，读取data 第四步，继续向右查询，读取磁盘5，发现35=35，读取11-35之间数据，结束 由此可见，这样的范围查询比B树速度提高了不少  B+树相对B树的优点  1.</description>
+    </item>
+    
+  </channel>
+</rss>

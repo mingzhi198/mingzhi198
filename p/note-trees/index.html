@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='二叉树, 二叉搜索树(BST), 平衡二叉树(AVL), 红黑树, B树,B&#43;树  二叉树 无序插入, 当需要查找的时候，还是得一个一个挨着去遍历查找
+二叉搜索树(BST) 插入的数据有序，左子树必须小于根节点，右子树必须大于根节点;
+使用二分查找来提高效率
+但是如果插入的顺序是升序或者降序的话，树的形状会变成如下：
+此时二叉搜索树就会退化成链表，时间复杂度又会变成O(n)
+平衡二叉树(AVL) 为了解决上述问题，通过左旋转或右旋转让树平衡
+最短子树跟最长子树高度只差不能超过1
+由图我们可以看到，当顺序插入的时候，会自动的进行旋转，以达到平衡
+但是会通过插入性能的损失来弥补查询性能的提升
+ 当我们插入的数据很多时候，而查询很少的时候，由于插入数据会旋转同样会消耗很多时间  4. 红黑树 同样是经过左右旋让树平衡起来，还要变色的行为
+最长子树只要不超过最短子树的两倍即可
+查询性能和插入性能近似取得平衡
+ 但是随着数据的插入、发现树的深度会变深，树的深度会越来越深，意味着IO次数越多，影响数据读取的效率  5. B树 为了解决上述数据插入过多，树深度变深的问题，我们采用B树
+把原来的有序二叉树变成有序多叉树
+举例： 如果要查询select * from table where id=14？ 第一步，将磁盘一加载到内存中，发现14&amp;lt;16,寻找地址磁盘2 第二步，将磁盘二加载到内存中，发现14&amp;gt;11,寻找地址磁盘7 第三步，将磁盘七加载到内存中，发现14=14，读取data，取出data，结束  问题   B树不支持范围查询的快速查找  如果我们查询一个范围的数据，查找到范围一个边界时，需要回到根节点重新遍历查找，需要从根节点进行多次遍历，即便找到范围的另一个边界，查询效率会降低。 如果data存储的是行记录，行的大小随着列数的增多，所占空间会变大。  这时，一个页中可存储的数据量就会变少，树相应就会变高，磁盘IO次数就会变大。 6. B&#43;树 B&#43;树对B树进行了改进，把数据全放在了叶子节点中，叶子节点之间使用双向指针连接，最底层的叶子节点形成了一个双向有序链表。
+例如： 查询范围 select * from table where id between 11 and 35？ 第一步，将磁盘一加载到内存中，发现11&amp;lt;28,寻找地址磁盘2 第二步，将磁盘二加载到内存中，发现10&amp;gt;11&amp;gt;17,寻找地址磁盘5 第三步，将磁盘五加载到内存中，发现11=11，读取data 第四步，继续向右查询，读取磁盘5，发现35=35，读取11-35之间数据，结束 由此可见，这样的范围查询比B树速度提高了不少  B&#43;树相对B树的优点  1.'><title>Note: Trees</title>
+
+<link rel='canonical' href='/p/note-trees/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Note: Trees'>
+<meta property='og:description' content='二叉树, 二叉搜索树(BST), 平衡二叉树(AVL), 红黑树, B树,B&#43;树  二叉树 无序插入, 当需要查找的时候，还是得一个一个挨着去遍历查找
+二叉搜索树(BST) 插入的数据有序，左子树必须小于根节点，右子树必须大于根节点;
+使用二分查找来提高效率
+但是如果插入的顺序是升序或者降序的话，树的形状会变成如下：
+此时二叉搜索树就会退化成链表，时间复杂度又会变成O(n)
+平衡二叉树(AVL) 为了解决上述问题，通过左旋转或右旋转让树平衡
+最短子树跟最长子树高度只差不能超过1
+由图我们可以看到，当顺序插入的时候，会自动的进行旋转，以达到平衡
+但是会通过插入性能的损失来弥补查询性能的提升
+ 当我们插入的数据很多时候，而查询很少的时候，由于插入数据会旋转同样会消耗很多时间  4. 红黑树 同样是经过左右旋让树平衡起来，还要变色的行为
+最长子树只要不超过最短子树的两倍即可
+查询性能和插入性能近似取得平衡
+ 但是随着数据的插入、发现树的深度会变深，树的深度会越来越深，意味着IO次数越多，影响数据读取的效率  5. B树 为了解决上述数据插入过多，树深度变深的问题，我们采用B树
+把原来的有序二叉树变成有序多叉树
+举例： 如果要查询select * from table where id=14？ 第一步，将磁盘一加载到内存中，发现14&amp;lt;16,寻找地址磁盘2 第二步，将磁盘二加载到内存中，发现14&amp;gt;11,寻找地址磁盘7 第三步，将磁盘七加载到内存中，发现14=14，读取data，取出data，结束  问题   B树不支持范围查询的快速查找  如果我们查询一个范围的数据，查找到范围一个边界时，需要回到根节点重新遍历查找，需要从根节点进行多次遍历，即便找到范围的另一个边界，查询效率会降低。 如果data存储的是行记录，行的大小随着列数的增多，所占空间会变大。  这时，一个页中可存储的数据量就会变少，树相应就会变高，磁盘IO次数就会变大。 6. B&#43;树 B&#43;树对B树进行了改进，把数据全放在了叶子节点中，叶子节点之间使用双向指针连接，最底层的叶子节点形成了一个双向有序链表。
+例如： 查询范围 select * from table where id between 11 and 35？ 第一步，将磁盘一加载到内存中，发现11&amp;lt;28,寻找地址磁盘2 第二步，将磁盘二加载到内存中，发现10&amp;gt;11&amp;gt;17,寻找地址磁盘5 第三步，将磁盘五加载到内存中，发现11=11，读取data 第四步，继续向右查询，读取磁盘5，发现35=35，读取11-35之间数据，结束 由此可见，这样的范围查询比B树速度提高了不少  B&#43;树相对B树的优点  1.'>
+<meta property='og:url' content='/p/note-trees/'>
+<meta property='og:site_name' content='Li. Mingzhi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='database' /><meta property='article:tag' content='db' /><meta property='article:tag' content='tree' /><meta property='article:tag' content='B-Tree' /><meta property='article:published_time' content='2021-02-26T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-02-26T19:00:52&#43;08:00'/>
+<meta name="twitter:title" content="Note: Trees">
+<meta name="twitter:description" content="二叉树, 二叉搜索树(BST), 平衡二叉树(AVL), 红黑树, B树,B&#43;树  二叉树 无序插入, 当需要查找的时候，还是得一个一个挨着去遍历查找
+二叉搜索树(BST) 插入的数据有序，左子树必须小于根节点，右子树必须大于根节点;
+使用二分查找来提高效率
+但是如果插入的顺序是升序或者降序的话，树的形状会变成如下：
+此时二叉搜索树就会退化成链表，时间复杂度又会变成O(n)
+平衡二叉树(AVL) 为了解决上述问题，通过左旋转或右旋转让树平衡
+最短子树跟最长子树高度只差不能超过1
+由图我们可以看到，当顺序插入的时候，会自动的进行旋转，以达到平衡
+但是会通过插入性能的损失来弥补查询性能的提升
+ 当我们插入的数据很多时候，而查询很少的时候，由于插入数据会旋转同样会消耗很多时间  4. 红黑树 同样是经过左右旋让树平衡起来，还要变色的行为
+最长子树只要不超过最短子树的两倍即可
+查询性能和插入性能近似取得平衡
+ 但是随着数据的插入、发现树的深度会变深，树的深度会越来越深，意味着IO次数越多，影响数据读取的效率  5. B树 为了解决上述数据插入过多，树深度变深的问题，我们采用B树
+把原来的有序二叉树变成有序多叉树
+举例： 如果要查询select * from table where id=14？ 第一步，将磁盘一加载到内存中，发现14&amp;lt;16,寻找地址磁盘2 第二步，将磁盘二加载到内存中，发现14&amp;gt;11,寻找地址磁盘7 第三步，将磁盘七加载到内存中，发现14=14，读取data，取出data，结束  问题   B树不支持范围查询的快速查找  如果我们查询一个范围的数据，查找到范围一个边界时，需要回到根节点重新遍历查找，需要从根节点进行多次遍历，即便找到范围的另一个边界，查询效率会降低。 如果data存储的是行记录，行的大小随着列数的增多，所占空间会变大。  这时，一个页中可存储的数据量就会变少，树相应就会变高，磁盘IO次数就会变大。 6. B&#43;树 B&#43;树对B树进行了改进，把数据全放在了叶子节点中，叶子节点之间使用双向指针连接，最底层的叶子节点形成了一个双向有序链表。
+例如： 查询范围 select * from table where id between 11 and 35？ 第一步，将磁盘一加载到内存中，发现11&amp;lt;28,寻找地址磁盘2 第二步，将磁盘二加载到内存中，发现10&amp;gt;11&amp;gt;17,寻找地址磁盘5 第三步，将磁盘五加载到内存中，发现11=11，读取data 第四步，继续向右查询，读取磁盘5，发现35=35，读取11-35之间数据，结束 由此可见，这样的范围查询比B树速度提高了不少  B&#43;树相对B树的优点  1.">
+    </head>
+    <body class="">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "auto");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.body.dataset.scheme = 'dark';
+        } else {
+            document.body.dataset.scheme = 'light';
+        }
+    })();
+</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    
+                    
+                    
+                        
+                        <img src="/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+
+                
+            </figure>
+        
+        <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
+    </header>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/p/resume/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/archives/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/search/index.html'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <div id="article-toolbar">
+        <a href="" class="back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+            <span>Back</span>
+        </a>
+    </div>
+
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/notes/" >
+                notes
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/note-trees/">Note: Trees</a>
+    </h2>
+
+    <footer class="article-time">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <time class="article-time--published">Feb 26, 2021</time>
+    </footer></div>
+</header>
+
+    <section class="article-content">
+    <ul>
+<li>二叉树, 二叉搜索树(BST), 平衡二叉树(AVL), 红黑树, B树,B+树</li>
+</ul>
+<h4 id="二叉树">二叉树</h4>
+<p>无序插入, 当需要查找的时候，还是得一个一个挨着去遍历查找<br>
+<img src="/post/jobs_knowledge/images/binary_tree.png" alt="binary_tree"  /></p>
+<h4 id="二叉搜索树bst">二叉搜索树(BST)</h4>
+<p>插入的数据有序，左子树必须小于根节点，右子树必须大于根节点;<br>
+使用二分查找来提高效率<br>
+<img src="/post/jobs_knowledge/images/bst.png" alt="bst"  /><br>
+但是如果插入的顺序是升序或者降序的话，树的形状会变成如下：<br>
+<img src="/post/jobs_knowledge/images/bst_o_n.png" alt="bst_o_n"  /><br>
+此时二叉搜索树就会退化成链表，时间复杂度又会变成O(n)</p>
+<h4 id="平衡二叉树avl">平衡二叉树(AVL)</h4>
+<p>为了解决上述问题，通过左旋转或右旋转让树平衡<br>
+最短子树跟最长子树高度只差不能超过1<br>
+<img src="/post/jobs_knowledge/images/avl.webp" alt="avl"  /><br>
+由图我们可以看到，当顺序插入的时候，会自动的进行旋转，以达到平衡<br>
+但是会通过插入性能的损失来弥补查询性能的提升</p>
+<ul>
+<li>当我们插入的数据很多时候，而查询很少的时候，由于插入数据会旋转同样会消耗很多时间</li>
+</ul>
+<h4 id="4-红黑树">4. 红黑树</h4>
+<p>同样是经过左右旋让树平衡起来，还要变色的行为<br>
+最长子树只要不超过最短子树的两倍即可<br>
+查询性能和插入性能近似取得平衡</p>
+<ul>
+<li>但是随着数据的插入、发现树的深度会变深，树的深度会越来越深，意味着IO次数越多，影响数据读取的效率</li>
+</ul>
+<h4 id="5-b树">5. B树</h4>
+<p>为了解决上述数据插入过多，树深度变深的问题，我们采用B树<br>
+把原来的有序二叉树变成有序多叉树<br>
+<img src="/post/jobs_knowledge/images/b_tree.webp" alt="b_tree"  /></p>
+<pre><code>举例： 如果要查询select * from table where id=14？
+第一步，将磁盘一加载到内存中，发现14&lt;16,寻找地址磁盘2
+第二步，将磁盘二加载到内存中，发现14&gt;11,寻找地址磁盘7
+第三步，将磁盘七加载到内存中，发现14=14，读取data，取出data，结束
+</code></pre><ul>
+<li>问题</li>
+</ul>
+<ol>
+<li>B树不支持范围查询的快速查找</li>
+</ol>
+<pre><code>如果我们查询一个范围的数据，查找到范围一个边界时，需要回到根节点重新遍历查找，需要从根节点进行多次遍历，即便找到范围的另一个边界，查询效率会降低。
+</code></pre><ol start="2">
+<li>如果data存储的是行记录，行的大小随着列数的增多，所占空间会变大。</li>
+</ol>
+<pre><code>这时，一个页中可存储的数据量就会变少，树相应就会变高，磁盘IO次数就会变大。
+</code></pre><h4 id="6-b树">6. B+树</h4>
+<p>B+树对B树进行了改进，把数据全放在了叶子节点中，叶子节点之间使用双向指针连接，最底层的叶子节点形成了一个双向有序链表。</p>
+<p><img src="/post/jobs_knowledge/images/b&#43;tree.webp" alt="b&#43;tree"  /></p>
+<pre><code>例如： 查询范围 select * from table where id between 11 and 35？
+
+第一步，将磁盘一加载到内存中，发现11&lt;28,寻找地址磁盘2
+第二步，将磁盘二加载到内存中，发现10&gt;11&gt;17,寻找地址磁盘5
+第三步，将磁盘五加载到内存中，发现11=11，读取data
+第四步，继续向右查询，读取磁盘5，发现35=35，读取11-35之间数据，结束
+由此可见，这样的范围查询比B树速度提高了不少
+</code></pre><ul>
+<li>B+树相对B树的优点</li>
+</ul>
+<pre><code>1. 叶子节点中才放数据
+2. 非叶子节点中不存储数据
+3. B+树每个节点包含更多个节点，这样做的好处，可以降低树的高度，同时将数据范围变成多个区间，区间越多查询越快
+</code></pre><p><a class="link" href="https://www.jianshu.com/p/63bda04adf38"  target="_blank" rel="noopener"
+    >https://www.jianshu.com/p/63bda04adf38</a></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/notes/">notes</a>
+        
+            <a href="/tags/database/">database</a>
+        
+            <a href="/tags/db/">db</a>
+        
+            <a href="/tags/tree/">tree</a>
+        
+            <a href="/tags/b-tree/">B-Tree</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/note-mysql/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: MySQL</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/note-network/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: Network</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/note-redis/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: Redis</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/note-system-and-programming/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: System and Programming</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 Li. Mingzhi
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

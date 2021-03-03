@@ -6,11 +6,11 @@
     <description>Recent content in Tags on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Feb 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 01 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>database</title>
       <link>/tags/database/</link>
-      <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+      <pubDate>Mon, 01 Mar 2021 19:00:52 +0800</pubDate>
       
       <guid>/tags/database/</guid>
       <description></description>
@@ -19,9 +19,18 @@
     <item>
       <title>db</title>
       <link>/tags/db/</link>
-      <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+      <pubDate>Mon, 01 Mar 2021 19:00:52 +0800</pubDate>
       
       <guid>/tags/db/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>notes</title>
+      <link>/tags/notes/</link>
+      <pubDate>Mon, 01 Mar 2021 19:00:52 +0800</pubDate>
+      
+      <guid>/tags/notes/</guid>
       <description></description>
     </item>
     
@@ -49,15 +58,6 @@
       <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
       
       <guid>/tags/language/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>notes</title>
-      <link>/tags/notes/</link>
-      <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
-      
-      <guid>/tags/notes/</guid>
       <description></description>
     </item>
     
