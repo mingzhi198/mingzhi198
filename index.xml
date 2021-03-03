@@ -6,7 +6,218 @@
         <description>Recent content on Li. Mingzhi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Mon, 01 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 03 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Note: Logic</title>
+        <link>/p/note-logic/</link>
+        <pubDate>Wed, 03 Mar 2021 19:00:52 +0800</pubDate>
+        
+        <guid>/p/note-logic/</guid>
+        <description>&lt;h3 id=&#34;1-状态机-两杯酒交互后的数量&#34;&gt;1. 状态机: 两杯酒交互后的数量&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;调酒&lt;br&gt;
+两个杯子(B1, B2)分别装1000ml酒, B1装红酒, B2装白酒;&lt;br&gt;
+从B1倒100ml红酒到B2中;&lt;br&gt;
+再从B2倒出100ml酒(非均匀混合体)到B1中;&lt;br&gt;
+问题: B1中白酒多,还是B2中红酒多&lt;br&gt;
+答案: 一样多&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;status 1&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;graph
+B1[(B1 红酒)]
+B2[(B2 白酒)]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/wine_s1.png&#34; alt=&#34;wine_s1&#34;  /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;status 2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;杯子&lt;/th&gt;
+&lt;th&gt;红酒&lt;/th&gt;
+&lt;th&gt;白酒&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;B1&lt;/td&gt;
+&lt;td&gt;1000&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B2&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;1000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;graph LR
+B1[(B1)] --&amp;gt; |100ml红酒| B2[(B2)]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/wine_s2.png&#34; alt=&#34;wine_s2&#34;  /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;status 3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;杯子&lt;/th&gt;
+&lt;th&gt;红酒&lt;/th&gt;
+&lt;th&gt;白酒&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;B1&lt;/td&gt;
+&lt;td&gt;900&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B2&lt;/td&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;1000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;graph RL
+B2[(B2)] --&amp;gt; |100ml混合酒, 白酒:X, 红酒:100-X| B1[(B1)]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/wine_s3.png&#34; alt=&#34;wine_s3&#34;  /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;status 4&lt;br&gt;
+从B2倒100ml混合酒到B1, 令B2倒入B1杯中的白酒容量为X,则B2倒入B1杯中的红酒容量则为100-X&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;杯子&lt;/th&gt;
+&lt;th&gt;红酒&lt;/th&gt;
+&lt;th&gt;白酒&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;B1&lt;/td&gt;
+&lt;td&gt;900+(100-X)&lt;/td&gt;
+&lt;td&gt;X&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B2&lt;/td&gt;
+&lt;td&gt;100-(100-X)&lt;/td&gt;
+&lt;td&gt;1000-X&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;结果如下表:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;杯子&lt;/th&gt;
+&lt;th&gt;红酒&lt;/th&gt;
+&lt;th&gt;白酒&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;B1&lt;/td&gt;
+&lt;td&gt;1000-X&lt;/td&gt;
+&lt;td&gt;X&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;B2&lt;/td&gt;
+&lt;td&gt;X&lt;/td&gt;
+&lt;td&gt;100-X&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;2-集合题-编程多面手&#34;&gt;2. 集合题: 编程多面手&lt;/h3&gt;
+&lt;p&gt;一个技术团队总共有100人, 会Java, Golang 和 C语言的人数分别是75, 65, 60人;&lt;br&gt;
+问题: 三个语言都会的,最多有多少人,最少有多少人?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1. 三个语言都会的最多有多少人?
+最多的人应该是最小集合的全集: 60
+
+2. 三个语言都会的最少人数?
+下班了,这人有时间再更
+&lt;/code&gt;&lt;/pre&gt;&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;
+&lt;/code&gt;&lt;/pre&gt;</description>
+        </item>
+        <item>
+        <title>Note: Trees</title>
+        <link>/p/note-trees/</link>
+        <pubDate>Wed, 03 Mar 2021 19:00:52 +0800</pubDate>
+        
+        <guid>/p/note-trees/</guid>
+        <description>&lt;ul&gt;
+&lt;li&gt;二叉树, 二叉搜索树(BST), 平衡二叉树(AVL), 红黑树, B树,B+树&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;二叉树&#34;&gt;二叉树&lt;/h4&gt;
+&lt;p&gt;无序插入, 当需要查找的时候，还是得一个一个挨着去遍历查找&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/binary_tree.png&#34; alt=&#34;binary_tree&#34;  /&gt;&lt;/p&gt;
+&lt;h4 id=&#34;二叉搜索树bst&#34;&gt;二叉搜索树(BST)&lt;/h4&gt;
+&lt;p&gt;插入的数据有序，左子树必须小于根节点，右子树必须大于根节点;&lt;br&gt;
+使用二分查找来提高效率&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/bst.png&#34; alt=&#34;bst&#34;  /&gt;&lt;br&gt;
+但是如果插入的顺序是升序或者降序的话，树的形状会变成如下：&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/bst_o_n.png&#34; alt=&#34;bst_o_n&#34;  /&gt;&lt;br&gt;
+此时二叉搜索树就会退化成链表，时间复杂度又会变成O(n)&lt;/p&gt;
+&lt;h4 id=&#34;平衡二叉树avl&#34;&gt;平衡二叉树(AVL)&lt;/h4&gt;
+&lt;p&gt;为了解决上述问题，通过左旋转或右旋转让树平衡&lt;br&gt;
+最短子树跟最长子树高度只差不能超过1&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/avl.webp&#34; alt=&#34;avl&#34;  /&gt;&lt;br&gt;
+由图我们可以看到，当顺序插入的时候，会自动的进行旋转，以达到平衡&lt;br&gt;
+但是会通过插入性能的损失来弥补查询性能的提升&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;当我们插入的数据很多时候，而查询很少的时候，由于插入数据会旋转同样会消耗很多时间&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;4-红黑树&#34;&gt;4. 红黑树&lt;/h4&gt;
+&lt;p&gt;同样是经过左右旋让树平衡起来，还要变色的行为&lt;br&gt;
+最长子树只要不超过最短子树的两倍即可&lt;br&gt;
+查询性能和插入性能近似取得平衡&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;但是随着数据的插入、发现树的深度会变深，树的深度会越来越深，意味着IO次数越多，影响数据读取的效率&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;5-b树&#34;&gt;5. B树&lt;/h4&gt;
+&lt;p&gt;为了解决上述数据插入过多，树深度变深的问题，我们采用B树&lt;br&gt;
+把原来的有序二叉树变成有序多叉树&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/b_tree.webp&#34; alt=&#34;b_tree&#34;  /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;举例： 如果要查询select * from table where id=14？
+第一步，将磁盘一加载到内存中，发现14&amp;lt;16,寻找地址磁盘2
+第二步，将磁盘二加载到内存中，发现14&amp;gt;11,寻找地址磁盘7
+第三步，将磁盘七加载到内存中，发现14=14，读取data，取出data，结束
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;B树不支持范围查询的快速查找&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;如果我们查询一个范围的数据，查找到范围一个边界时，需要回到根节点重新遍历查找，需要从根节点进行多次遍历，即便找到范围的另一个边界，查询效率会降低。
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;如果data存储的是行记录，行的大小随着列数的增多，所占空间会变大。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;这时，一个页中可存储的数据量就会变少，树相应就会变高，磁盘IO次数就会变大。
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;6-b树&#34;&gt;6. B+树&lt;/h4&gt;
+&lt;p&gt;B+树对B树进行了改进，把数据全放在了叶子节点中，叶子节点之间使用双向指针连接，最底层的叶子节点形成了一个双向有序链表。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/b&amp;#43;tree.webp&#34; alt=&#34;b&amp;#43;tree&#34;  /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;例如： 查询范围 select * from table where id between 11 and 35？
+
+第一步，将磁盘一加载到内存中，发现11&amp;lt;28,寻找地址磁盘2
+第二步，将磁盘二加载到内存中，发现10&amp;gt;11&amp;gt;17,寻找地址磁盘5
+第三步，将磁盘五加载到内存中，发现11=11，读取data
+第四步，继续向右查询，读取磁盘5，发现35=35，读取11-35之间数据，结束
+由此可见，这样的范围查询比B树速度提高了不少
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;B+树相对B树的优点&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;1. 叶子节点中才放数据
+2. 非叶子节点中不存储数据
+3. B+树每个节点包含更多个节点，这样做的好处，可以降低树的高度，同时将数据范围变成多个区间，区间越多查询越快
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;引用&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://www.jianshu.com/p/63bda04adf38&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.jianshu.com/p/63bda04adf38&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>Note: Network</title>
         <link>/p/note-network/</link>
         <pubDate>Mon, 01 Mar 2021 19:00:52 +0800</pubDate>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>logic on Li. Mingzhi</title>
+    <link>/tags/logic/</link>
+    <description>Recent content in logic on Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 03 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/logic/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Note: Logic</title>
+      <link>/p/note-logic/</link>
+      <pubDate>Wed, 03 Mar 2021 19:00:52 +0800</pubDate>
+      
+      <guid>/p/note-logic/</guid>
+      <description>1. 状态机: 两杯酒交互后的数量  调酒
+两个杯子(B1, B2)分别装1000ml酒, B1装红酒, B2装白酒;
+从B1倒100ml红酒到B2中;
+再从B2倒出100ml酒(非均匀混合体)到B1中;
+问题: B1中白酒多,还是B2中红酒多
+答案: 一样多   status 1  graph B1[(B1 红酒)] B2[(B2 白酒)]  status 2     杯子 红酒 白酒     B1 1000 0   B2 0 1000    graph LR B1[(B1)] --&amp;gt; |100ml红酒| B2[(B2)]  status 3     杯子 红酒 白酒     B1 900 0   B2 100 1000    graph RL B2[(B2)] --&amp;gt; |100ml混合酒, 白酒:X, 红酒:100-X| B1[(B1)]  status 4</description>
+    </item>
+    
+  </channel>
+</rss>

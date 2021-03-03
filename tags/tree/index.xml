@@ -6,11 +6,11 @@
     <description>Recent content in tree on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Feb 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/tree/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 03 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/tree/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Note: Trees</title>
       <link>/p/note-trees/</link>
-      <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
+      <pubDate>Wed, 03 Mar 2021 19:00:52 +0800</pubDate>
       
       <guid>/p/note-trees/</guid>
       <description>二叉树, 二叉搜索树(BST), 平衡二叉树(AVL), 红黑树, B树,B+树  二叉树 无序插入, 当需要查找的时候，还是得一个一个挨着去遍历查找
