@@ -251,9 +251,40 @@ AuBuC = 36 + 44 + 32 = 112
 2. 非叶子节点中不存储数据
 3. B+树每个节点包含更多个节点，这样做的好处，可以降低树的高度，同时将数据范围变成多个区间，区间越多查询越快
 &lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;思考题&lt;br&gt;
+为什么 MySQL 的索引要使用 B+ 树而不是其它树形结构?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;因为 B 树不管叶子节点还是非叶子节点，都会保存数据，这样导致在非叶子节点中能保存的指针数量变少（有些资料也称为扇出），指针少的情况下要保存大量数据，只能增加树的高度，导致 IO 操作变多，查询性能变低。
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;7-b树的高度与数据量&#34;&gt;7. B+树的高度与数据量&lt;/h4&gt;
+&lt;h5 id=&#34;71--innodb-索引数据结构&#34;&gt;7.1  InnoDB 索引数据结构&lt;/h5&gt;
+&lt;p&gt;在计算机中磁盘存储数据最小单元是扇区，一个扇区的大小是 512 字节，&lt;br&gt;
+而文件系统（例如XFS/EXT4）他的最小单元是块，一个块的大小是 4k，文件系统中一个文件大小只有1个字节，但不得不占磁盘上4KB的空间。&lt;br&gt;
+而对于我们的 InnoDB 存储引擎也有自己的最小储存单元——页（Page），一个页的大小是 16K。&lt;br&gt;
+Innodb 的所有数据文件（后缀为 ibd 的文件），他的大小始终都是 16384（16k）的整数倍。&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/innodb_block_size.png&#34; alt=&#34;innodb_block_size&#34;  /&gt;&lt;/p&gt;
+&lt;p&gt;磁盘扇区、文件系统、InnoDB 存储引擎都有各自的最小存储单元。&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/innodb_file_system.jpg&#34; alt=&#34;innodb_file_system&#34;  /&gt;&lt;br&gt;
+MySQL中, InnoDB 页的大小默认是 16k:&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/innodb_page_size.png&#34; alt=&#34;innodb_page_size&#34;  /&gt;&lt;/p&gt;
+&lt;p&gt;数据表中的数据都是存储在页中的，假设一行数据的大小是 1k，那么一个页可以存放 16 行这样的数据。&lt;br&gt;
+1、InnoDB 存储引擎的最小存储单元是页，页可以用于存放数据也可以用于存放键值 + 指针，在 B+ 树中叶子节点存放数据，非叶子节点存放键值 + 指针。&lt;/p&gt;
+&lt;p&gt;2、索引组织表通过非叶子节点的二分查找法以及指针确定数据在哪个页中，进而在去数据页中查找到需要的数据；&lt;/p&gt;
+&lt;p&gt;假设 B+ 树高为 2，即存在一个根节点和若干个叶子节点，那么这棵 B+ 树的存放总记录数为：根节点指针数 * 单个叶子节点记录行数。&lt;br&gt;
+上文我们已经说明单个叶子节点（页）中的记录数 =16K/1K=16（这里假设一行记录的数据大小为 1k)。&lt;/p&gt;
+&lt;p&gt;非叶子节点能存放多少指针？&lt;br&gt;
+假设主键 ID 为 bigint 类型，长度为 8 字节，而指针大小在 InnoDB 源码中设置为 6 字节，这样一共 14 字节，我们一个页中能存放多少这样的单元，其实就代表有多少指针，即 16384/14=1170。&lt;br&gt;
+那么可以算出一棵高度为 2 的 B+ 树，能存放 1170&lt;em&gt;16=18720 条这样的数据记录。&lt;br&gt;
+根据同样的原理我们可以算出一个高度为 3 的 B+ 树可以存放： 1170&lt;/em&gt;1170*16=21902400 条这样的记录。&lt;/p&gt;
+&lt;p&gt;所以在 InnoDB 中 B+ 树高度一般为 1-3 层，它就能满足千万级的数据存储。&lt;/p&gt;
+&lt;p&gt;在查找数据时一次页的查找代表一次 IO，所以通过主键索引查询通常只需要 1-3 次 IO 操作即可查找到数据。&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://yq.aliyun.com/articles/692067&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;索引优化&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
 &lt;li&gt;引用&lt;br&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://www.jianshu.com/p/63bda04adf38&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://www.jianshu.com/p/63bda04adf38&lt;/a&gt;&lt;/li&gt;
+    &gt;https://www.jianshu.com/p/63bda04adf38&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/86137284&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://zhuanlan.zhihu.com/p/86137284&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
         </item>
@@ -404,7 +435,8 @@ TIME-WAIT状态:&lt;/p&gt;
         <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
         
         <guid>/p/note-mysql/</guid>
-        <description>&lt;h2 id=&#34;1-事务&#34;&gt;1. 事务&lt;/h2&gt;
+        <description>&lt;p&gt;[TOC]&lt;/p&gt;
+&lt;h2 id=&#34;1-事务&#34;&gt;1. 事务&lt;/h2&gt;
 &lt;h3 id=&#34;11-事务的四个重要特性acid&#34;&gt;1.1 事务的四个重要特性(ACID)：&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;原子性（Atomicity）&lt;/li&gt;
@@ -701,7 +733,7 @@ InnoDB 使用 Next-key Locks 解决幻读问题。需要注意的是，如果索
 
 （6）如果一个内部表很大，会转化为磁盘表。
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;4-索引&#34;&gt;4. 索引&lt;/h2&gt;
-&lt;h3 id=&#34;41-聚簇索引和非聚簇索引&#34;&gt;4.1 聚簇索引和非聚簇索引&lt;/h3&gt;
+&lt;h3 id=&#34;41-聚簇索引和非聚簇索引辅助索引&#34;&gt;4.1 聚簇索引和非聚簇索引(辅助索引)&lt;/h3&gt;
 &lt;p&gt;判断是否是聚簇索引就看数据和索引是否在一个文件中&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;innodb&lt;/li&gt;
@@ -765,11 +797,45 @@ select * from table where age = ? and name = ? ;-- 生效
 select * from table where name = ? and age = ? ;
 在没有索引下推之前，根据name从存储引擎中获取符合规则的数据，在server层对age进行过滤
 有索引下推之后，根据name、age两个条件从存储引擎中获取对应的数据
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;分析：有索引下推的好处，如果我们有50条数据，我们通过过滤会得到10条数据，如果没有索引下推，会先获取50条再去排除得到10条，而有了下推之后，我们会直接在存储引擎就过滤成了10条&lt;/p&gt;
-&lt;p&gt;MySam和innoDB的区别&lt;/p&gt;
-&lt;h2 id=&#34;5-分布式和数据同步&#34;&gt;5. 分布式和数据同步&lt;/h2&gt;
+
+分析：有索引下推的好处，如果我们有50条数据，我们通过过滤会得到10条数据，如果没有索引下推，会先获取50条再去排除得到10条，而有了下推之后，我们会直接在存储引擎就过滤成了10条
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;46-索引和数据文件&#34;&gt;4.6 索引和数据文件&lt;/h3&gt;
+&lt;p&gt;MySQL的数据位置在/var/lib/mysql/目录;&lt;br&gt;
+InnoDB存储引擎的数据库表对应两个文件，MYISAM存储引擎数据库表对应3个文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.frm文件是存储的是表结构，两个存储引擎都一样
+.ibd文件是InnoDB的索引+数据
+.MYI（I：index）和.MYD（D：data）文件分别是MYISAM的索引字段的索引结构和数据文件，
+也就是说MYISAM存储引擎的索引和数据是分开的，而InnoDB存储引擎的数据和索引是在一个文件里的。
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;5-innodb和myisam的一些不同&#34;&gt;5. InnoDB和MYISAM的一些不同&lt;/h3&gt;
+&lt;h4 id=&#34;51-myisam索引实现非聚集&#34;&gt;5.1 MYISAM索引实现（非聚集）&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;索引文件和数据文件是分离的（非聚集）&lt;/li&gt;
+&lt;li&gt;数据、行记录是存储在MYD文件:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;假如col1是索引字段, 那么这一列是存储在以B+Tree的结构来组织的MYI文件里;
+然后他的叶子节点的data部分存储的是索引所在行记录的磁盘文件地址，
+根据磁盘文件地址指针就可以从MYD文件里快速的找到我们的这一行记录。
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;51-innodb索引实现聚集&#34;&gt;5.1 InnoDB索引实现（聚集）&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;表数据文件本身就是按B+Tree组织的一个索引结构文件&lt;/li&gt;
+&lt;li&gt;聚集索引-叶子节点包含了完整的数据记录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;.frm文件和MYISAM一样都是表结构文件，
+.ibd文件就是MYISAM的MYI和MYD文件的合并，索引文件和数据文件都存储到一个文件。
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;InnoDB索引B+树的叶子节点和MYISAM有点区别，它存储的是索引所在行的所有字段。&lt;br&gt;
+这样就不用回表了，性能比MYISAM高，而MYISAM查找到索引所在行记录的磁盘地址后还要回MYD文件读取一次。&lt;/p&gt;
+&lt;h4 id=&#34;52-为什么innodb表必须有主键并且推荐使用整型的自增主键&#34;&gt;5.2 为什么InnoDB表必须有主键，并且推荐使用整型的自增主键？&lt;/h4&gt;
+&lt;p&gt;mysql设计的就是innoDB把你的数据和主键索引用B+Tree来组织的，没有主键他的数据就没有一个结构来存储。&lt;br&gt;
+建innoDB表的时候没有建主键，表也能建成功&lt;/p&gt;
+&lt;p&gt;为什么推荐使用整型的主键？&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;我们想象一下查找过程，是把节点load到内存然后在内存里去比较大小，也就是在查找的过程中要不断的去进行数据的比对。假设UUID，既不自增也不是整形。问一下，是整形的1&amp;lt;2比较的效率高还是字符串的“abc”和“abe”比较的效率高呢？显然是前者，因为字符串的比较是转换成ASICI一位一位的比，如果最后一位不一样，比到最后才比较出大小，就比整形比较慢多了，存储空间来说，整形更小。索引越节约资源越好。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;为什么是自增的主键呢？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;B-Tree的叶子节点之间是没有指针的，B+Tree优化后增加了叶子节点之间的指针，如果我们遍历数据，从当前节点遍历完之后，就可以根据节点间的指针快速找到下一个节点去遍历。
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;6-分布式和数据同步&#34;&gt;6. 分布式和数据同步&lt;/h2&gt;
 &lt;p&gt;MySQL读写分离和数据同步原理&lt;/p&gt;
-&lt;h2 id=&#34;6-其它数据库&#34;&gt;6. 其它数据库&lt;/h2&gt;
+&lt;h2 id=&#34;7-其它数据库&#34;&gt;7. 其它数据库&lt;/h2&gt;
 &lt;h4 id=&#34;mongodb&#34;&gt;MongoDB&lt;/h4&gt;
 &lt;h4 id=&#34;elasticsearch&#34;&gt;ElasticSearch&lt;/h4&gt;
 &lt;ul&gt;
@@ -781,7 +847,9 @@ select * from table where name = ? and age = ? ;
 &lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/102147497&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://zhuanlan.zhihu.com/p/102147497&lt;/a&gt;&lt;br&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://www.jianshu.com/p/63bda04adf38&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://www.jianshu.com/p/63bda04adf38&lt;/a&gt;&lt;/li&gt;
+    &gt;https://www.jianshu.com/p/63bda04adf38&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://mp.weixin.qq.com/s?__biz=MzUxNTQyOTIxNA==&amp;amp;mid=2247484041&amp;amp;idx=1&amp;amp;sn=76d3bf1772f9e3c796ad3d8a089220fa&amp;amp;chksm=f9b784b8cec00dae3d52318f6cb2bdee39ad975bf79469b72a499ceca1c5d57db5cbbef914ea&amp;amp;token=2025456560&amp;amp;lang=zh_CN#rd&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://mp.weixin.qq.com/s?__biz=MzUxNTQyOTIxNA==&amp;amp;mid=2247484041&amp;amp;idx=1&amp;amp;sn=76d3bf1772f9e3c796ad3d8a089220fa&amp;amp;chksm=f9b784b8cec00dae3d52318f6cb2bdee39ad975bf79469b72a499ceca1c5d57db5cbbef914ea&amp;amp;token=2025456560&amp;amp;lang=zh_CN#rd&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
         </item>

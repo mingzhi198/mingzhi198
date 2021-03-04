@@ -300,9 +300,40 @@
 2. 非叶子节点中不存储数据
 3. B+树每个节点包含更多个节点，这样做的好处，可以降低树的高度，同时将数据范围变成多个区间，区间越多查询越快
 </code></pre><ul>
+<li>思考题<br>
+为什么 MySQL 的索引要使用 B+ 树而不是其它树形结构?</li>
+</ul>
+<pre><code>因为 B 树不管叶子节点还是非叶子节点，都会保存数据，这样导致在非叶子节点中能保存的指针数量变少（有些资料也称为扇出），指针少的情况下要保存大量数据，只能增加树的高度，导致 IO 操作变多，查询性能变低。
+</code></pre><h4 id="7-b树的高度与数据量">7. B+树的高度与数据量</h4>
+<h5 id="71--innodb-索引数据结构">7.1  InnoDB 索引数据结构</h5>
+<p>在计算机中磁盘存储数据最小单元是扇区，一个扇区的大小是 512 字节，<br>
+而文件系统（例如XFS/EXT4）他的最小单元是块，一个块的大小是 4k，文件系统中一个文件大小只有1个字节，但不得不占磁盘上4KB的空间。<br>
+而对于我们的 InnoDB 存储引擎也有自己的最小储存单元——页（Page），一个页的大小是 16K。<br>
+Innodb 的所有数据文件（后缀为 ibd 的文件），他的大小始终都是 16384（16k）的整数倍。<br>
+<img src="/post/jobs_knowledge/images/innodb_block_size.png" alt="innodb_block_size"  /></p>
+<p>磁盘扇区、文件系统、InnoDB 存储引擎都有各自的最小存储单元。<br>
+<img src="/post/jobs_knowledge/images/innodb_file_system.jpg" alt="innodb_file_system"  /><br>
+MySQL中, InnoDB 页的大小默认是 16k:<br>
+<img src="/post/jobs_knowledge/images/innodb_page_size.png" alt="innodb_page_size"  /></p>
+<p>数据表中的数据都是存储在页中的，假设一行数据的大小是 1k，那么一个页可以存放 16 行这样的数据。<br>
+1、InnoDB 存储引擎的最小存储单元是页，页可以用于存放数据也可以用于存放键值 + 指针，在 B+ 树中叶子节点存放数据，非叶子节点存放键值 + 指针。</p>
+<p>2、索引组织表通过非叶子节点的二分查找法以及指针确定数据在哪个页中，进而在去数据页中查找到需要的数据；</p>
+<p>假设 B+ 树高为 2，即存在一个根节点和若干个叶子节点，那么这棵 B+ 树的存放总记录数为：根节点指针数 * 单个叶子节点记录行数。<br>
+上文我们已经说明单个叶子节点（页）中的记录数 =16K/1K=16（这里假设一行记录的数据大小为 1k)。</p>
+<p>非叶子节点能存放多少指针？<br>
+假设主键 ID 为 bigint 类型，长度为 8 字节，而指针大小在 InnoDB 源码中设置为 6 字节，这样一共 14 字节，我们一个页中能存放多少这样的单元，其实就代表有多少指针，即 16384/14=1170。<br>
+那么可以算出一棵高度为 2 的 B+ 树，能存放 1170<em>16=18720 条这样的数据记录。<br>
+根据同样的原理我们可以算出一个高度为 3 的 B+ 树可以存放： 1170</em>1170*16=21902400 条这样的记录。</p>
+<p>所以在 InnoDB 中 B+ 树高度一般为 1-3 层，它就能满足千万级的数据存储。</p>
+<p>在查找数据时一次页的查找代表一次 IO，所以通过主键索引查询通常只需要 1-3 次 IO 操作即可查找到数据。</p>
+<p><a class="link" href="https://yq.aliyun.com/articles/692067"  target="_blank" rel="noopener"
+    >索引优化</a></p>
+<ul>
 <li>引用<br>
 <a class="link" href="https://www.jianshu.com/p/63bda04adf38"  target="_blank" rel="noopener"
-    >https://www.jianshu.com/p/63bda04adf38</a></li>
+    >https://www.jianshu.com/p/63bda04adf38</a><br>
+<a class="link" href="https://zhuanlan.zhihu.com/p/86137284"  target="_blank" rel="noopener"
+    >https://zhuanlan.zhihu.com/p/86137284</a></li>
 </ul>
 
 </section>

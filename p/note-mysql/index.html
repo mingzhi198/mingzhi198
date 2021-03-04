@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.'><title>Note: MySQL</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='[TOC]
+1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.'><title>Note: MySQL</title>
 
 <link rel='canonical' href='/p/note-mysql/'>
 
 <link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Note: MySQL'>
-<meta property='og:description' content='1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.'>
+<meta property='og:description' content='[TOC]
+1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.'>
 <meta property='og:url' content='/p/note-mysql/'>
 <meta property='og:site_name' content='Li. Mingzhi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='database' /><meta property='article:tag' content='db' /><meta property='article:published_time' content='2021-02-26T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-02-26T19:00:52&#43;08:00'/>
 <meta name="twitter:title" content="Note: MySQL">
-<meta name="twitter:description" content="1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.">
+<meta name="twitter:description" content="[TOC]
+1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.">
     </head>
     <body class="">
     <script>
@@ -190,7 +193,8 @@
 </header>
 
     <section class="article-content">
-    <h2 id="1-事务">1. 事务</h2>
+    <p>[TOC]</p>
+<h2 id="1-事务">1. 事务</h2>
 <h3 id="11-事务的四个重要特性acid">1.1 事务的四个重要特性(ACID)：</h3>
 <ul>
 <li>原子性（Atomicity）</li>
@@ -487,7 +491,7 @@ InnoDB 使用 Next-key Locks 解决幻读问题。需要注意的是，如果索
 
 （6）如果一个内部表很大，会转化为磁盘表。
 </code></pre><h2 id="4-索引">4. 索引</h2>
-<h3 id="41-聚簇索引和非聚簇索引">4.1 聚簇索引和非聚簇索引</h3>
+<h3 id="41-聚簇索引和非聚簇索引辅助索引">4.1 聚簇索引和非聚簇索引(辅助索引)</h3>
 <p>判断是否是聚簇索引就看数据和索引是否在一个文件中</p>
 <ul>
 <li>innodb</li>
@@ -551,11 +555,45 @@ select * from table where age = ? and name = ? ;-- 生效
 select * from table where name = ? and age = ? ;
 在没有索引下推之前，根据name从存储引擎中获取符合规则的数据，在server层对age进行过滤
 有索引下推之后，根据name、age两个条件从存储引擎中获取对应的数据
-</code></pre><p>分析：有索引下推的好处，如果我们有50条数据，我们通过过滤会得到10条数据，如果没有索引下推，会先获取50条再去排除得到10条，而有了下推之后，我们会直接在存储引擎就过滤成了10条</p>
-<p>MySam和innoDB的区别</p>
-<h2 id="5-分布式和数据同步">5. 分布式和数据同步</h2>
+
+分析：有索引下推的好处，如果我们有50条数据，我们通过过滤会得到10条数据，如果没有索引下推，会先获取50条再去排除得到10条，而有了下推之后，我们会直接在存储引擎就过滤成了10条
+</code></pre><h3 id="46-索引和数据文件">4.6 索引和数据文件</h3>
+<p>MySQL的数据位置在/var/lib/mysql/目录;<br>
+InnoDB存储引擎的数据库表对应两个文件，MYISAM存储引擎数据库表对应3个文件。</p>
+<pre><code>.frm文件是存储的是表结构，两个存储引擎都一样
+.ibd文件是InnoDB的索引+数据
+.MYI（I：index）和.MYD（D：data）文件分别是MYISAM的索引字段的索引结构和数据文件，
+也就是说MYISAM存储引擎的索引和数据是分开的，而InnoDB存储引擎的数据和索引是在一个文件里的。
+</code></pre><h3 id="5-innodb和myisam的一些不同">5. InnoDB和MYISAM的一些不同</h3>
+<h4 id="51-myisam索引实现非聚集">5.1 MYISAM索引实现（非聚集）</h4>
+<ul>
+<li>索引文件和数据文件是分离的（非聚集）</li>
+<li>数据、行记录是存储在MYD文件:</li>
+</ul>
+<pre><code>假如col1是索引字段, 那么这一列是存储在以B+Tree的结构来组织的MYI文件里;
+然后他的叶子节点的data部分存储的是索引所在行记录的磁盘文件地址，
+根据磁盘文件地址指针就可以从MYD文件里快速的找到我们的这一行记录。
+</code></pre><h4 id="51-innodb索引实现聚集">5.1 InnoDB索引实现（聚集）</h4>
+<ul>
+<li>表数据文件本身就是按B+Tree组织的一个索引结构文件</li>
+<li>聚集索引-叶子节点包含了完整的数据记录</li>
+</ul>
+<pre><code>.frm文件和MYISAM一样都是表结构文件，
+.ibd文件就是MYISAM的MYI和MYD文件的合并，索引文件和数据文件都存储到一个文件。
+</code></pre><p>InnoDB索引B+树的叶子节点和MYISAM有点区别，它存储的是索引所在行的所有字段。<br>
+这样就不用回表了，性能比MYISAM高，而MYISAM查找到索引所在行记录的磁盘地址后还要回MYD文件读取一次。</p>
+<h4 id="52-为什么innodb表必须有主键并且推荐使用整型的自增主键">5.2 为什么InnoDB表必须有主键，并且推荐使用整型的自增主键？</h4>
+<p>mysql设计的就是innoDB把你的数据和主键索引用B+Tree来组织的，没有主键他的数据就没有一个结构来存储。<br>
+建innoDB表的时候没有建主键，表也能建成功</p>
+<p>为什么推荐使用整型的主键？</p>
+<pre><code>我们想象一下查找过程，是把节点load到内存然后在内存里去比较大小，也就是在查找的过程中要不断的去进行数据的比对。假设UUID，既不自增也不是整形。问一下，是整形的1&lt;2比较的效率高还是字符串的“abc”和“abe”比较的效率高呢？显然是前者，因为字符串的比较是转换成ASICI一位一位的比，如果最后一位不一样，比到最后才比较出大小，就比整形比较慢多了，存储空间来说，整形更小。索引越节约资源越好。
+</code></pre><ul>
+<li>为什么是自增的主键呢？</li>
+</ul>
+<pre><code>B-Tree的叶子节点之间是没有指针的，B+Tree优化后增加了叶子节点之间的指针，如果我们遍历数据，从当前节点遍历完之后，就可以根据节点间的指针快速找到下一个节点去遍历。
+</code></pre><h2 id="6-分布式和数据同步">6. 分布式和数据同步</h2>
 <p>MySQL读写分离和数据同步原理</p>
-<h2 id="6-其它数据库">6. 其它数据库</h2>
+<h2 id="7-其它数据库">7. 其它数据库</h2>
 <h4 id="mongodb">MongoDB</h4>
 <h4 id="elasticsearch">ElasticSearch</h4>
 <ul>
@@ -567,7 +605,9 @@ select * from table where name = ? and age = ? ;
 <a class="link" href="https://zhuanlan.zhihu.com/p/102147497"  target="_blank" rel="noopener"
     >https://zhuanlan.zhihu.com/p/102147497</a><br>
 <a class="link" href="https://www.jianshu.com/p/63bda04adf38"  target="_blank" rel="noopener"
-    >https://www.jianshu.com/p/63bda04adf38</a></li>
+    >https://www.jianshu.com/p/63bda04adf38</a><br>
+<a class="link" href="https://mp.weixin.qq.com/s?__biz=MzUxNTQyOTIxNA==&amp;mid=2247484041&amp;idx=1&amp;sn=76d3bf1772f9e3c796ad3d8a089220fa&amp;chksm=f9b784b8cec00dae3d52318f6cb2bdee39ad975bf79469b72a499ceca1c5d57db5cbbef914ea&amp;token=2025456560&amp;lang=zh_CN#rd"  target="_blank" rel="noopener"
+    >https://mp.weixin.qq.com/s?__biz=MzUxNTQyOTIxNA==&amp;mid=2247484041&amp;idx=1&amp;sn=76d3bf1772f9e3c796ad3d8a089220fa&amp;chksm=f9b784b8cec00dae3d52318f6cb2bdee39ad975bf79469b72a499ceca1c5d57db5cbbef914ea&amp;token=2025456560&amp;lang=zh_CN#rd</a></li>
 </ul>
 
 </section>

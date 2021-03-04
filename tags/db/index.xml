@@ -46,7 +46,8 @@
       <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
       
       <guid>/p/note-mysql/</guid>
-      <description>1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.</description>
+      <description>[TOC]
+1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.</description>
     </item>
     
     <item>
