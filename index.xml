@@ -22,15 +22,12 @@
 答案: 一样多&lt;/li&gt;
 &lt;/ol&gt;
 &lt;ul&gt;
-&lt;li&gt;status 1&lt;/li&gt;
+&lt;li&gt;status 1&lt;br&gt;
+B1装1000ml红酒, B2装1000ml白酒;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;graph
-B1[(B1 红酒)]
-B2[(B2 白酒)]
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/wine_s1.png&#34; alt=&#34;wine_s1&#34;  /&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;status 2&lt;/li&gt;
-&lt;/ul&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/wine_s1.png&#34; alt=&#34;wine_s1&#34;  /&gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -52,12 +49,13 @@ B2[(B2 白酒)]
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;graph LR
-B1[(B1)] --&amp;gt; |100ml红酒| B2[(B2)]
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/wine_s2.png&#34; alt=&#34;wine_s2&#34;  /&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;status 3&lt;/li&gt;
+&lt;li&gt;status 2&lt;br&gt;
+从B1倒100ml红酒到B2中;&lt;/li&gt;
 &lt;/ul&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/wine_s2.png&#34; alt=&#34;wine_s2&#34;  /&gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -69,23 +67,24 @@ B1[(B1)] --&amp;gt; |100ml红酒| B2[(B2)]
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td&gt;B1&lt;/td&gt;
-&lt;td&gt;900&lt;/td&gt;
+&lt;td&gt;1000-(100)=900&lt;/td&gt;
 &lt;td&gt;0&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;B2&lt;/td&gt;
-&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;0+(100)=100&lt;/td&gt;
 &lt;td&gt;1000&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;graph RL
-B2[(B2)] --&amp;gt; |100ml混合酒, 白酒:X, 红酒:100-X| B1[(B1)]
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/wine_s3.png&#34; alt=&#34;wine_s3&#34;  /&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;status 4&lt;br&gt;
-从B2倒100ml混合酒到B1, 令B2倒入B1杯中的白酒容量为X,则B2倒入B1杯中的红酒容量则为100-X&lt;/li&gt;
+&lt;li&gt;step 3&lt;br&gt;
+再从B2倒出100ml酒(非均匀混合体)到B1中&lt;/li&gt;
 &lt;/ul&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/wine_s3.png&#34; alt=&#34;wine_s3&#34;  /&gt;&lt;br&gt;
+从B2倒100ml混合酒到B1, 令B2倒入B1杯中的白酒容量为X,则B2倒入B1杯中的红酒容量则为100-X&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -125,19 +124,60 @@ B2[(B2)] --&amp;gt; |100ml混合酒, 白酒:X, 红酒:100-X| B1[(B1)]
 &lt;tr&gt;
 &lt;td&gt;B2&lt;/td&gt;
 &lt;td&gt;X&lt;/td&gt;
-&lt;td&gt;100-X&lt;/td&gt;
+&lt;td&gt;1000-X&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;因此, B1中白酒和B2中红酒都是X&lt;/p&gt;
 &lt;h3 id=&#34;2-集合题-编程多面手&#34;&gt;2. 集合题: 编程多面手&lt;/h3&gt;
-&lt;p&gt;一个技术团队总共有100人, 会Java, Golang 和 C语言的人数分别是75, 65, 60人;&lt;br&gt;
-问题: 三个语言都会的,最多有多少人,最少有多少人?&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;1. 三个语言都会的最多有多少人?
-最多的人应该是最小集合的全集: 60
+&lt;p&gt;假如技术团队共有50人，其中会C语言的有36人，会JAVA语言的有44人，会GO语言的有32人,&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;三个语言都会的最多有多少人?&lt;br&gt;
+最多的人应该是最小集合的全集: 32&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;三个语言都会的最少人数?&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;总人数:50人&lt;br&gt;
+a. 用集合表&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;能力\语言&lt;/th&gt;
+&lt;th&gt;C&lt;/th&gt;
+&lt;th&gt;JAVA&lt;/th&gt;
+&lt;th&gt;GO&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;会&lt;/td&gt;
+&lt;td&gt;36&lt;/td&gt;
+&lt;td&gt;44&lt;/td&gt;
+&lt;td&gt;32&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;不会&lt;/td&gt;
+&lt;td&gt;14&lt;/td&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;td&gt;18&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre&gt;&lt;code&gt;三个语言都不会的最大值是14+6+18=38, 则都会的最小值即为50-38=12
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;b. 用集合算数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;A B C 的交集公式为:
+AnBnC = AuBuC - (AnB + BnC + AnC) + (AnBnC)
+(AnBnC)min = AuBuC - (AnB + BnC + AnC)max + (AnBnC)min
 
-2. 三个语言都会的最少人数?
-下班了,这人有时间再更
-&lt;/code&gt;&lt;/pre&gt;&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;
+AuBuC = 36 + 44 + 32 = 112
+(AnB + BnC + AnC)max =  (36 + 32 + 32) = 100
+(AnBnC)min = 0
+因此 (AnBnC)min = 112 - 100 + 0 = 12
 &lt;/code&gt;&lt;/pre&gt;</description>
         </item>
         <item>
@@ -1245,12 +1285,15 @@ C --&amp;gt; |Two| E[Result Two]
   C --&amp;gt;|金枪不倒| F[(看情况)]
   A --&amp;gt;|穿衣服| G([跳绳])
   A --&amp;gt; H{{洗澡}}
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;ul&gt;
 &lt;li&gt;引用&lt;br&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://www.iminho.me/wiki/docs/mindoc/mermaid.md&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://www.iminho.me/wiki/docs/mindoc/mermaid.md&lt;/a&gt;&lt;br&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://juejin.cn/post/6844904147666337806&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://juejin.cn/post/6844904147666337806&lt;/a&gt;&lt;/li&gt;
+    &gt;https://juejin.cn/post/6844904147666337806&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/thither_shore/article/details/52328313&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://blog.csdn.net/thither_shore/article/details/52328313&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
         </item>

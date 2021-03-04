@@ -6,7 +6,9 @@
 从B1倒100ml红酒到B2中;
 再从B2倒出100ml酒(非均匀混合体)到B1中;
 问题: B1中白酒多,还是B2中红酒多
-答案: 一样多   status 1  graph B1[(B1 红酒)] B2[(B2 白酒)]  status 2     杯子 红酒 白酒     B1 1000 0   B2 0 1000    graph LR B1[(B1)] --&amp;gt; |100ml红酒| B2[(B2)]  status 3     杯子 红酒 白酒     B1 900 0   B2 100 1000    graph RL B2[(B2)] --&amp;gt; |100ml混合酒, 白酒:X, 红酒:100-X| B1[(B1)]  status 4'><title>Note: Logic</title>
+答案: 一样多   status 1
+B1装1000ml红酒, B2装1000ml白酒;     杯子 红酒 白酒     B1 1000 0   B2 0 1000     status 2
+从B1倒100ml红酒到B2中;     杯子 红酒 白酒     B1 1000-(100)=900 0   B2 0&#43;(100)=100 1000     step 3'><title>Note: Logic</title>
 
 <link rel='canonical' href='/p/note-logic/'>
 
@@ -16,7 +18,9 @@
 从B1倒100ml红酒到B2中;
 再从B2倒出100ml酒(非均匀混合体)到B1中;
 问题: B1中白酒多,还是B2中红酒多
-答案: 一样多   status 1  graph B1[(B1 红酒)] B2[(B2 白酒)]  status 2     杯子 红酒 白酒     B1 1000 0   B2 0 1000    graph LR B1[(B1)] --&amp;gt; |100ml红酒| B2[(B2)]  status 3     杯子 红酒 白酒     B1 900 0   B2 100 1000    graph RL B2[(B2)] --&amp;gt; |100ml混合酒, 白酒:X, 红酒:100-X| B1[(B1)]  status 4'>
+答案: 一样多   status 1
+B1装1000ml红酒, B2装1000ml白酒;     杯子 红酒 白酒     B1 1000 0   B2 0 1000     status 2
+从B1倒100ml红酒到B2中;     杯子 红酒 白酒     B1 1000-(100)=900 0   B2 0&#43;(100)=100 1000     step 3'>
 <meta property='og:url' content='/p/note-logic/'>
 <meta property='og:site_name' content='Li. Mingzhi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='logic' /><meta property='article:published_time' content='2021-03-03T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-03-03T19:00:52&#43;08:00'/>
@@ -26,7 +30,9 @@
 从B1倒100ml红酒到B2中;
 再从B2倒出100ml酒(非均匀混合体)到B1中;
 问题: B1中白酒多,还是B2中红酒多
-答案: 一样多   status 1  graph B1[(B1 红酒)] B2[(B2 白酒)]  status 2     杯子 红酒 白酒     B1 1000 0   B2 0 1000    graph LR B1[(B1)] --&amp;gt; |100ml红酒| B2[(B2)]  status 3     杯子 红酒 白酒     B1 900 0   B2 100 1000    graph RL B2[(B2)] --&amp;gt; |100ml混合酒, 白酒:X, 红酒:100-X| B1[(B1)]  status 4">
+答案: 一样多   status 1
+B1装1000ml红酒, B2装1000ml白酒;     杯子 红酒 白酒     B1 1000 0   B2 0 1000     status 2
+从B1倒100ml红酒到B2中;     杯子 红酒 白酒     B1 1000-(100)=900 0   B2 0&#43;(100)=100 1000     step 3">
     </head>
     <body class="">
     <script>
@@ -215,15 +221,12 @@
 答案: 一样多</li>
 </ol>
 <ul>
-<li>status 1</li>
+<li>status 1<br>
+B1装1000ml红酒, B2装1000ml白酒;</li>
 </ul>
-<pre><code class="language-mermaid" data-lang="mermaid">graph
-B1[(B1 红酒)]
-B2[(B2 白酒)]
-</code></pre><p><img src="/post/jobs_knowledge/images/wine_s1.png" alt="wine_s1"  /></p>
-<ul>
-<li>status 2</li>
-</ul>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><img src="/post/jobs_knowledge/images/wine_s1.png" alt="wine_s1"  /></p>
 <table>
 <thead>
 <tr>
@@ -245,12 +248,13 @@ B2[(B2 白酒)]
 </tr>
 </tbody>
 </table>
-<pre><code class="language-mermaid" data-lang="mermaid">graph LR
-B1[(B1)] --&gt; |100ml红酒| B2[(B2)]
-</code></pre><p><img src="/post/jobs_knowledge/images/wine_s2.png" alt="wine_s2"  /></p>
 <ul>
-<li>status 3</li>
+<li>status 2<br>
+从B1倒100ml红酒到B2中;</li>
 </ul>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><img src="/post/jobs_knowledge/images/wine_s2.png" alt="wine_s2"  /></p>
 <table>
 <thead>
 <tr>
@@ -262,23 +266,24 @@ B1[(B1)] --&gt; |100ml红酒| B2[(B2)]
 <tbody>
 <tr>
 <td>B1</td>
-<td>900</td>
+<td>1000-(100)=900</td>
 <td>0</td>
 </tr>
 <tr>
 <td>B2</td>
-<td>100</td>
+<td>0+(100)=100</td>
 <td>1000</td>
 </tr>
 </tbody>
 </table>
-<pre><code class="language-mermaid" data-lang="mermaid">graph RL
-B2[(B2)] --&gt; |100ml混合酒, 白酒:X, 红酒:100-X| B1[(B1)]
-</code></pre><p><img src="/post/jobs_knowledge/images/wine_s3.png" alt="wine_s3"  /></p>
 <ul>
-<li>status 4<br>
-从B2倒100ml混合酒到B1, 令B2倒入B1杯中的白酒容量为X,则B2倒入B1杯中的红酒容量则为100-X</li>
+<li>step 3<br>
+再从B2倒出100ml酒(非均匀混合体)到B1中</li>
 </ul>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><img src="/post/jobs_knowledge/images/wine_s3.png" alt="wine_s3"  /><br>
+从B2倒100ml混合酒到B1, 令B2倒入B1杯中的白酒容量为X,则B2倒入B1杯中的红酒容量则为100-X</p>
 <table>
 <thead>
 <tr>
@@ -318,19 +323,60 @@ B2[(B2)] --&gt; |100ml混合酒, 白酒:X, 红酒:100-X| B1[(B1)]
 <tr>
 <td>B2</td>
 <td>X</td>
-<td>100-X</td>
+<td>1000-X</td>
 </tr>
 </tbody>
 </table>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>因此, B1中白酒和B2中红酒都是X</p>
 <h3 id="2-集合题-编程多面手">2. 集合题: 编程多面手</h3>
-<p>一个技术团队总共有100人, 会Java, Golang 和 C语言的人数分别是75, 65, 60人;<br>
-问题: 三个语言都会的,最多有多少人,最少有多少人?</p>
-<pre><code>1. 三个语言都会的最多有多少人?
-最多的人应该是最小集合的全集: 60
+<p>假如技术团队共有50人，其中会C语言的有36人，会JAVA语言的有44人，会GO语言的有32人,</p>
+<ol>
+<li>
+<p>三个语言都会的最多有多少人?<br>
+最多的人应该是最小集合的全集: 32</p>
+</li>
+<li>
+<p>三个语言都会的最少人数?</p>
+</li>
+</ol>
+<p>总人数:50人<br>
+a. 用集合表</p>
+<table>
+<thead>
+<tr>
+<th>能力\语言</th>
+<th>C</th>
+<th>JAVA</th>
+<th>GO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>会</td>
+<td>36</td>
+<td>44</td>
+<td>32</td>
+</tr>
+<tr>
+<td>不会</td>
+<td>14</td>
+<td>6</td>
+<td>18</td>
+</tr>
+</tbody>
+</table>
+<pre><code>三个语言都不会的最大值是14+6+18=38, 则都会的最小值即为50-38=12
+</code></pre><p>b. 用集合算数</p>
+<pre><code>A B C 的交集公式为:
+AnBnC = AuBuC - (AnB + BnC + AnC) + (AnBnC)
+(AnBnC)min = AuBuC - (AnB + BnC + AnC)max + (AnBnC)min
 
-2. 三个语言都会的最少人数?
-下班了,这人有时间再更
-</code></pre><pre><code class="language-mermaid" data-lang="mermaid">
+AuBuC = 36 + 44 + 32 = 112
+(AnB + BnC + AnC)max =  (36 + 32 + 32) = 100
+(AnBnC)min = 0
+因此 (AnBnC)min = 112 - 100 + 0 = 12
 </code></pre>
 </section>
 

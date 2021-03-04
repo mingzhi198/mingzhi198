@@ -18,7 +18,9 @@
 从B1倒100ml红酒到B2中;
 再从B2倒出100ml酒(非均匀混合体)到B1中;
 问题: B1中白酒多,还是B2中红酒多
-答案: 一样多   status 1  graph B1[(B1 红酒)] B2[(B2 白酒)]  status 2     杯子 红酒 白酒     B1 1000 0   B2 0 1000    graph LR B1[(B1)] --&amp;gt; |100ml红酒| B2[(B2)]  status 3     杯子 红酒 白酒     B1 900 0   B2 100 1000    graph RL B2[(B2)] --&amp;gt; |100ml混合酒, 白酒:X, 红酒:100-X| B1[(B1)]  status 4</description>
+答案: 一样多   status 1
+B1装1000ml红酒, B2装1000ml白酒;     杯子 红酒 白酒     B1 1000 0   B2 0 1000     status 2
+从B1倒100ml红酒到B2中;     杯子 红酒 白酒     B1 1000-(100)=900 0   B2 0+(100)=100 1000     step 3</description>
     </item>
     
   </channel>
