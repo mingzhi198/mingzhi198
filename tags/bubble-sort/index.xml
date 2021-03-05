@@ -25,8 +25,7 @@ We do it in the following steps:
       
       <guid>/p/algorithm-2.-insert-sort/</guid>
       <description>Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. What is Insert Sort? Anyone who has played poker would understand what insert sort is.
-We do it in the following steps:
-1. We start from the beginning index, which is the second one of an array, compare it with the previous element, and switch these two elements if the previous one is bigger.</description>
+Be cautious that elements to the left of the beginning index are already sorted, thus we can stop redundant comparison if the beginning indexed element is bigger than the previous one.</description>
     </item>
     
   </channel>
