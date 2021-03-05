@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. What is Bubble Sort? Bubble Sort is a sorting algorithm that is simple and obvious.
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. What is Insert Sort? Anyone who has played poker would understand what insert sort is.
 We do it in the following steps:
-1. We iterate elements of an array in pairs and then switch them if the sequence of elements in a pair is not correct.'><title>Algorithm: 1. Bubble Sort</title>
+1. We start from the beginning index, which is the second one of an array, compare it with the previous element, and switch these two elements if the previous one is bigger.'><title>Algorithm: 2. Insert Sort</title>
 
-<link rel='canonical' href='/p/algorithm-1.-bubble-sort/'>
+<link rel='canonical' href='/p/algorithm-2.-insert-sort/'>
 
-<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Algorithm: 1. Bubble Sort'>
-<meta property='og:description' content='Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. What is Bubble Sort? Bubble Sort is a sorting algorithm that is simple and obvious.
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Algorithm: 2. Insert Sort'>
+<meta property='og:description' content='Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. What is Insert Sort? Anyone who has played poker would understand what insert sort is.
 We do it in the following steps:
-1. We iterate elements of an array in pairs and then switch them if the sequence of elements in a pair is not correct.'>
-<meta property='og:url' content='/p/algorithm-1.-bubble-sort/'>
+1. We start from the beginning index, which is the second one of an array, compare it with the previous element, and switch these two elements if the previous one is bigger.'>
+<meta property='og:url' content='/p/algorithm-2.-insert-sort/'>
 <meta property='og:site_name' content='Li. Mingzhi'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='algorithm' /><meta property='article:tag' content='bubble sort' /><meta property='article:tag' content='sort' /><meta property='article:published_time' content='2021-03-05T14:30:27&#43;08:00'/><meta property='article:modified_time' content='2021-03-05T14:30:27&#43;08:00'/>
-<meta name="twitter:title" content="Algorithm: 1. Bubble Sort">
-<meta name="twitter:description" content="Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. What is Bubble Sort? Bubble Sort is a sorting algorithm that is simple and obvious.
+<meta name="twitter:title" content="Algorithm: 2. Insert Sort">
+<meta name="twitter:description" content="Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. What is Insert Sort? Anyone who has played poker would understand what insert sort is.
 We do it in the following steps:
-1. We iterate elements of an array in pairs and then switch them if the sequence of elements in a pair is not correct.">
+1. We start from the beginning index, which is the second one of an array, compare it with the previous element, and switch these two elements if the previous one is bigger.">
     </head>
     <body class="">
     <script>
@@ -179,7 +179,7 @@ We do it in the following steps:
     
 
     <h2 class="article-title">
-        <a href="/p/algorithm-1.-bubble-sort/">Algorithm: 1. Bubble Sort</a>
+        <a href="/p/algorithm-2.-insert-sort/">Algorithm: 2. Insert Sort</a>
     </h2>
 
     <footer class="article-time">
@@ -201,40 +201,38 @@ We do it in the following steps:
 <li>This article is my study notes about algorithms.</li>
 <li>Please refer to the original work for more details and indicate the source for reprinting.</li>
 </ul>
-<h3 id="1-what-is-bubble-sort">1. What is Bubble Sort?</h3>
-<p>Bubble Sort is a sorting algorithm that is simple and obvious.<br>
+<h3 id="1-what-is-insert-sort">1. What is Insert Sort?</h3>
+<p>Anyone who has played poker would understand what insert sort is.<br>
 We do it in the following steps:</p>
-<pre><code>1. We iterate elements of an array in pairs and then switch them if the sequence of elements in a pair is not correct. At the end of the iteration, the last element will be the biggest.
+<pre><code>1. We start from the beginning index, which is the second one of an array, compare it with the previous element, and switch these two elements if the previous one is bigger.
 
-2. Repeat step one until the last biggest element.
+2. We set the one behind the beginning index as the new beginning index.
 
-3. End if there are no elements we need to compare.
-</code></pre><p><img src="https://www.runoob.com/wp-content/uploads/2019/03/bubbleSort.gif" alt="bubble_sort"  /></p>
+3. Repeat steps 1 and 2 until the beginning index reaches the end of the array.
+</code></pre><p><img src="https://www.runoob.com/wp-content/uploads/2019/03/insertionSort.gif" alt="bubble_sort"  /></p>
 <h3 id="2-time-and-space-efficiency">2. Time and Space Efficiency</h3>
-<p>Since we cannot get a sorted array(N) by iterating array elements once, we should repeat the iteration multiple(N) times.<br>
+<p>Since we repeat the iteration multiple(N) times and compare elements multiple(N) times.<br>
 Thus the bubble sort gets O(n^2) time.<br>
-However, it doesn&rsquo;t need extra memory as we swap elements when required.</p>
+However, it doesn&rsquo;t need extra memory if we swap elements when required.</p>
 <h3 id="3-implementation">3. Implementation</h3>
-<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kd">func</span> <span class="nf">BubbleSort</span><span class="p">(</span><span class="nx">arr</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kd">func</span> <span class="nf">InsertSort</span><span class="p">(</span><span class="nx">arr</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
 	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="p">{</span>
 		<span class="k">return</span>
 	<span class="p">}</span>
 
-	<span class="nx">lastEnd</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span>
-	<span class="k">for</span> <span class="nx">lastEnd</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="k">for</span> <span class="nx">j</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="p">&lt;</span> <span class="nx">lastEnd</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span> <span class="p">{</span>
-			<span class="k">if</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">&gt;</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">{</span>
-				<span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="p">],</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span>
+	<span class="nx">arrLen</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">arrLen</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">j</span> <span class="o">:=</span> <span class="nx">i</span><span class="p">;</span> <span class="nx">j</span> <span class="p">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span><span class="o">--</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">&lt;</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">{</span>
+				<span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="p">],</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span>
 			<span class="p">}</span>
 		<span class="p">}</span>
-		<span class="nx">lastEnd</span> <span class="o">-=</span> <span class="mi">1</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;lastEnd: &#34;</span><span class="p">,</span> <span class="nx">lastEnd</span><span class="p">)</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div><ul>
 <li>Reference<br>
-<a class="link" href="https://www.runoob.com/w3cnote/bubble-sort.html"  target="_blank" rel="noopener"
-    >https://www.runoob.com/w3cnote/bubble-sort.html</a></li>
+<a class="link" href="https://www.runoob.com/w3cnote/insertion-sort.html"  target="_blank" rel="noopener"
+    >https://www.runoob.com/w3cnote/insertion-sort.html</a></li>
 </ul>
 
 </section>
@@ -279,12 +277,12 @@ However, it doesn&rsquo;t need extra memory as we swap elements when required.</
                 
                     
 <article class="">
-    <a href="/p/algorithm-2.-insert-sort/">
+    <a href="/p/algorithm-1.-bubble-sort/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">Algorithm: 2. Insert Sort</h2>
+            <h2 class="article-title">Algorithm: 1. Bubble Sort</h2>
         </div>
     </a>
 </article>

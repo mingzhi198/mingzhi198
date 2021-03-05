@@ -19,6 +19,17 @@ We do it in the following steps:
     </item>
     
     <item>
+      <title>Algorithm: 2. Insert Sort</title>
+      <link>/p/algorithm-2.-insert-sort/</link>
+      <pubDate>Fri, 05 Mar 2021 14:30:27 +0800</pubDate>
+      
+      <guid>/p/algorithm-2.-insert-sort/</guid>
+      <description>Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. What is Insert Sort? Anyone who has played poker would understand what insert sort is.
+We do it in the following steps:
+1. We start from the beginning index, which is the second one of an array, compare it with the previous element, and switch these two elements if the previous one is bigger.</description>
+    </item>
+    
+    <item>
       <title>GA: 7. Dijkstra&#39;s algorithm</title>
       <link>/p/ga-7.-dijkstras-algorithm/</link>
       <pubDate>Sun, 13 Dec 2020 23:44:52 +0800</pubDate>
