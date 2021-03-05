@@ -2,19 +2,40 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>/tags/b-tree/</loc>
-    <lastmod>2021-03-03T19:00:52+08:00</lastmod>
+    <loc>/categories/algorithm/</loc>
+    <lastmod>2021-03-05T14:30:27+08:00</lastmod>
+  </url><url>
+    <loc>/tags/algorithm/</loc>
+    <lastmod>2021-03-05T14:30:27+08:00</lastmod>
+  </url><url>
+    <loc>/p/algorithm-1.-bubble-sort/</loc>
+    <lastmod>2021-03-05T14:30:27+08:00</lastmod>
+  </url><url>
+    <loc>/tags/bubble-sort/</loc>
+    <lastmod>2021-03-05T14:30:27+08:00</lastmod>
   </url><url>
     <loc>/categories/</loc>
+    <lastmod>2021-03-05T14:30:27+08:00</lastmod>
+  </url><url>
+    <loc>/</loc>
+    <lastmod>2021-03-05T14:30:27+08:00</lastmod>
+  </url><url>
+    <loc>/post/</loc>
+    <lastmod>2021-03-05T14:30:27+08:00</lastmod>
+  </url><url>
+    <loc>/tags/sort/</loc>
+    <lastmod>2021-03-05T14:30:27+08:00</lastmod>
+  </url><url>
+    <loc>/tags/</loc>
+    <lastmod>2021-03-05T14:30:27+08:00</lastmod>
+  </url><url>
+    <loc>/tags/b-tree/</loc>
     <lastmod>2021-03-03T19:00:52+08:00</lastmod>
   </url><url>
     <loc>/tags/database/</loc>
     <lastmod>2021-03-03T19:00:52+08:00</lastmod>
   </url><url>
     <loc>/tags/db/</loc>
-    <lastmod>2021-03-03T19:00:52+08:00</lastmod>
-  </url><url>
-    <loc>/</loc>
     <lastmod>2021-03-03T19:00:52+08:00</lastmod>
   </url><url>
     <loc>/tags/logic/</loc>
@@ -30,12 +51,6 @@
     <lastmod>2021-03-03T19:00:52+08:00</lastmod>
   </url><url>
     <loc>/categories/notes/</loc>
-    <lastmod>2021-03-03T19:00:52+08:00</lastmod>
-  </url><url>
-    <loc>/post/</loc>
-    <lastmod>2021-03-03T19:00:52+08:00</lastmod>
-  </url><url>
-    <loc>/tags/</loc>
     <lastmod>2021-03-03T19:00:52+08:00</lastmod>
   </url><url>
     <loc>/tags/tree/</loc>
@@ -80,9 +95,6 @@
     <loc>/p/md-mermaid-for-charts/</loc>
     <lastmod>2020-12-14T23:44:52+08:00</lastmod>
   </url><url>
-    <loc>/tags/algorithm/</loc>
-    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
-  </url><url>
     <loc>/tags/dijkstra/</loc>
     <lastmod>2020-12-13T23:44:52+08:00</lastmod>
   </url><url>
@@ -120,9 +132,6 @@
     <lastmod>2020-12-09T08:32:27+08:00</lastmod>
   </url><url>
     <loc>/tags/quick-sort/</loc>
-    <lastmod>2020-12-09T08:32:27+08:00</lastmod>
-  </url><url>
-    <loc>/tags/sort/</loc>
     <lastmod>2020-12-09T08:32:27+08:00</lastmod>
   </url><url>
     <loc>/p/ga-3.-recursion/</loc>

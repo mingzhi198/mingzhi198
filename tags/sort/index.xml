@@ -6,7 +6,18 @@
     <description>Recent content in sort on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 09 Dec 2020 08:32:27 +0800</lastBuildDate><atom:link href="/tags/sort/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 05 Mar 2021 14:30:27 +0800</lastBuildDate><atom:link href="/tags/sort/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Algorithm: 1. Bubble Sort</title>
+      <link>/p/algorithm-1.-bubble-sort/</link>
+      <pubDate>Fri, 05 Mar 2021 14:30:27 +0800</pubDate>
+      
+      <guid>/p/algorithm-1.-bubble-sort/</guid>
+      <description>Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. What is Bubble Sort? Bubble Sort is a sorting algorithm that is simple and obvious.
+We do it in the following steps:
+1. We iterate elements of an array in pairs and then switch them if the sequence of elements in a pair is not correct.</description>
+    </item>
+    
     <item>
       <title>GA: 4. Quicksort</title>
       <link>/p/ga-4.-quicksort/</link>

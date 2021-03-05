@@ -84,7 +84,7 @@ B1装1000ml红酒, B2装1000ml白酒;     杯子 红酒 白酒     B1 1000 0   B
       <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
       
       <guid>/p/note-system-and-programming/</guid>
-      <description>Programming Language   Golang 和 C＋＋的区别及使用场景
+      <description>1. channel 底层实现 Programming Language   Golang 和 C＋＋的区别及使用场景
   Golang 的协程管理（GOP）
   进程，线程和协程的区别
   make 和 new 的区别

@@ -6,7 +6,34 @@
     <description>Recent content in Tags on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 03 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 05 Mar 2021 14:30:27 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>algorithm</title>
+      <link>/tags/algorithm/</link>
+      <pubDate>Fri, 05 Mar 2021 14:30:27 +0800</pubDate>
+      
+      <guid>/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>bubble sort</title>
+      <link>/tags/bubble-sort/</link>
+      <pubDate>Fri, 05 Mar 2021 14:30:27 +0800</pubDate>
+      
+      <guid>/tags/bubble-sort/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sort</title>
+      <link>/tags/sort/</link>
+      <pubDate>Fri, 05 Mar 2021 14:30:27 +0800</pubDate>
+      
+      <guid>/tags/sort/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>B-Tree</title>
       <link>/tags/b-tree/</link>
@@ -125,15 +152,6 @@
     </item>
     
     <item>
-      <title>algorithm</title>
-      <link>/tags/algorithm/</link>
-      <pubDate>Sun, 13 Dec 2020 23:44:52 +0800</pubDate>
-      
-      <guid>/tags/algorithm/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Dijkstra</title>
       <link>/tags/dijkstra/</link>
       <pubDate>Sun, 13 Dec 2020 23:44:52 +0800</pubDate>
@@ -202,15 +220,6 @@
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
       <guid>/tags/quick-sort/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>sort</title>
-      <link>/tags/sort/</link>
-      <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
-      
-      <guid>/tags/sort/</guid>
       <description></description>
     </item>
     
