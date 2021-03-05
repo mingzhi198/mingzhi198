@@ -6,7 +6,33 @@
         <description>Recent content on Li. Mingzhi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Fri, 05 Mar 2021 14:30:27 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 05 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>CAP Theory</title>
+        <link>/p/cap-theory/</link>
+        <pubDate>Fri, 05 Mar 2021 19:00:52 +0800</pubDate>
+        
+        <guid>/p/cap-theory/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;This article is my study notes about distributed systems.&lt;/li&gt;
+&lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;[https://www.ibm.com/cloud/learn/cap-theorem(https://www.ibm.com/cloud/learn/cap-theorem)&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://towardsdatascience.com/cap-theorem-and-distributed-database-management-systems-5c2be977950e&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://towardsdatascience.com/cap-theorem-and-distributed-database-management-systems-5c2be977950e&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://www.analyticsvidhya.com/blog/2020/08/a-beginners-guide-to-cap-theorem-for-data-engineering/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.analyticsvidhya.com/blog/2020/08/a-beginners-guide-to-cap-theorem-for-data-engineering/&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/33999708&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://zhuanlan.zhihu.com/p/33999708&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;http://www.ruanyifeng.com/blog/2018/07/cap.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;http://www.ruanyifeng.com/blog/2018/07/cap.html&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://juejin.cn/post/6844903621490901006&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://juejin.cn/post/6844903621490901006&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Algorithm: 1. Bubble Sort</title>
         <link>/p/algorithm-1.-bubble-sort/</link>
         <pubDate>Fri, 05 Mar 2021 14:30:27 +0800</pubDate>

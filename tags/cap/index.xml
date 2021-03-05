@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cap on Li. Mingzhi</title>
+    <link>/tags/cap/</link>
+    <description>Recent content in cap on Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 05 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/cap/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CAP Theory</title>
+      <link>/p/cap-theory/</link>
+      <pubDate>Fri, 05 Mar 2021 19:00:52 +0800</pubDate>
+      
+      <guid>/p/cap-theory/</guid>
+      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  [https://www.ibm.com/cloud/learn/cap-theorem(https://www.ibm.com/cloud/learn/cap-theorem)
+https://towardsdatascience.com/cap-theorem-and-distributed-database-management-systems-5c2be977950e
+https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/
+https://www.analyticsvidhya.com/blog/2020/08/a-beginners-guide-to-cap-theorem-for-data-engineering/
+https://zhuanlan.zhihu.com/p/33999708
+http://www.ruanyifeng.com/blog/2018/07/cap.html
+https://juejin.cn/post/6844903621490901006</description>
+    </item>
+    
+  </channel>
+</rss>
