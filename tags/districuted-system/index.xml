@@ -8,18 +8,21 @@
     <language>en-us</language>
     <lastBuildDate>Fri, 05 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/tags/districuted-system/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>CAP Theory</title>
-      <link>/p/cap-theory/</link>
+      <title>分布式: CAP 定理</title>
+      <link>/p/%E5%88%86%E5%B8%83%E5%BC%8F-cap-%E5%AE%9A%E7%90%86/</link>
       <pubDate>Fri, 05 Mar 2021 19:00:52 +0800</pubDate>
       
-      <guid>/p/cap-theory/</guid>
-      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  [https://www.ibm.com/cloud/learn/cap-theorem(https://www.ibm.com/cloud/learn/cap-theorem)
-https://towardsdatascience.com/cap-theorem-and-distributed-database-management-systems-5c2be977950e
-https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/
-https://www.analyticsvidhya.com/blog/2020/08/a-beginners-guide-to-cap-theorem-for-data-engineering/
-https://zhuanlan.zhihu.com/p/33999708
-http://www.ruanyifeng.com/blog/2018/07/cap.html
-https://juejin.cn/post/6844903621490901006</description>
+      <guid>/p/%E5%88%86%E5%B8%83%E5%BC%8F-cap-%E5%AE%9A%E7%90%86/</guid>
+      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  1. 什么是CAP定理 CAP定理，指的是在一个分布式系统中，Consistency（一致性）、 Availability（可用性）、Partition tolerance（分区容错性） 这三个基本需求，最多只能同时满足其中的2个。   Consistency（一致性）
+指数据在多个副本之间能够保持一致的特性（严格的一致性）
+  Availability（可用性）
+指系统提供的服务必须一直处于可用的状态，每次请求都能获取到非错的响应（不保证获取的数据为最新数据）
+  Partition tolerance（分区容错性）
+分布式系统在遇到任何网络分区故障的时候，仍然能够对外提供满足一致性和可用性的服务，除非整个网络环境都发生了故障
+  分区 在分布式系统中，不同的节点分布在不同的子网络中，由于一些特殊的原因，这些子节点之间出现了网络不通的状态， 但他们的内部子网络是正常的。从而导致了整个系统的环境被切分成了若干个孤立的区域，这就是分区。 2. 原理 2.1 定义 根据CAP原则定义，系统的一致性、可用性和分区容错性细分如下：
+一致性： N1和N2的数据库V之间的数据是否完全一样。 可用性： N1和N2的对外部的请求能否做出正常的响应。 分区容错性：N1和N2之间的网络是否互通。 2.2 异常情况 假设一种极端情况，N1和N2之间的网络断开了，我们要支持这种网络异常。
+相当于要满足分区容错性，能不能同时满足一致性和可用性呢？还是说要对他们进行取舍？
+ 两种选择：  第一：牺牲数据一致性，保证可用性。响应旧的数据V0给用户。 第二：牺牲可用性，保证数据一致性。阻塞等待，直到网络连接恢复，数据更新操作M完成之后，再给用户响应最新的数据V1。 这个过程，证明了要满足分区容错性的分布式系统，只能在一致性和可用性两者中，选择其中一个。</description>
     </item>
     
   </channel>
