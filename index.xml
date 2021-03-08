@@ -69,7 +69,9 @@
 &lt;p&gt;对于多数大型互联网应用的场景，主机众多、部署分散。而且现在的集群规模越来越大，所以节点故障、网络故障是常态。这种应用一般要保证服务可用性达到N个9，即保证P和A，只有舍弃C（退而求其次保证最终一致性）。虽然某些地方会影响客户体验，但没达到造成用户流程的严重程度。&lt;br&gt;
 对于涉及到钱财这样不能有一丝让步的场景，C必须保证。网络发生故障宁可停止服务，这是保证CA，舍弃P。&lt;/p&gt;
 &lt;p&gt;孰优孰劣，没有定论，只能根据场景定夺，适合的才是最好的。&lt;/p&gt;
-&lt;p&gt;[https://www.ibm.com/cloud/learn/cap-theorem(https://www.ibm.com/cloud/learn/cap-theorem)&lt;br&gt;
+&lt;ul&gt;
+&lt;li&gt;参考&lt;br&gt;
+[https://www.ibm.com/cloud/learn/cap-theorem(https://www.ibm.com/cloud/learn/cap-theorem)&lt;br&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://towardsdatascience.com/cap-theorem-and-distributed-database-management-systems-5c2be977950e&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://towardsdatascience.com/cap-theorem-and-distributed-database-management-systems-5c2be977950e&lt;/a&gt;&lt;br&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -81,7 +83,8 @@
 &lt;a class=&#34;link&#34; href=&#34;http://www.ruanyifeng.com/blog/2018/07/cap.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;http://www.ruanyifeng.com/blog/2018/07/cap.html&lt;/a&gt;&lt;br&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://juejin.cn/post/6844903621490901006&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://juejin.cn/post/6844903621490901006&lt;/a&gt;&lt;/p&gt;
+    &gt;https://juejin.cn/post/6844903621490901006&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </description>
         </item>
         <item>
