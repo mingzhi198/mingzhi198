@@ -1,38 +1,56 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='1. 状态机: 两杯酒交互后的数量  调酒
-两个杯子(B1, B2)分别装1000ml酒, B1装红酒, B2装白酒;
-从B1倒100ml红酒到B2中;
-再从B2倒出100ml酒(非均匀混合体)到B1中;
-问题: B1中白酒多,还是B2中红酒多
-答案: 一样多   status 1
-B1装1000ml红酒, B2装1000ml白酒;     杯子 红酒 白酒     B1 1000 0   B2 0 1000     status 2
-从B1倒100ml红酒到B2中;     杯子 红酒 白酒     B1 1000-(100)=900 0   B2 0&#43;(100)=100 1000     step 3'><title>Note: Logic</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  1. BASE理论 eBay的架构师Dan Pritchett源于对大规模分布式系统的实践总结，在ACM上发表文章提出BASE理论，BASE理论是对CAP理论的延伸，核心思想是即使无法做到强一致性（Strong Consistency，CAP的一致性就是强一致性），但应用可以采用适合的方式达到最终一致性（Eventual Consitency）。
+BASE是指:
+基本可用（Basically Available） 软状态（ Soft State） 最终一致性（ Eventual Consistency）   基本可用（Basically Available）
+分布式系统在出现故障的时候，允许损失部分可用性，即保证核心可用。
+电商大促时，为了应对访问量激增，部分用户可能会被引导到降级页面，服务层也可能只提供降级服务。
+这就是损失部分可用性的体现。
+  软状态（ Soft State）
+允许系统存在中间状态，而该中间状态不会影响系统整体可用性。分布式存储中一般一份数据至少会有三个副本，允许不同节点间副本同步的延时就是软状态的体现。mysql replication的异步复制也是一种体现。
+  最终一致性（ Eventual Consistency）
+系统中的所有数据副本经过一定时间后，最终能够达到一致的状态。弱一致性和强一致性相反，最终一致性是弱一致性的一种特殊情况。
+  2. ACID和BASE的区别与联系 ACID是传统数据库常用的设计理念，追求强一致性模型。
+BASE支持的是大型分布式系统，提出通过牺牲强一致性获得高可用性。
+ACID和BASE代表了两种截然相反的设计哲学
+在分布式系统设计的场景中，系统组件对一致性要求是不同的，因此ACID和BASE又会结合使用。'><title>分布式: BASE 理论</title>
 
-<link rel='canonical' href='/p/note-logic/'>
+<link rel='canonical' href='/p/%E5%88%86%E5%B8%83%E5%BC%8F-base-%E7%90%86%E8%AE%BA/'>
 
-<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Note: Logic'>
-<meta property='og:description' content='1. 状态机: 两杯酒交互后的数量  调酒
-两个杯子(B1, B2)分别装1000ml酒, B1装红酒, B2装白酒;
-从B1倒100ml红酒到B2中;
-再从B2倒出100ml酒(非均匀混合体)到B1中;
-问题: B1中白酒多,还是B2中红酒多
-答案: 一样多   status 1
-B1装1000ml红酒, B2装1000ml白酒;     杯子 红酒 白酒     B1 1000 0   B2 0 1000     status 2
-从B1倒100ml红酒到B2中;     杯子 红酒 白酒     B1 1000-(100)=900 0   B2 0&#43;(100)=100 1000     step 3'>
-<meta property='og:url' content='/p/note-logic/'>
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='分布式: BASE 理论'>
+<meta property='og:description' content='Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  1. BASE理论 eBay的架构师Dan Pritchett源于对大规模分布式系统的实践总结，在ACM上发表文章提出BASE理论，BASE理论是对CAP理论的延伸，核心思想是即使无法做到强一致性（Strong Consistency，CAP的一致性就是强一致性），但应用可以采用适合的方式达到最终一致性（Eventual Consitency）。
+BASE是指:
+基本可用（Basically Available） 软状态（ Soft State） 最终一致性（ Eventual Consistency）   基本可用（Basically Available）
+分布式系统在出现故障的时候，允许损失部分可用性，即保证核心可用。
+电商大促时，为了应对访问量激增，部分用户可能会被引导到降级页面，服务层也可能只提供降级服务。
+这就是损失部分可用性的体现。
+  软状态（ Soft State）
+允许系统存在中间状态，而该中间状态不会影响系统整体可用性。分布式存储中一般一份数据至少会有三个副本，允许不同节点间副本同步的延时就是软状态的体现。mysql replication的异步复制也是一种体现。
+  最终一致性（ Eventual Consistency）
+系统中的所有数据副本经过一定时间后，最终能够达到一致的状态。弱一致性和强一致性相反，最终一致性是弱一致性的一种特殊情况。
+  2. ACID和BASE的区别与联系 ACID是传统数据库常用的设计理念，追求强一致性模型。
+BASE支持的是大型分布式系统，提出通过牺牲强一致性获得高可用性。
+ACID和BASE代表了两种截然相反的设计哲学
+在分布式系统设计的场景中，系统组件对一致性要求是不同的，因此ACID和BASE又会结合使用。'>
+<meta property='og:url' content='/p/%E5%88%86%E5%B8%83%E5%BC%8F-base-%E7%90%86%E8%AE%BA/'>
 <meta property='og:site_name' content='Li. Mingzhi'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='logic' /><meta property='article:published_time' content='2021-03-03T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-03-03T19:00:52&#43;08:00'/>
-<meta name="twitter:title" content="Note: Logic">
-<meta name="twitter:description" content="1. 状态机: 两杯酒交互后的数量  调酒
-两个杯子(B1, B2)分别装1000ml酒, B1装红酒, B2装白酒;
-从B1倒100ml红酒到B2中;
-再从B2倒出100ml酒(非均匀混合体)到B1中;
-问题: B1中白酒多,还是B2中红酒多
-答案: 一样多   status 1
-B1装1000ml红酒, B2装1000ml白酒;     杯子 红酒 白酒     B1 1000 0   B2 0 1000     status 2
-从B1倒100ml红酒到B2中;     杯子 红酒 白酒     B1 1000-(100)=900 0   B2 0&#43;(100)=100 1000     step 3">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='cap' /><meta property='article:tag' content='districuted system' /><meta property='article:published_time' content='2021-03-05T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-03-05T19:00:52&#43;08:00'/>
+<meta name="twitter:title" content="分布式: BASE 理论">
+<meta name="twitter:description" content="Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  1. BASE理论 eBay的架构师Dan Pritchett源于对大规模分布式系统的实践总结，在ACM上发表文章提出BASE理论，BASE理论是对CAP理论的延伸，核心思想是即使无法做到强一致性（Strong Consistency，CAP的一致性就是强一致性），但应用可以采用适合的方式达到最终一致性（Eventual Consitency）。
+BASE是指:
+基本可用（Basically Available） 软状态（ Soft State） 最终一致性（ Eventual Consistency）   基本可用（Basically Available）
+分布式系统在出现故障的时候，允许损失部分可用性，即保证核心可用。
+电商大促时，为了应对访问量激增，部分用户可能会被引导到降级页面，服务层也可能只提供降级服务。
+这就是损失部分可用性的体现。
+  软状态（ Soft State）
+允许系统存在中间状态，而该中间状态不会影响系统整体可用性。分布式存储中一般一份数据至少会有三个副本，允许不同节点间副本同步的延时就是软状态的体现。mysql replication的异步复制也是一种体现。
+  最终一致性（ Eventual Consistency）
+系统中的所有数据副本经过一定时间后，最终能够达到一致的状态。弱一致性和强一致性相反，最终一致性是弱一致性的一种特殊情况。
+  2. ACID和BASE的区别与联系 ACID是传统数据库常用的设计理念，追求强一致性模型。
+BASE支持的是大型分布式系统，提出通过牺牲强一致性获得高可用性。
+ACID和BASE代表了两种截然相反的设计哲学
+在分布式系统设计的场景中，系统组件对一致性要求是不同的，因此ACID和BASE又会结合使用。">
     </head>
     <body class="">
     <script>
@@ -194,7 +212,7 @@ B1装1000ml红酒, B2装1000ml白酒;     杯子 红酒 白酒     B1 1000 0   B
     
 
     <h2 class="article-title">
-        <a href="/p/note-logic/">Note: Logic</a>
+        <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-base-%E7%90%86%E8%AE%BA/">分布式: BASE 理论</a>
     </h2>
 
     <footer class="article-time">
@@ -206,178 +224,50 @@ B1装1000ml红酒, B2装1000ml白酒;     杯子 红酒 白酒     B1 1000 0   B
 
 
 
-        <time class="article-time--published">Mar 03, 2021</time>
+        <time class="article-time--published">Mar 05, 2021</time>
     </footer></div>
 </header>
 
     <section class="article-content">
-    <h3 id="1-状态机-两杯酒交互后的数量">1. 状态机: 两杯酒交互后的数量</h3>
-<ol>
-<li>调酒<br>
-两个杯子(B1, B2)分别装1000ml酒, B1装红酒, B2装白酒;<br>
-从B1倒100ml红酒到B2中;<br>
-再从B2倒出100ml酒(非均匀混合体)到B1中;<br>
-问题: B1中白酒多,还是B2中红酒多<br>
-答案: 一样多</li>
-</ol>
+    <h1 id="statement">Statement</h1>
 <ul>
-<li>status 1<br>
-B1装1000ml红酒, B2装1000ml白酒;</li>
+<li>This article is my study notes about distributed systems.</li>
+<li>Please refer to the original work for more details and indicate the source for reprinting.</li>
 </ul>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><img src="/post/jobs_knowledge/images/wine_s1.png" alt="wine_s1"  /></p>
-<table>
-<thead>
-<tr>
-<th>杯子</th>
-<th>红酒</th>
-<th>白酒</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>B1</td>
-<td>1000</td>
-<td>0</td>
-</tr>
-<tr>
-<td>B2</td>
-<td>0</td>
-<td>1000</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>status 2<br>
-从B1倒100ml红酒到B2中;</li>
-</ul>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><img src="/post/jobs_knowledge/images/wine_s2.png" alt="wine_s2"  /></p>
-<table>
-<thead>
-<tr>
-<th>杯子</th>
-<th>红酒</th>
-<th>白酒</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>B1</td>
-<td>1000-(100)=900</td>
-<td>0</td>
-</tr>
-<tr>
-<td>B2</td>
-<td>0+(100)=100</td>
-<td>1000</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>step 3<br>
-再从B2倒出100ml酒(非均匀混合体)到B1中</li>
-</ul>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><img src="/post/jobs_knowledge/images/wine_s3.png" alt="wine_s3"  /><br>
-从B2倒100ml混合酒到B1, 令B2倒入B1杯中的白酒容量为X,则B2倒入B1杯中的红酒容量则为100-X</p>
-<table>
-<thead>
-<tr>
-<th>杯子</th>
-<th>红酒</th>
-<th>白酒</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>B1</td>
-<td>900+(100-X)</td>
-<td>X</td>
-</tr>
-<tr>
-<td>B2</td>
-<td>100-(100-X)</td>
-<td>1000-X</td>
-</tr>
-</tbody>
-</table>
-<p>结果如下表:</p>
-<table>
-<thead>
-<tr>
-<th>杯子</th>
-<th>红酒</th>
-<th>白酒</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>B1</td>
-<td>1000-X</td>
-<td>X</td>
-</tr>
-<tr>
-<td>B2</td>
-<td>X</td>
-<td>1000-X</td>
-</tr>
-</tbody>
-</table>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>因此, B1中白酒和B2中红酒都是X</p>
-<h3 id="2-集合题-编程多面手">2. 集合题: 编程多面手</h3>
-<p>假如技术团队共有50人，其中会C语言的有36人，会JAVA语言的有44人，会GO语言的有32人,</p>
-<ol>
+<h3 id="1-base理论">1. BASE理论</h3>
+<p>eBay的架构师Dan Pritchett源于对大规模分布式系统的实践总结，在ACM上发表文章提出BASE理论，BASE理论是对CAP理论的延伸，核心思想是即使无法做到强一致性（Strong Consistency，CAP的一致性就是强一致性），但应用可以采用适合的方式达到最终一致性（Eventual Consitency）。</p>
+<p>BASE是指:</p>
+<pre><code>基本可用（Basically Available）
+软状态（ Soft State）
+最终一致性（ Eventual Consistency）
+</code></pre><ul>
 <li>
-<p>三个语言都会的最多有多少人?<br>
-最多的人应该是最小集合的全集: 32</p>
+<p>基本可用（Basically Available）<br>
+分布式系统在出现故障的时候，允许损失部分可用性，即保证核心可用。<br>
+电商大促时，为了应对访问量激增，部分用户可能会被引导到降级页面，服务层也可能只提供降级服务。<br>
+这就是损失部分可用性的体现。</p>
 </li>
 <li>
-<p>三个语言都会的最少人数?</p>
+<p>软状态（ Soft State）<br>
+允许系统存在中间状态，而该中间状态不会影响系统整体可用性。分布式存储中一般一份数据至少会有三个副本，允许不同节点间副本同步的延时就是软状态的体现。mysql replication的异步复制也是一种体现。</p>
 </li>
-</ol>
-<p>总人数:50人<br>
-a. 用集合表</p>
-<table>
-<thead>
-<tr>
-<th>能力\语言</th>
-<th>C</th>
-<th>JAVA</th>
-<th>GO</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>会</td>
-<td>36</td>
-<td>44</td>
-<td>32</td>
-</tr>
-<tr>
-<td>不会</td>
-<td>14</td>
-<td>6</td>
-<td>18</td>
-</tr>
-</tbody>
-</table>
-<pre><code>三个语言都不会的最大值是14+6+18=38, 则都会的最小值即为50-38=12
-</code></pre><p>b. 用集合算数</p>
-<pre><code>A B C 的交集公式为:
-AnBnC = AuBuC - (AnB + BnC + AnC) + (AnBnC)
-(AnBnC)min = AuBuC - (AnB + BnC + AnC)max + (AnBnC)min
+<li>
+<p>最终一致性（ Eventual Consistency）<br>
+系统中的所有数据副本经过一定时间后，最终能够达到一致的状态。弱一致性和强一致性相反，最终一致性是弱一致性的一种特殊情况。</p>
+</li>
+</ul>
+<h3 id="2-acid和base的区别与联系">2. ACID和BASE的区别与联系</h3>
+<p>ACID是传统数据库常用的设计理念，追求强一致性模型。<br>
+BASE支持的是大型分布式系统，提出通过牺牲强一致性获得高可用性。<br>
+ACID和BASE代表了两种截然相反的设计哲学<br>
+在分布式系统设计的场景中，系统组件对一致性要求是不同的，因此ACID和BASE又会结合使用。</p>
+<ul>
+<li>参考<br>
+<a class="link" href="https://my.oschina.net/foodon/blog/372703#OSC_h1_6"  target="_blank" rel="noopener"
+    >https://my.oschina.net/foodon/blog/372703#OSC_h1_6</a><br>
+<a class="link" href="" ></a></li>
+</ul>
 
-AuBuC = 36 + 44 + 32 = 112
-(AnB + BnC + AnC)max =  (36 + 32 + 32) = 100
-(AnBnC)min = 0
-因此 (AnBnC)min = 112 - 100 + 0 = 12
-</code></pre>
 </section>
 
 
@@ -387,7 +277,9 @@ AuBuC = 36 + 44 + 32 = 112
         
             <a href="/tags/notes/">notes</a>
         
-            <a href="/tags/logic/">logic</a>
+            <a href="/tags/cap/">cap</a>
+        
+            <a href="/tags/districuted-system/">districuted system</a>
         
     </section>
 
@@ -430,24 +322,24 @@ AuBuC = 36 + 44 + 32 = 112
                 
                     
 <article class="">
-    <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-base-%E7%90%86%E8%AE%BA/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">分布式: BASE 理论</h2>
-        </div>
-    </a>
-</article>
-                
-                    
-<article class="">
     <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-cap-%E5%AE%9A%E7%90%86/">
         
         
 
         <div class="article-details">
             <h2 class="article-title">分布式: CAP 定理</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/note-logic/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: Logic</h2>
         </div>
     </a>
 </article>
