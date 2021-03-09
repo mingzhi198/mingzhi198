@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='[TOC]
+Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  1. 背景 在分布式系统中发起一个事务，该事务涉及多个不同节点，那么为了保证事务 ACID 特性，就需要引入一个协调者来统一调度事务涉及的多个节点，被调度的节点称为事务参与者。由此衍生出 2PC 和 3PC 协议。
+2. 2PC(两阶段提交，Two-Phase Commit) 分为两个阶段：Prepare 和 Commit
+2.1 Prepare：提交事务请求   询问
+协调者向所有参与者发送事务请求，询问是否可执行事务操作，然后等待各个参与者的响应。
+  执行
+各个参与者接收到协调者事务请求后，执行事务操作(例如更新一个关系型数据库表中的记录)，并将 Undo 和 Redo 信息记录事务日志中。
+  响应
+如果参与者成功执行了事务并写入 Undo 和 Redo 信息，则向协调者返回 YES 响应，否则返回 NO 响应。当然，参与者也可能宕机，从而不会返回响应。
+  2.'><title>分布式: 2PC理论</title>
+
+<link rel='canonical' href='/p/%E5%88%86%E5%B8%83%E5%BC%8F-2pc%E7%90%86%E8%AE%BA/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='分布式: 2PC理论'>
+<meta property='og:description' content='[TOC]
+Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  1. 背景 在分布式系统中发起一个事务，该事务涉及多个不同节点，那么为了保证事务 ACID 特性，就需要引入一个协调者来统一调度事务涉及的多个节点，被调度的节点称为事务参与者。由此衍生出 2PC 和 3PC 协议。
+2. 2PC(两阶段提交，Two-Phase Commit) 分为两个阶段：Prepare 和 Commit
+2.1 Prepare：提交事务请求   询问
+协调者向所有参与者发送事务请求，询问是否可执行事务操作，然后等待各个参与者的响应。
+  执行
+各个参与者接收到协调者事务请求后，执行事务操作(例如更新一个关系型数据库表中的记录)，并将 Undo 和 Redo 信息记录事务日志中。
+  响应
+如果参与者成功执行了事务并写入 Undo 和 Redo 信息，则向协调者返回 YES 响应，否则返回 NO 响应。当然，参与者也可能宕机，从而不会返回响应。
+  2.'>
+<meta property='og:url' content='/p/%E5%88%86%E5%B8%83%E5%BC%8F-2pc%E7%90%86%E8%AE%BA/'>
+<meta property='og:site_name' content='Li. Mingzhi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='2pc' /><meta property='article:tag' content='districuted system' /><meta property='article:published_time' content='2021-03-05T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-03-05T19:00:52&#43;08:00'/>
+<meta name="twitter:title" content="分布式: 2PC理论">
+<meta name="twitter:description" content="[TOC]
+Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  1. 背景 在分布式系统中发起一个事务，该事务涉及多个不同节点，那么为了保证事务 ACID 特性，就需要引入一个协调者来统一调度事务涉及的多个节点，被调度的节点称为事务参与者。由此衍生出 2PC 和 3PC 协议。
+2. 2PC(两阶段提交，Two-Phase Commit) 分为两个阶段：Prepare 和 Commit
+2.1 Prepare：提交事务请求   询问
+协调者向所有参与者发送事务请求，询问是否可执行事务操作，然后等待各个参与者的响应。
+  执行
+各个参与者接收到协调者事务请求后，执行事务操作(例如更新一个关系型数据库表中的记录)，并将 Undo 和 Redo 信息记录事务日志中。
+  响应
+如果参与者成功执行了事务并写入 Undo 和 Redo 信息，则向协调者返回 YES 响应，否则返回 NO 响应。当然，参与者也可能宕机，从而不会返回响应。
+  2.">
+    </head>
+    <body class="">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "auto");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.body.dataset.scheme = 'dark';
+        } else {
+            document.body.dataset.scheme = 'light';
+        }
+    })();
+</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    
+                    
+                    
+                        
+                        <img src="/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+
+                
+            </figure>
+        
+        <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
+    </header>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/p/resume/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/archives/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/search/index.html'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <div id="article-toolbar">
+        <a href="" class="back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+            <span>Back</span>
+        </a>
+    </div>
+
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/notes/" >
+                notes
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-2pc%E7%90%86%E8%AE%BA/">分布式: 2PC理论</a>
+    </h2>
+
+    <footer class="article-time">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <time class="article-time--published">Mar 05, 2021</time>
+    </footer></div>
+</header>
+
+    <section class="article-content">
+    <p>[TOC]</p>
+<h1 id="statement">Statement</h1>
+<ul>
+<li>This article is my study notes about distributed systems.</li>
+<li>Please refer to the original work for more details and indicate the source for reprinting.</li>
+</ul>
+<h3 id="1-背景">1. 背景</h3>
+<p>在分布式系统中发起一个事务，该事务涉及多个不同节点，那么为了保证事务 ACID 特性，就需要引入一个协调者来统一调度事务涉及的多个节点，被调度的节点称为事务参与者。由此衍生出 2PC 和 3PC 协议。</p>
+<h3 id="2-2pc两阶段提交two-phase-commit">2. 2PC(两阶段提交，Two-Phase Commit)</h3>
+<p>分为两个阶段：Prepare 和 Commit</p>
+<h4 id="21-prepare提交事务请求">2.1 Prepare：提交事务请求</h4>
+<p><img src="/post/distributed_system/images/2pc.webp" alt="2pc"  /></p>
+<ul>
+<li>
+<p>询问<br>
+协调者向所有参与者发送事务请求，询问是否可执行事务操作，然后等待各个参与者的响应。</p>
+</li>
+<li>
+<p>执行<br>
+各个参与者接收到协调者事务请求后，执行事务操作(例如更新一个关系型数据库表中的记录)，并将 Undo 和 Redo 信息记录事务日志中。</p>
+</li>
+<li>
+<p>响应<br>
+如果参与者成功执行了事务并写入 Undo 和 Redo 信息，则向协调者返回 YES 响应，否则返回 NO 响应。当然，参与者也可能宕机，从而不会返回响应。</p>
+</li>
+</ul>
+<h4 id="22-commit执行事务提交">2.2 Commit：执行事务提交</h4>
+<p>执行事务提交分为两种情况，正常提交和回退。</p>
+<h5 id="221-正常提交事务">2.2.1 正常提交事务</h5>
+<p><img src="/post/distributed_system/images/2pc_commit.webp" alt="2pc_commit"  /></p>
+<ul>
+<li>
+<p>commit 请求<br>
+协调者向所有参与者发送 Commit 请求。</p>
+</li>
+<li>
+<p>事务提交<br>
+参与者收到 Commit 请求后，执行事务提交，提交完成后释放事务执行期占用的所有资源。</p>
+</li>
+</ul>
+<p>*反馈结果<br>
+参与者执行事务提交后向协调者发送 Ack 响应。</p>
+<ul>
+<li>完成事务<br>
+接收到所有参与者的 Ack 响应后，完成事务提交。</li>
+</ul>
+<h5 id="222-中断事务">2.2.2 中断事务</h5>
+<p>在执行 Prepare 步骤过程中，如果某些参与者执行事务失败、宕机或与协调者之间的网络中断，那么协调者就无法收到所有参与者的 YES 响应，或者某个参与者返回了 No 响应，此时，协调者就会进入回退流程，对事务进行回退。流程如下图红色部分(将 Commit 请求替换为红色的 Rollback 请求)：</p>
+<p><img src="/post/distributed_system/images/2pc_rollback.webp" alt="2pc_rollback"  /></p>
+<ul>
+<li>
+<p>rollback 请求<br>
+协调者向所有参与者发送 Rollback 请求。</p>
+</li>
+<li>
+<p>事务回滚<br>
+参与者收到 Rollback 后，使用 Prepare 阶段的 Undo 日志执行事务回滚，完成后释放事务执行期占用的所有资源。</p>
+</li>
+<li>
+<p>反馈结果<br>
+参与者执行事务回滚后向协调者发送 Ack 响应。</p>
+</li>
+<li>
+<p>中断事务<br>
+接收到所有参与者的 Ack 响应后，完成事务中断。</p>
+</li>
+</ul>
+<h4 id="3-2pc的问题">3. 2PC的问题</h4>
+<ul>
+<li>
+<p>同步阻塞<br>
+参与者在等待协调者的指令时，其实是在等待其他参与者的响应，在此过程中，参与者是无法进行其他操作的，也就是阻塞了其运行。<br>
+倘若参与者与协调者之间网络异常导致参与者一直收不到协调者信息，那么会导致参与者一直阻塞下去。</p>
+</li>
+<li>
+<p>单点<br>
+在 2PC 中，一切请求都来自协调者，所以协调者的地位是至关重要的，如果协调者宕机，那么就会使参与者一直阻塞并一直占用事务资源。<br>
+如果协调者也是分布式，使用选主方式提供服务，那么在一个协调者挂掉后，可以选取另一个协调者继续后续的服务，可以解决单点问题。但是，新协调者无法知道上一个事务的全部状态信息(例如已等待 Prepare 响应的时长等)，所以也无法顺利处理上一个事务。</p>
+</li>
+<li>
+<p>数据不一致<br>
+Commit 事务过程中 Commit 请求/Rollback 请求可能因为协调者宕机或协调者与参与者网络问题丢失，那么就导致了部分参与者没有收到 Commit/Rollback 请求，而其他参与者则正常收到执行了 Commit/Rollback 操作，没有收到请求的参与者则继续阻塞。这时，参与者之间的数据就不再一致了。<br>
+当参与者执行 Commit/Rollback 后会向协调者发送 Ack，然而协调者不论是否收到所有的参与者的 Ack，该事务也不会再有其他补救措施了，协调者能做的也就是等待超时后向事务发起者返回一个“我不确定该事务是否成功”。</p>
+</li>
+<li>
+<p>环境可靠性依赖<br>
+协调者 Prepare 请求发出后，等待响应，然而如果有参与者宕机或与协调者之间的网络中断，都会导致协调者无法收到所有参与者的响应，那么在 2PC 中，协调者会等待一定时间，然后超时后，会触发事务中断，在这个过程中，协调者和所有其他参与者都是出于阻塞的。这种机制对网络问题常见的现实环境来说太苛刻了。</p>
+</li>
+<li>
+<p>参考<br>
+<a class="link" href="https://juejin.cn/post/6844903814898647048"  target="_blank" rel="noopener"
+    >https://juejin.cn/post/6844903814898647048</a></p>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/notes/">notes</a>
+        
+            <a href="/tags/2pc/">2pc</a>
+        
+            <a href="/tags/districuted-system/">districuted system</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-3pc%E7%90%86%E8%AE%BA/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">分布式: 3PC理论</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-base-%E7%90%86%E8%AE%BA/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">分布式: BASE 理论</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-cap-%E5%AE%9A%E7%90%86/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">分布式: CAP 定理</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/note-logic/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: Logic</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/note-trees/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: Trees</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 Li. Mingzhi
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
