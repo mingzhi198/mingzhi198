@@ -6,15 +6,70 @@
     <description>Recent content in notes on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 05 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/categories/notes/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 09 Mar 2021 15:00:52 +0800</lastBuildDate><atom:link href="/categories/notes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang: Channel底层实现</title>
+      <link>/p/golang-channel%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Tue, 09 Mar 2021 15:00:52 +0800</pubDate>
+      
+      <guid>/p/golang-channel%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/</guid>
+      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.   1. channel结构  buf 是有缓冲的channel所特有的结构，用来存储缓存数据。是个循环链表 sendx和recvx用于记录buf这个循环链表中的发送或者接收的index lock lock是个互斥锁 recvq和sendq分别是接收(&amp;lt;-channel)或者发送(channel &amp;lt;- xxx)的goroutine抽象出来的结构体(sudog)的队列。是个双向链表  hchan源码: src/runtime/chan.go
+2. 创建channel ch := make(chan int, 5) 创建channel的时候会在内存中实例化一个hchan的结构体,并返回一个ch指针.
+hchan包含了一个互斥锁, 让goroutine可以FIFO的方式进入一个结构体中.
+3. channel中的队列 channel中有个缓存buf，是用来缓存数据的, 当使用send (ch &amp;lt;- xx)或者recv ( &amp;lt;-ch)的时候，首先要锁住hchan这个结构体。
+然后开始send (ch &amp;lt;- xx)数据。
+recv ( &amp;lt;-ch)是个逆向的操作，也是需要加锁。
+recvx和sendx是根据循环链表buf的变动而改变的。
+4. send/recv的细化操作 每一步的操作的细节可以细化为：</description>
+    </item>
+    
+    <item>
+      <title>System: 僵尸进程和孤独进程</title>
+      <link>/p/system-%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%AD%A4%E7%8B%AC%E8%BF%9B%E7%A8%8B/</link>
+      <pubDate>Tue, 09 Mar 2021 15:00:52 +0800</pubDate>
+      
+      <guid>/p/system-%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%AD%A4%E7%8B%AC%E8%BF%9B%E7%A8%8B/</guid>
+      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  进程 进程就是运行起来的一个程序，但是进程并不局限于执行起来的代码，他的作用范围还有很多，如存放数据的内存地址空间，执行线程，打开的文件，挂起的信号，处理器状态等。
+进程在创建的时候开始存活，Linux系统会调用fork()方法复制一个现有进程来创建一个全新的进程，新产生的进程为子进程，创建者进程为父进程。当程序结束运行时，通过exit()系统调用退出执行，该进程占用的资源包括内存空间，线程等被释放掉。
+2. 进程终结 当进程终结时候，系统需要释放他所占有的所有资源。进程通过exit()系统调用结束进程，这个调用可能是来自进程内部的exit()，也可能来自外部的信号。在结束时候，该进程会使用该系统调用释放自己的空间，包括引用的文件，内存描述符，还会给自己的父进程发送信号，给自己的子进程寻找一个父进程等操作。
+调用结束后，此时该进程并没有完全从系统上消失，进程的进程描述符依然存在于系统中，存在的唯一目的就是向父进程提供信息。
+与自然规律相反，进程的收尾工作总是由该进程的父进程来做的，父进程会通过wait()系统调用来释放该进程最后剩余的进程标识符，slab缓存等，该调用会阻塞当前父进程，直到某个子进程退出。
+3. 僵尸进程 当进程exit()退出之后，他的父进程仍未结束,且没有通过wait()系统调用回收他的进程描述符的信息，该进程会继续停留在系统的进程表中，占用内核资源，这样的进程就是僵尸进程。
+等到父进程退出之后，再来查看系统，该僵尸进程在系统中找不到了。
+4. 孤儿进程 当一个进程正在运行时，他的父进程忽然退出，此时该进程就是一个孤儿进程。作为一个进程，需要找到一个父进程，否则这种进程在退出之后没人回收他的进程描述符，空耗内存。此时该进程会找到一个父进程，如果自己所在的进程组没人收养，那就作为init或systemd进程的子进程。
+Init进程会为每一个子进程使用wait系统调用，确保不会产生僵尸进程。这里的wait系统调用指的是waitpid()，会传入一个要等待的进程Pid，等待的指定进程，而不阻塞当前进程去等待。
+等到该进程退出后，该进程的进程描述符等信息会被init进程回收，不会形成僵尸进程。
+5. 处置方式 孤儿进程会由init进程收养作为子进程，所以不会有什么危害；僵尸进程会占用进程号，以及未回收的文件描述符占用空间，如果产生大量的僵尸进程，将会导致系统无法分配进程号，说明父进程的代码编写有问题。
+在理想情况下，可以通过kill命令杀死该进程的父进程来结束僵尸进程。当然也要结合具体场景来对待。
+ 参考
+https://segmentfault.com/a/1190000038820321  </description>
+    </item>
+    
+    <item>
+      <title>Golang: 调度模型</title>
+      <link>/p/golang-%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Mon, 08 Mar 2021 15:00:52 +0800</pubDate>
+      
+      <guid>/p/golang-%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B/</guid>
+      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.   1. GMP模型 M指的是Machine，一个M直接关联了一个内核线程。
+P指的是”processor”，代表了M所需的上下文环境，也是处理用户级代码逻辑的处理器。
+G指的是Goroutine，其实本质上也是一种轻量级的线程。
+三者关系如下图所示：
+P(Processor)的数量是在启动时被设置为环境变量GOMAXPROCS的值，或者通过运行时调用函数runtime.GOMAXPROCS()进行设置。Processor数量固定意味着任意时刻只有固定数量的线程在运行go代码。Goroutine中就是我们要执行并发的代码。图中P正在执行的Goroutine为蓝色的；处于待执行状态的Goroutine为灰色的，灰色的Goroutine形成了一个队列runqueues
+三者关系的宏观的图为：
+需要上下文的目的，是当遇到内核线程阻塞的时候, 我们可以直接放开其他线程。
+一个很简单的例子就是系统调用sysall，一个线程肯定不能同时执行代码和系统调用被阻塞，这个时候，此线程M需要放弃当前的上下文环境P，以便可以让其他的Goroutine被调度执行。
+ 参考
+https://i6448038.github.io/2017/12/04/golang-concurrency-principle/  </description>
+    </item>
+    
     <item>
       <title>分布式: 2PC理论</title>
       <link>/p/%E5%88%86%E5%B8%83%E5%BC%8F-2pc%E7%90%86%E8%AE%BA/</link>
       <pubDate>Fri, 05 Mar 2021 19:00:52 +0800</pubDate>
       
       <guid>/p/%E5%88%86%E5%B8%83%E5%BC%8F-2pc%E7%90%86%E8%AE%BA/</guid>
-      <description>[TOC]
-Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  1. 背景 在分布式系统中发起一个事务，该事务涉及多个不同节点，那么为了保证事务 ACID 特性，就需要引入一个协调者来统一调度事务涉及的多个节点，被调度的节点称为事务参与者。由此衍生出 2PC 和 3PC 协议。
+      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  1. 背景 在分布式系统中发起一个事务，该事务涉及多个不同节点，那么为了保证事务 ACID 特性，就需要引入一个协调者来统一调度事务涉及的多个节点，被调度的节点称为事务参与者。由此衍生出 2PC 和 3PC 协议。
 2. 2PC(两阶段提交，Two-Phase Commit) 分为两个阶段：Prepare 和 Commit
 2.1 Prepare：提交事务请求   询问
 协调者向所有参与者发送事务请求，询问是否可执行事务操作，然后等待各个参与者的响应。

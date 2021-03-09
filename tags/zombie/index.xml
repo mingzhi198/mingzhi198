@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>zombie on Li. Mingzhi</title>
+    <link>/tags/zombie/</link>
+    <description>Recent content in zombie on Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 09 Mar 2021 15:00:52 +0800</lastBuildDate><atom:link href="/tags/zombie/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>System: 僵尸进程和孤独进程</title>
+      <link>/p/system-%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%AD%A4%E7%8B%AC%E8%BF%9B%E7%A8%8B/</link>
+      <pubDate>Tue, 09 Mar 2021 15:00:52 +0800</pubDate>
+      
+      <guid>/p/system-%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%AD%A4%E7%8B%AC%E8%BF%9B%E7%A8%8B/</guid>
+      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  进程 进程就是运行起来的一个程序，但是进程并不局限于执行起来的代码，他的作用范围还有很多，如存放数据的内存地址空间，执行线程，打开的文件，挂起的信号，处理器状态等。
+进程在创建的时候开始存活，Linux系统会调用fork()方法复制一个现有进程来创建一个全新的进程，新产生的进程为子进程，创建者进程为父进程。当程序结束运行时，通过exit()系统调用退出执行，该进程占用的资源包括内存空间，线程等被释放掉。
+2. 进程终结 当进程终结时候，系统需要释放他所占有的所有资源。进程通过exit()系统调用结束进程，这个调用可能是来自进程内部的exit()，也可能来自外部的信号。在结束时候，该进程会使用该系统调用释放自己的空间，包括引用的文件，内存描述符，还会给自己的父进程发送信号，给自己的子进程寻找一个父进程等操作。
+调用结束后，此时该进程并没有完全从系统上消失，进程的进程描述符依然存在于系统中，存在的唯一目的就是向父进程提供信息。
+与自然规律相反，进程的收尾工作总是由该进程的父进程来做的，父进程会通过wait()系统调用来释放该进程最后剩余的进程标识符，slab缓存等，该调用会阻塞当前父进程，直到某个子进程退出。
+3. 僵尸进程 当进程exit()退出之后，他的父进程仍未结束,且没有通过wait()系统调用回收他的进程描述符的信息，该进程会继续停留在系统的进程表中，占用内核资源，这样的进程就是僵尸进程。
+等到父进程退出之后，再来查看系统，该僵尸进程在系统中找不到了。
+4. 孤儿进程 当一个进程正在运行时，他的父进程忽然退出，此时该进程就是一个孤儿进程。作为一个进程，需要找到一个父进程，否则这种进程在退出之后没人回收他的进程描述符，空耗内存。此时该进程会找到一个父进程，如果自己所在的进程组没人收养，那就作为init或systemd进程的子进程。
+Init进程会为每一个子进程使用wait系统调用，确保不会产生僵尸进程。这里的wait系统调用指的是waitpid()，会传入一个要等待的进程Pid，等待的指定进程，而不阻塞当前进程去等待。
+等到该进程退出后，该进程的进程描述符等信息会被init进程回收，不会形成僵尸进程。
+5. 处置方式 孤儿进程会由init进程收养作为子进程，所以不会有什么危害；僵尸进程会占用进程号，以及未回收的文件描述符占用空间，如果产生大量的僵尸进程，将会导致系统无法分配进程号，说明父进程的代码编写有问题。
+在理想情况下，可以通过kill命令杀死该进程的父进程来结束僵尸进程。当然也要结合具体场景来对待。
+ 参考
+https://segmentfault.com/a/1190000038820321  </description>
+    </item>
+    
+  </channel>
+</rss>

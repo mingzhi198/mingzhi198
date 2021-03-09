@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.   1. channel结构  buf 是有缓冲的channel所特有的结构，用来存储缓存数据。是个循环链表 sendx和recvx用于记录buf这个循环链表中的发送或者接收的index lock lock是个互斥锁 recvq和sendq分别是接收(&amp;lt;-channel)或者发送(channel &amp;lt;- xxx)的goroutine抽象出来的结构体(sudog)的队列。是个双向链表  hchan源码: src/runtime/chan.go
+2. 创建channel ch := make(chan int, 5) 创建channel的时候会在内存中实例化一个hchan的结构体,并返回一个ch指针.
+hchan包含了一个互斥锁, 让goroutine可以FIFO的方式进入一个结构体中.
+3. channel中的队列 channel中有个缓存buf，是用来缓存数据的, 当使用send (ch &amp;lt;- xx)或者recv ( &amp;lt;-ch)的时候，首先要锁住hchan这个结构体。
+然后开始send (ch &amp;lt;- xx)数据。
+recv ( &amp;lt;-ch)是个逆向的操作，也是需要加锁。
+recvx和sendx是根据循环链表buf的变动而改变的。
+4. send/recv的细化操作 每一步的操作的细节可以细化为：'><title>Golang: Channel底层实现</title>
+
+<link rel='canonical' href='/p/golang-channel%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Golang: Channel底层实现'>
+<meta property='og:description' content='Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.   1. channel结构  buf 是有缓冲的channel所特有的结构，用来存储缓存数据。是个循环链表 sendx和recvx用于记录buf这个循环链表中的发送或者接收的index lock lock是个互斥锁 recvq和sendq分别是接收(&amp;lt;-channel)或者发送(channel &amp;lt;- xxx)的goroutine抽象出来的结构体(sudog)的队列。是个双向链表  hchan源码: src/runtime/chan.go
+2. 创建channel ch := make(chan int, 5) 创建channel的时候会在内存中实例化一个hchan的结构体,并返回一个ch指针.
+hchan包含了一个互斥锁, 让goroutine可以FIFO的方式进入一个结构体中.
+3. channel中的队列 channel中有个缓存buf，是用来缓存数据的, 当使用send (ch &amp;lt;- xx)或者recv ( &amp;lt;-ch)的时候，首先要锁住hchan这个结构体。
+然后开始send (ch &amp;lt;- xx)数据。
+recv ( &amp;lt;-ch)是个逆向的操作，也是需要加锁。
+recvx和sendx是根据循环链表buf的变动而改变的。
+4. send/recv的细化操作 每一步的操作的细节可以细化为：'>
+<meta property='og:url' content='/p/golang-channel%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/'>
+<meta property='og:site_name' content='Li. Mingzhi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='cap' /><meta property='article:tag' content='districuted system' /><meta property='article:published_time' content='2021-03-09T15:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-03-09T15:00:52&#43;08:00'/>
+<meta name="twitter:title" content="Golang: Channel底层实现">
+<meta name="twitter:description" content="Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.   1. channel结构  buf 是有缓冲的channel所特有的结构，用来存储缓存数据。是个循环链表 sendx和recvx用于记录buf这个循环链表中的发送或者接收的index lock lock是个互斥锁 recvq和sendq分别是接收(&amp;lt;-channel)或者发送(channel &amp;lt;- xxx)的goroutine抽象出来的结构体(sudog)的队列。是个双向链表  hchan源码: src/runtime/chan.go
+2. 创建channel ch := make(chan int, 5) 创建channel的时候会在内存中实例化一个hchan的结构体,并返回一个ch指针.
+hchan包含了一个互斥锁, 让goroutine可以FIFO的方式进入一个结构体中.
+3. channel中的队列 channel中有个缓存buf，是用来缓存数据的, 当使用send (ch &amp;lt;- xx)或者recv ( &amp;lt;-ch)的时候，首先要锁住hchan这个结构体。
+然后开始send (ch &amp;lt;- xx)数据。
+recv ( &amp;lt;-ch)是个逆向的操作，也是需要加锁。
+recvx和sendx是根据循环链表buf的变动而改变的。
+4. send/recv的细化操作 每一步的操作的细节可以细化为：">
+    </head>
+    <body class="">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "auto");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.body.dataset.scheme = 'dark';
+        } else {
+            document.body.dataset.scheme = 'light';
+        }
+    })();
+</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    
+                    
+                    
+                        
+                        <img src="/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+
+                
+            </figure>
+        
+        <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
+    </header>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/p/resume/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/archives/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/search/index.html'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <div id="article-toolbar">
+        <a href="" class="back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+            <span>Back</span>
+        </a>
+    </div>
+
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/notes/" >
+                notes
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/golang-channel%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">Golang: Channel底层实现</a>
+    </h2>
+
+    <footer class="article-time">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <time class="article-time--published">Mar 09, 2021</time>
+    </footer></div>
+</header>
+
+    <section class="article-content">
+    <h1 id="statement">Statement</h1>
+<ul>
+<li>This article is my study notes about distributed systems.</li>
+<li>Please refer to the original work for more details and indicate the source for reprinting.</li>
+</ul>
+<hr>
+<h2 id="1-channel结构">1. channel结构</h2>
+<p><img src="/post/golang/images/hchan.png" alt="hchan_struct"  /></p>
+<ul>
+<li>buf 是有缓冲的channel所特有的结构，用来存储缓存数据。是个循环链表</li>
+<li>sendx和recvx用于记录buf这个循环链表中的发送或者接收的index</li>
+<li>lock lock是个互斥锁</li>
+<li>recvq和sendq分别是接收(&lt;-channel)或者发送(channel &lt;- xxx)的goroutine抽象出来的结构体(sudog)的队列。是个双向链表</li>
+</ul>
+<p>hchan源码: src/runtime/chan.go<br>
+<img src="/post/golang/images/hchan_struct.png" alt="chan_strcut "  /></p>
+<h2 id="2-创建channel">2. 创建channel</h2>
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</code></pre></div><p>创建channel的时候会在内存中实例化一个hchan的结构体,并返回一个ch指针.<br>
+hchan包含了一个互斥锁, 让goroutine可以FIFO的方式进入一个结构体中.</p>
+<h2 id="3-channel中的队列">3. channel中的队列</h2>
+<p>channel中有个缓存buf，是用来缓存数据的, 当使用send (ch &lt;- xx)或者recv ( &lt;-ch)的时候，首先要锁住hchan这个结构体。<br>
+然后开始send (ch &lt;- xx)数据。<br>
+recv ( &lt;-ch)是个逆向的操作，也是需要加锁。<br>
+recvx和sendx是根据循环链表buf的变动而改变的。</p>
+<h2 id="4-sendrecv的细化操作">4. send/recv的细化操作</h2>
+<p>每一步的操作的细节可以细化为：</p>
+<ul>
+<li>第一，加锁</li>
+<li>第二，把数据从goroutine中copy到“队列”中(或者从队列中copy到goroutine中）。</li>
+<li>第三，释放锁<br>
+Go中那句经典的话：Do not communicate by sharing memory; instead, share memory by communicating.的具体实现就是利用channel把数据从一端copy到了另一端！<br>
+<img src="https://i6448038.github.io/img/channel/hchan_channl.gif" alt="chan_goroutine"  /></li>
+</ul>
+<h2 id="5-channel缓存原理">5. channel缓存原理</h2>
+<p>当channel缓存满了，或者没有缓存的时候，我们继续send(ch &lt;- xxx)或者recv(&lt;- ch)会阻塞当前goroutine.<br>
+Go的goroutine是用户态的线程(user-space threads)，用户态的线程是需要自己去调度的，Go有运行时的scheduler去帮我们完成调度这件事情。<br>
+goroutine的阻塞操作，实际上是调用send (ch &lt;- xx)或者recv ( &lt;-ch)的时候主动触发的</p>
+<p><img src="/post/golang/images/hchan_block1.png" alt="chan_block1"  /><br>
+这个时候G1正在正常运行,当再次进行send操作(ch&lt;-1)的时候，会主动调用Go的调度器,让G1等待，并从让出M，让其他G去使用<br>
+<img src="/post/golang/images/hchan_block2.png" alt="chan_block2"  /></p>
+<p>同时G1也会被抽象成含有G1指针和send元素的sudog结构体保存到hchan的sendq中等待被唤醒。<br>
+<img src="https://i6448038.github.io/img/channel/hchan_blok3.gif" alt="chan_sudog"  /></p>
+<p>G1是如何被唤醒的?<br>
+G2执行了recv操作p := &lt;-ch，于是会发生以下的操作：<br>
+<img src="https://i6448038.github.io/img/channel/hchan_block5.gif" alt="chan_recv"  /><br>
+G2从缓存队列中取出数据，channel会将等待队列中的G1推出，将G1当时send的数据推到缓存中，然后调用Go的scheduler，唤醒G1，并把G1放到可运行的Goroutine队列中。</p>
+<p><img src="./images/hchan_mutex.png" alt="chan_mutex"  /></p>
+<h2 id="3-channel的发送ch--和接收--ch">3. channel的发送(ch &lt;-)和接收(&lt;- ch)</h2>
+<ul>
+<li>参考<br>
+<a class="link" href="https://i6448038.github.io/2019/04/11/go-channel/"  target="_blank" rel="noopener"
+    >https://i6448038.github.io/2019/04/11/go-channel/</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/notes/">notes</a>
+        
+            <a href="/tags/cap/">cap</a>
+        
+            <a href="/tags/districuted-system/">districuted system</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/golang-%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Golang: 调度模型</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-base-%E7%90%86%E8%AE%BA/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">分布式: BASE 理论</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-cap-%E5%AE%9A%E7%90%86/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">分布式: CAP 定理</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-2pc%E7%90%86%E8%AE%BA/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">分布式: 2PC理论</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/%E5%88%86%E5%B8%83%E5%BC%8F-3pc%E7%90%86%E8%AE%BA/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">分布式: 3PC理论</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 Li. Mingzhi
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
