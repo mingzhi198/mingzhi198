@@ -9,6 +9,7 @@ P(Processor)的数量是在启动时被设置为环境变量GOMAXPROCS的值，�
 三者关系的宏观的图为：
 需要上下文的目的，是当遇到内核线程阻塞的时候, 我们可以直接放开其他线程。
 一个很简单的例子就是系统调用sysall，一个线程肯定不能同时执行代码和系统调用被阻塞，这个时候，此线程M需要放弃当前的上下文环境P，以便可以让其他的Goroutine被调度执行。
+未完待续&amp;hellip;
  参考
 https://i6448038.github.io/2017/12/04/golang-concurrency-principle/  '><title>Golang: 调度模型</title>
 
@@ -23,6 +24,7 @@ P(Processor)的数量是在启动时被设置为环境变量GOMAXPROCS的值，�
 三者关系的宏观的图为：
 需要上下文的目的，是当遇到内核线程阻塞的时候, 我们可以直接放开其他线程。
 一个很简单的例子就是系统调用sysall，一个线程肯定不能同时执行代码和系统调用被阻塞，这个时候，此线程M需要放弃当前的上下文环境P，以便可以让其他的Goroutine被调度执行。
+未完待续&amp;hellip;
  参考
 https://i6448038.github.io/2017/12/04/golang-concurrency-principle/  '>
 <meta property='og:url' content='/p/golang-%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B/'>
@@ -37,6 +39,7 @@ P(Processor)的数量是在启动时被设置为环境变量GOMAXPROCS的值，�
 三者关系的宏观的图为：
 需要上下文的目的，是当遇到内核线程阻塞的时候, 我们可以直接放开其他线程。
 一个很简单的例子就是系统调用sysall，一个线程肯定不能同时执行代码和系统调用被阻塞，这个时候，此线程M需要放弃当前的上下文环境P，以便可以让其他的Goroutine被调度执行。
+未完待续&amp;hellip;
  参考
 https://i6448038.github.io/2017/12/04/golang-concurrency-principle/  ">
     </head>
@@ -235,6 +238,7 @@ G指的是Goroutine，其实本质上也是一种轻量级的线程。<br>
 需要上下文的目的，是当遇到内核线程阻塞的时候, 我们可以直接放开其他线程。</p>
 <p>一个很简单的例子就是系统调用sysall，一个线程肯定不能同时执行代码和系统调用被阻塞，这个时候，此线程M需要放弃当前的上下文环境P，以便可以让其他的Goroutine被调度执行。<br>
 <img src="/post/golang/images/giveupP.png" alt="give_up_p"  /></p>
+<p>未完待续&hellip;</p>
 <ul>
 <li>参考<br>
 <a class="link" href="https://i6448038.github.io/2017/12/04/golang-concurrency-principle/"  target="_blank" rel="noopener"

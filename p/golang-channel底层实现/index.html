@@ -260,6 +260,7 @@ G2执行了recv操作p := &lt;-ch，于是会发生以下的操作：<br>
 G2从缓存队列中取出数据，channel会将等待队列中的G1推出，将G1当时send的数据推到缓存中，然后调用Go的scheduler，唤醒G1，并把G1放到可运行的Goroutine队列中。</p>
 <p><img src="./images/hchan_mutex.png" alt="chan_mutex"  /></p>
 <h2 id="3-channel的发送ch--和接收--ch">3. channel的发送(ch &lt;-)和接收(&lt;- ch)</h2>
+<p>未完待续&hellip;</p>
 <ul>
 <li>参考<br>
 <a class="link" href="https://i6448038.github.io/2019/04/11/go-channel/"  target="_blank" rel="noopener"
