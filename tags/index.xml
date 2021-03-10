@@ -6,20 +6,11 @@
     <description>Recent content in Tags on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 09 Mar 2021 15:00:52 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>cap</title>
-      <link>/tags/cap/</link>
-      <pubDate>Tue, 09 Mar 2021 15:00:52 +0800</pubDate>
-      
-      <guid>/tags/cap/</guid>
-      <description></description>
-    </item>
-    
+    <lastBuildDate>Wed, 10 Mar 2021 18:00:52 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>districuted system</title>
       <link>/tags/districuted-system/</link>
-      <pubDate>Tue, 09 Mar 2021 15:00:52 +0800</pubDate>
+      <pubDate>Wed, 10 Mar 2021 18:00:52 +0800</pubDate>
       
       <guid>/tags/districuted-system/</guid>
       <description></description>
@@ -28,9 +19,27 @@
     <item>
       <title>notes</title>
       <link>/tags/notes/</link>
-      <pubDate>Tue, 09 Mar 2021 15:00:52 +0800</pubDate>
+      <pubDate>Wed, 10 Mar 2021 18:00:52 +0800</pubDate>
       
       <guid>/tags/notes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>raft</title>
+      <link>/tags/raft/</link>
+      <pubDate>Wed, 10 Mar 2021 18:00:52 +0800</pubDate>
+      
+      <guid>/tags/raft/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cap</title>
+      <link>/tags/cap/</link>
+      <pubDate>Tue, 09 Mar 2021 15:00:52 +0800</pubDate>
+      
+      <guid>/tags/cap/</guid>
       <description></description>
     </item>
     

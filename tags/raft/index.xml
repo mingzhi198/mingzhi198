@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>raft on Li. Mingzhi</title>
+    <link>/tags/raft/</link>
+    <description>Recent content in raft on Li. Mingzhi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 10 Mar 2021 18:00:52 +0800</lastBuildDate><atom:link href="/tags/raft/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>分布式: 一致性协议Raft</title>
+      <link>/p/%E5%88%86%E5%B8%83%E5%BC%8F-%E4%B8%80%E8%87%B4%E6%80%A7%E5%8D%8F%E8%AE%AEraft/</link>
+      <pubDate>Wed, 10 Mar 2021 18:00:52 +0800</pubDate>
+      
+      <guid>/p/%E5%88%86%E5%B8%83%E5%BC%8F-%E4%B8%80%E8%87%B4%E6%80%A7%E5%8D%8F%E8%AE%AEraft/</guid>
+      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  1. 一致性协议Raft Raft 也是一个 一致性算法，和 Paxos 目标相同。但它还有另一个名字 - 易于理解的一致性算法。Paxos 和 Raft 都是为了实现 一致性 产生的。这个过程如同选举一样，参选者 需要说服 大多数选民 (服务器) 投票给他，一旦选定后就跟随其操作。Paxos 和 Raft 的区别在于选举的 具体过程 不同。
+Raft 协议将 Server 进程分成三类，分别是 Leader，Candidate，Follower。一个 Server 进程在某一时刻，只能是其中 一种类型，但这不是固定的。不同的时刻，它可能拥有不同的类型，一个 Server 进程的类型是如何改变的，后面会有解释。
+在一个由 Raft 协议组织的集群中有三类角色：
+ Leader（领袖） Follower（群众） Candidate（候选人）  就像一个民主社会，领袖由民众投票选出。刚开始没有 领袖，所有集群中的 参与者 都是 群众，那么首先开启一轮大选。在大选期间 所有群众 都能参与竞选，这时所有群众的角色就变成了 候选人，民主投票选出领袖后就开始了这届领袖的任期，然后选举结束，所有除 领袖 的 候选人 又变回 群众角色 服从领袖领导。</description>
+    </item>
+    
+  </channel>
+</rss>
