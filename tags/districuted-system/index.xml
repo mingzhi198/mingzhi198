@@ -41,17 +41,16 @@ recvx和sendx是根据循环链表buf的变动而改变的。
       <pubDate>Mon, 08 Mar 2021 15:00:52 +0800</pubDate>
       
       <guid>/p/golang-%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B/</guid>
-      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.   1. GMP模型 M指的是Machine，一个M直接关联了一个内核线程。
-P指的是”processor”，代表了M所需的上下文环境，也是处理用户级代码逻辑的处理器。
-G指的是Goroutine，其实本质上也是一种轻量级的线程。
-三者关系如下图所示：
-P(Processor)的数量是在启动时被设置为环境变量GOMAXPROCS的值，或者通过运行时调用函数runtime.GOMAXPROCS()进行设置。Processor数量固定意味着任意时刻只有固定数量的线程在运行go代码。Goroutine中就是我们要执行并发的代码。图中P正在执行的Goroutine为蓝色的；处于待执行状态的Goroutine为灰色的，灰色的Goroutine形成了一个队列runqueues
-三者关系的宏观的图为：
-需要上下文的目的，是当遇到内核线程阻塞的时候, 我们可以直接放开其他线程。
-一个很简单的例子就是系统调用sysall，一个线程肯定不能同时执行代码和系统调用被阻塞，这个时候，此线程M需要放弃当前的上下文环境P，以便可以让其他的Goroutine被调度执行。
-未完待续&amp;hellip;
- 参考
-https://i6448038.github.io/2017/12/04/golang-concurrency-principle/  </description>
+      <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.   1. Goroutine Goroutine = Golang + Coroutine。Goroutine是golang实现的协程，是用户级线程。
+Goroutine具有以下特点：
+ 相比线程，其启动的代价很小，以很小栈空间启动（2Kb左右） 能够动态地伸缩栈的大小，最大可以支持到Gb级别 工作在用户态，切换成很小 与线程关系是n:m，即可以在n个系统线程上多工调度m个Goroutine  2. 进程、线程、Goroutine 在仅支持进程的操作系统中，进程是拥有资源和独立调度的基本单位。
+在引入线程的操作系统中，线程是独立调度的基本单位，进程是资源拥有的基本单位。
+线程创建、管理、调度等采用的方式称为线程模型。线程模型一般分为以下三种：
+ 内核级线程(Kernel Level Thread)模型 用户级线程(User Level Thread)模型 两级线程模型，也称混合型线程模型  三大线程模型最大差异就在于用户级线程与内核调度实体KSE（KSE，Kernel Scheduling Entity）之间的对应关系。
+KSE是Kernel Scheduling Entity的缩写，其是可被操作系统内核调度器调度的对象实体，是操作系统内核的最小调度单元，可以简单理解为内核级线程。
+用户级线程即协程，由应用程序创建与管理，协程必须与内核级线程绑定之后才能执行。
+线程由 CPU 调度是抢占式的，协程由用户态调度是协作式的，一个协程让出 CPU 后，才执行下一个协程。
+3. Golang的线程模型 Golang在底层实现了混合型线程模型。M即系统线程，由系统调用产生，一个M关联一个KSE，即两级线程模型中的系统线程。G为Groutine，即两级线程模型的的应用及线程。M与G的关系是N:M。</description>
     </item>
     
     <item>
