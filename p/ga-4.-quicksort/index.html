@@ -240,7 +240,7 @@ Then we are left with a land of 10 * 10, which is the answer.</p>
 </ul>
 <div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="k">def</span> <span class="nf">sumR</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+        <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">sumR</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 </code></pre></div><ul>
 <li>Golang</li>
@@ -257,9 +257,9 @@ Then we are left with a land of 10 * 10, which is the answer.</p>
 <ul>
 <li>Python</li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="k">def</span> <span class="nf">countEleR</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span> 
+<div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="k">def</span> <span class="nf">countEleR</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">1</span> 
+        <span class="k">return</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">countEleR</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 </code></pre></div><ol start="3">
 <li>Find the maximum number in a list</li>
@@ -267,14 +267,14 @@ Then we are left with a land of 10 * 10, which is the answer.</p>
 <ul>
 <li>Python</li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="k">def</span> <span class="nf">findMaxR</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span> 
+<div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="k">def</span> <span class="nf">findMaxR</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">findMaxR</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
     <span class="k">if</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">ret</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+        <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ret</span> 
+        <span class="k">return</span> <span class="n">ret</span>
 </code></pre></div><ol start="4">
 <li>Write the D&amp;C code for Binary Search</li>
 </ol>
@@ -283,13 +283,13 @@ Then we are left with a land of 10 * 10, which is the answer.</p>
 </ul>
 <div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="k">def</span> <span class="nf">binarySearchR</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">low</span> <span class="o">&gt;</span> <span class="n">high</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span> 
+        <span class="k">return</span> <span class="bp">None</span>
 
     <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
     <span class="n">guess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">guess</span> <span class="o">&gt;</span> <span class="n">item</span><span class="p">:</span> 
-        <span class="n">high</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span><span class="mi">1</span> 
-    <span class="k">else</span><span class="p">:</span> 
+    <span class="k">if</span> <span class="n">guess</span> <span class="o">&gt;</span> <span class="n">item</span><span class="p">:</span>
+        <span class="n">high</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
         <span class="n">low</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">binarySearchR</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
 </code></pre></div><ul>
@@ -318,8 +318,8 @@ Then we are left with a land of 10 * 10, which is the answer.</p>
 <p>Tip: When we got a recursive function involving an array, the base case is often an empty array or an array with one element.</p>
 </blockquote>
 <h2 id="3-quick-sort">3. Quick Sort</h2>
-<p>3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life.<br>
-The base case for quicksort are arrays that are empty and arrays with just one element.<br>
+<h3 id="31-quicksort-is-a-sorting-algorithm-which-is-much-faster-than-selection-sort-and-commonly-used-in-life">3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life.</h3>
+<p>The base case for quicksort are arrays that are empty and arrays with just one element.<br>
 Using D&amp;C, we can break down a array until we get the base case.</p>
 <ul>
 <li>Here are the steps for quick sort:</li>
@@ -332,7 +332,7 @@ Using D&amp;C, we can break down a array until we get the base case.</p>
 <li>The sub-arrays get sorted, and then we combine the whole thing to get a sorted array.</li>
 </ol>
 </blockquote>
-<p>3.2  Here we can see one example from the book.</p>
+<h3 id="32--here-we-can-see-one-example-from-the-book">3.2  Here we can see one example from the book.</h3>
 <p>After partitioning, we get three parts: numbers less than the pivot, the pivot and numbers greater than the pivot.</p>
 <figure>
     <img src="/post/grokking_algorithm/images/quick_sort_m1.png" width="50%"/> 
@@ -452,7 +452,7 @@ Since quicksort doesn&rsquo;t to see whether the input array is already sorted, 
 </figure>
 </p>
 <p>Since we&rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.<br>
-As we always get O(n) in every level of the stack, we finally get O(n)*O(n)O(n^2)time.<br>
+As we always get O(n) in every level of the stack, we finally get O(n)*O(n) = O(n^2) time.<br>
 Therefore, the call stack is so long that it takes O(n^2) time.</p>
 <p>On the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).<br>
 Therefore, we get operation time O(nlogn).</p>
@@ -466,9 +466,9 @@ Therefore, we get operation time O(nlogn).</p>
 </ul>
 <pre><code>Thank you for your effort to read this part of this passage.
 What are included in this passage are my study notes about algorithm.
-If you want to know more details about it, I strongly recommend you this book: 
+If you want to know more details about it, I strongly recommend you this book:
 grokking algoriths: An illustrated guide for programmers and other curious people.
-The author illustrate algorithms with pictures, which make people easily understand difficult questions.
+The author illustrates algorithms with pictures, which make people easily understand difficult questions.
 </code></pre><h3 id="summary">Summary</h3>
 <ul>
 <li>D&amp;C works by splitting a problem into smaller parts. And the base case is usually an array with no or only one element.</li>

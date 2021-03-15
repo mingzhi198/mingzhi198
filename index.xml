@@ -1353,7 +1353,7 @@ MySQL中, InnoDB 页的大小默认是 16k:&lt;br&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;5-在后续的交互中用session-key-和-mac-算法密钥对传输的内容进行加解密&#34;&gt;5. 在后续的交互中，用session key 和 MAC 算法密钥对传输的内容进行加解密&lt;/h4&gt;
 &lt;pre&gt;&lt;code&gt;客户端：
   1. 用MAC密钥对内容进行摘要
-  2. 用 session key对摘要进行加密
+  2. 用 session key对内容进行加密
 服务端：
   1. 用sesion key对收到的数据进行解密
   2. 用 MAC 密钥验证内容的完整性
@@ -1402,11 +1402,12 @@ TIME-WAIT状态:&lt;/p&gt;
 3. TCP四次挥手过程中，为了保证ACK和接收延迟数据，设置TIME-WAIT为2倍的MSL。
 &lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;3-解决大量time-wait状态的方法&#34;&gt;3. 解决大量TIME-WAIT状态的方法&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;1. 客户端
-  HTTP请求的头部Connection设置为keep-alive, 这样服务端不会关闭连接，目前大量浏览器是这样处理的
+  使用长链接：HTTP请求的头部Connection设置为keep-alive, 这样服务端不会关闭连接，目前大量浏览器是这样处理的
 2. 服务端
   a. 允许time_wait状态的socket被重用
   b. 缩短time_wait的时间
-&lt;/code&gt;&lt;/pre&gt;&lt;ol&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;4-time-wait存在的目的&#34;&gt;4. TIME-WAIT存在的目的&lt;/h3&gt;
+&lt;ol&gt;
 &lt;li&gt;可靠的实现TCP的全双工连接&lt;/li&gt;
 &lt;/ol&gt;
 &lt;pre&gt;&lt;code&gt;  TCP四次挥手关闭连接时，最后一个ACK是由主动关闭连接的一方发出的；
@@ -1416,16 +1417,17 @@ TIME-WAIT状态:&lt;/p&gt;
 &lt;li&gt;处理延迟到达的报文&lt;/li&gt;
 &lt;/ol&gt;
 &lt;pre&gt;&lt;code&gt;因为网络的不稳定性，TCP报文可能会迟延到达，
-为了避免延迟到达的报文被误认为是新TCP连接的数据，需要在允许新建TCP连接前，保持一个不可用的状态，等待延迟报文的消失，一般设置为2MSL（Maximum Segment Lifetime：最大生存时间）
+为了避免延迟到达的报文被误认为是新TCP连接的数据，需要在允许新建TCP连接前，保持一个不可用的状态，
+等待延迟报文的消失，一般设置为2MSL（Maximum Segment Lifetime：最大生存时间）
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/tcp_fin_timeout.png&#34; alt=&#34;tcp_fin_timeout&#34;  /&gt;&lt;/p&gt;
-&lt;h3 id=&#34;3-tcp协议控制算法&#34;&gt;3. tcp协议控制算法&lt;/h3&gt;
+&lt;h3 id=&#34;5-tcp协议控制算法&#34;&gt;5. tcp协议控制算法&lt;/h3&gt;
 &lt;p&gt;####　1. 流量控制&lt;/p&gt;
 &lt;h4 id=&#34;2-拥塞控制&#34;&gt;2. 拥塞控制&lt;/h4&gt;
 &lt;p&gt;#####　１.慢启动&lt;br&gt;
 #####　２.拥塞避免&lt;br&gt;
 #####　３.拥塞发生&lt;br&gt;
 #####　４.快恢复&lt;/p&gt;
-&lt;p&gt;###　４. tcp与udp的区别，为什么是可靠连接&lt;/p&gt;
+&lt;p&gt;###　6. tcp与udp的区别，为什么是可靠连接&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;引用&lt;br&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://www.cioage.com/art/202008/623158.htm###&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -1488,7 +1490,7 @@ TIME-WAIT状态:&lt;/p&gt;
 最后一步读取到了 mysql 终端 1 中未提交的事务（没有 commit 提交动作），即产生了 脏读 ，大部分业务场景都不允许脏读出现，
 但是此隔离级别下数据库的并发是最好的。
 &lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;READ COMMITTED（读提交）&lt;br&gt;
+&lt;li&gt;READ COMMITTED（读已提交）&lt;br&gt;
 一个事务可以读取另一个已提交的事务，多次读取会造成不一样的结果，此现象称为不可重复读问题，Oracle 和 SQL Server 的默认隔离级别。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code&gt;  1. 登录 mysql 终端 1，开启一个事务，将 ID 为 1 的记录更新为 2 ，并确认记录数变更过来。
@@ -1570,7 +1572,7 @@ MySQL 的 InnoDB 引擎可以通过 next-key locks 机制（参考下文 行锁�
 &lt;td&gt;可以出现&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;读提交&lt;/td&gt;
+&lt;td&gt;读已提交&lt;/td&gt;
 &lt;td&gt;不允许出现&lt;/td&gt;
 &lt;td&gt;可以出现&lt;/td&gt;
 &lt;td&gt;可以出现&lt;/td&gt;
@@ -1720,7 +1722,7 @@ InnoDB 使用 Next-key Locks 解决幻读问题。需要注意的是，如果索
 
 （1）使用共享表空间存储：所有的表和索引存放在同一个表空间中。
 
-（2）使用多表空间存储：表结构放在frm文件，数据和索引放在IBD文件中。分区表的话，每个分区对应单独的IBD文件，分区表的定义可以查看我的其他文章。使用分区表的好处在于提升查询效率。
+（2）使用多表空间存储：表结构放在frm文件，数据和索引放在IBD文件中。分区表的话，每个分区对应单独的IBD文件，分区表的定义可以查看其他文章。使用分区表的好处在于提升查询效率。
 &lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
 &lt;li&gt;对于InnoDB来说，最大的特点在于支持事务。但是这是以损失效率来换取的。&lt;/li&gt;
 &lt;/ul&gt;
@@ -1834,11 +1836,15 @@ InnoDB存储引擎的数据库表对应两个文件，MYISAM存储引擎数据�
 &lt;p&gt;mysql设计的就是innoDB把你的数据和主键索引用B+Tree来组织的，没有主键他的数据就没有一个结构来存储。&lt;br&gt;
 建innoDB表的时候没有建主键，表也能建成功&lt;/p&gt;
 &lt;p&gt;为什么推荐使用整型的主键？&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;我们想象一下查找过程，是把节点load到内存然后在内存里去比较大小，也就是在查找的过程中要不断的去进行数据的比对。假设UUID，既不自增也不是整形。问一下，是整形的1&amp;lt;2比较的效率高还是字符串的“abc”和“abe”比较的效率高呢？显然是前者，因为字符串的比较是转换成ASICI一位一位的比，如果最后一位不一样，比到最后才比较出大小，就比整形比较慢多了，存储空间来说，整形更小。索引越节约资源越好。
+&lt;pre&gt;&lt;code&gt;我们想象一下查找过程，是把节点load到内存然后在内存里去比较大小，也就是在查找的过程中要不断的去进行数据的比对。
+假设UUID，既不自增也不是整形。问一下，是整形的1&amp;lt;2比较的效率高还是字符串的“abc”和“abe”比较的效率高呢？
+显然是前者，因为字符串的比较是转换成ASICI一位一位的比，如果最后一位不一样，比到最后才比较出大小，
+就比整形比较慢多了，存储空间来说，整形更小。索引越节约资源越好。
 &lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
 &lt;li&gt;为什么是自增的主键呢？&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;B-Tree的叶子节点之间是没有指针的，B+Tree优化后增加了叶子节点之间的指针，如果我们遍历数据，从当前节点遍历完之后，就可以根据节点间的指针快速找到下一个节点去遍历。
+&lt;pre&gt;&lt;code&gt;B-Tree的叶子节点之间是没有指针的，B+Tree优化后增加了叶子节点之间的指针，
+如果我们遍历数据，从当前节点遍历完之后，就可以根据节点间的指针快速找到下一个节点去遍历。
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;6-分布式和数据同步&#34;&gt;6. 分布式和数据同步&lt;/h2&gt;
 &lt;p&gt;MySQL读写分离和数据同步原理&lt;/p&gt;
 &lt;h2 id=&#34;7-其它数据库&#34;&gt;7. 其它数据库&lt;/h2&gt;
@@ -2742,15 +2748,15 @@ It&amp;rsquo;s a very vivid picture, from which we can see this abstract concept
 &lt;li&gt;We can map a node to all its neighbors by using a hash table.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Here is an example of Golang:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Golang&#34; data-lang=&#34;Golang&#34;&gt;&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;map&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; 
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Golang&#34; data-lang=&#34;Golang&#34;&gt;&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;map&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; 
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;jonny}
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;graph[&amp;#34;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;anuj&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;] = []string{}
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;graph[&amp;#34;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;peggy&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;] = []string{}
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;graph[&amp;#34;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;thom&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;] = []string{}
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;graph[&amp;#34;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;jonny&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;jonny&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;jonny&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
 &lt;li&gt;In the example above, Anuj is Bob&amp;rsquo;s neighbor, however, Bob isn&amp;rsquo;t Anju&amp;rsquo;s neighbor, since this graph is a directed graph.&lt;/li&gt;
 &lt;/ul&gt;
@@ -2761,41 +2767,41 @@ It&amp;rsquo;s a very vivid picture, from which we can see this abstract concept
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;collections&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;deque&lt;/span&gt;
 
 &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;search&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;deque&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# creates a new queue &lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# Adds all of your neighbors to the search queue &lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;searched&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;    
-    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;# While the queue isn&amp;#39;t empty &lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;person&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;popleft&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;# grabs the first person off the queue &lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;deque&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# creates a new queue&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# Adds all of your neighbors to the search queue&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;searched&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;# While the queue isn&amp;#39;t empty&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;person&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;popleft&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;# grabs the first person off the queue&lt;/span&gt;
         &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;person&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;searched&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;continue&lt;/span&gt; 
+            &lt;span class=&#34;k&#34;&gt;continue&lt;/span&gt;
         &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;person_is_seller&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;person&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;# Checks whether the person is a mango seller&lt;/span&gt;
             &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;person&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34; is a mango seller!&amp;#34;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;# Yes, they&amp;#39;re a mango seller.&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt; 
+            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;
         &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
             &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;person&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;# No, they aren&amp;#39;t. Add all of this person&amp;#39;s friends to the search queue.&lt;/span&gt;
             &lt;span class=&#34;n&#34;&gt;searched&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;append&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;person&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;                                    &lt;span class=&#34;c1&#34;&gt;# If you reached here, no one in the queue was a mongo seller. &lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;                                    &lt;span class=&#34;c1&#34;&gt;# If you reached here, no one in the queue was a mongo seller.&lt;/span&gt;
 
 &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;person_is_seller&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;m&amp;#39;&lt;/span&gt; 
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;m&amp;#39;&lt;/span&gt;
 
 
 &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; 
+&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;jonny&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt; 
-&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt; 
-&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt; 
-&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;jonny&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt; 
+&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;jonny&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
 
 &lt;span class=&#34;n&#34;&gt;search&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
 &lt;li&gt;Golang&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Golang&#34; data-lang=&#34;Golang&#34;&gt;&lt;span class=&#34;nx&#34;&gt;hash_collision_1ckage&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Golang&#34; data-lang=&#34;Golang&#34;&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
 
 &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
 
@@ -2901,7 +2907,7 @@ Hash tables are used for lookups on a much larger scale.&lt;/p&gt;
 since it would have to run a simple search(O(n)) over the entire list.&lt;br&gt;
 However, you can get the value instantly if you store them in a hash table.&lt;br&gt;
 Thus, checking for duplicates is very fast with a hash table.&lt;/p&gt;
-&lt;h3 id=&#34;23-using-hash-tables-as&#34;&gt;2.3 Using hash tables as&lt;/h3&gt;
+&lt;h3 id=&#34;23-using-hash-tables-as-caching&#34;&gt;2.3 Using hash tables as caching&lt;/h3&gt;
 &lt;p&gt;Caching is One of the final use of hash tables.&lt;br&gt;
 Caching is widely used in websites, since the servers don&amp;rsquo;t have to do much work to find the requested data.&lt;br&gt;
 Thus, caching is a common way to make things faster.&lt;/p&gt;
@@ -2955,7 +2961,7 @@ If multiple keys map to the same slot, start a linked list at that slot.&lt;br&g
 &lt;/table&gt;
 &lt;p&gt;We can see from the figure above that hash tables are as fast as arrays at searching,&lt;br&gt;
 and are as fast as linked lists at inserts and delets.&lt;br&gt;
-Nevertheless, hash tables are slow(O(n)) at all of those operations.&lt;br&gt;
+Nevertheless, hash tables are slow(O(n)) at all of those operations in the worst cases.&lt;br&gt;
 In order not to hit the worst case performance with hash tables, we need to avoid collisions.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;A low load factor&lt;/li&gt;
@@ -3039,7 +3045,7 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;sumR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sumR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:])&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
 &lt;li&gt;Golang&lt;/li&gt;
@@ -3056,9 +3062,9 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Python&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;countEleR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; 
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;countEleR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;countEleR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:])&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
 &lt;li&gt;Find the maximum number in a list&lt;/li&gt;
@@ -3066,14 +3072,14 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Python&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;findMaxR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; 
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;findMaxR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
         &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
     &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;findMaxR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:])&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
 &lt;li&gt;Write the D&amp;amp;C code for Binary Search&lt;/li&gt;
 &lt;/ol&gt;
@@ -3082,13 +3088,13 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;binarySearchR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;low&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;low&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt;
 
     &lt;span class=&#34;n&#34;&gt;mid&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;low&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;
     &lt;span class=&#34;n&#34;&gt;guess&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mid&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;guess&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; 
-        &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mid&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; 
-    &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; 
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;guess&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mid&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
         &lt;span class=&#34;n&#34;&gt;low&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mid&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;binarySearchR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;low&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
@@ -3117,8 +3123,8 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;p&gt;Tip: When we got a recursive function involving an array, the base case is often an empty array or an array with one element.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2 id=&#34;3-quick-sort&#34;&gt;3. Quick Sort&lt;/h2&gt;
-&lt;p&gt;3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life.&lt;br&gt;
-The base case for quicksort are arrays that are empty and arrays with just one element.&lt;br&gt;
+&lt;h3 id=&#34;31-quicksort-is-a-sorting-algorithm-which-is-much-faster-than-selection-sort-and-commonly-used-in-life&#34;&gt;3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life.&lt;/h3&gt;
+&lt;p&gt;The base case for quicksort are arrays that are empty and arrays with just one element.&lt;br&gt;
 Using D&amp;amp;C, we can break down a array until we get the base case.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Here are the steps for quick sort:&lt;/li&gt;
@@ -3131,7 +3137,7 @@ Using D&amp;amp;C, we can break down a array until we get the base case.&lt;/p&g
 &lt;li&gt;The sub-arrays get sorted, and then we combine the whole thing to get a sorted array.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;3.2  Here we can see one example from the book.&lt;/p&gt;
+&lt;h3 id=&#34;32--here-we-can-see-one-example-from-the-book&#34;&gt;3.2  Here we can see one example from the book.&lt;/h3&gt;
 &lt;p&gt;After partitioning, we get three parts: numbers less than the pivot, the pivot and numbers greater than the pivot.&lt;/p&gt;
 &lt;figure&gt;
     &lt;img src=&#34;/post/grokking_algorithm/images/quick_sort_m1.png&#34; width=&#34;50%&#34;/&gt; 
@@ -3251,7 +3257,7 @@ Since quicksort doesn&amp;rsquo;t to see whether the input array is already sort
 &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;Since we&amp;rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.&lt;br&gt;
-As we always get O(n) in every level of the stack, we finally get O(n)*O(n)O(n^2)time.&lt;br&gt;
+As we always get O(n) in every level of the stack, we finally get O(n)*O(n) = O(n^2) time.&lt;br&gt;
 Therefore, the call stack is so long that it takes O(n^2) time.&lt;/p&gt;
 &lt;p&gt;On the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).&lt;br&gt;
 Therefore, we get operation time O(nlogn).&lt;/p&gt;
@@ -3265,9 +3271,9 @@ Therefore, we get operation time O(nlogn).&lt;/p&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code&gt;Thank you for your effort to read this part of this passage.
 What are included in this passage are my study notes about algorithm.
-If you want to know more details about it, I strongly recommend you this book: 
+If you want to know more details about it, I strongly recommend you this book:
 grokking algoriths: An illustrated guide for programmers and other curious people.
-The author illustrate algorithms with pictures, which make people easily understand difficult questions.
+The author illustrates algorithms with pictures, which make people easily understand difficult questions.
 &lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;summary&#34;&gt;Summary&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;D&amp;amp;C works by splitting a problem into smaller parts. And the base case is usually an array with no or only one element.&lt;/li&gt;

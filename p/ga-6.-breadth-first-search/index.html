@@ -270,15 +270,15 @@ It&rsquo;s a very vivid picture, from which we can see this abstract concept.</p
 <li>We can map a node to all its neighbors by using a hash table.</li>
 </ul>
 <p>Here is an example of Golang:</p>
-<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="nx">graph</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> 
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="nx">graph</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="nx">graph</span><span class="p">[</span><span class="s">&#34;you&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;alice&#34;</span><span class="p">,</span> <span class="s">&#34;bob&#34;</span><span class="p">,</span> <span class="s">&#34;claire&#34;</span><span class="p">}</span>
-<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;bob&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;anuj&#34;</span><span class="p">,</span> <span class="s">&#34;peggy&#34;</span><span class="p">}</span> 
+<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;bob&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;anuj&#34;</span><span class="p">,</span> <span class="s">&#34;peggy&#34;</span><span class="p">}</span>
 <span class="nx">graph</span><span class="p">[</span><span class="s">&#34;alice&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;peggy&#34;</span><span class="p">}</span>
-<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;claire&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;thom&#34;</span><span class="p">,</span> <span class="s">&#34;jonny}
-</span><span class="s">graph[&#34;</span><span class="nx">anuj</span><span class="s">&#34;] = []string{}
-</span><span class="s">graph[&#34;</span><span class="nx">peggy</span><span class="s">&#34;] = []string{}
-</span><span class="s">graph[&#34;</span><span class="nx">thom</span><span class="s">&#34;] = []string{}
-</span><span class="s">graph[&#34;</span><span class="nx">jonny</span><span class="err">&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{}</span>
+<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;claire&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;thom&#34;</span><span class="p">,</span> <span class="s">&#34;jonny&#34;</span><span class="p">}</span>
+<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;anuj&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{}</span>
+<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;peggy&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{}</span>
+<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;thom&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{}</span>
+<span class="nx">graph</span><span class="p">[</span><span class="s">&#34;jonny&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{}</span>
 </code></pre></div><ul>
 <li>In the example above, Anuj is Bob&rsquo;s neighbor, however, Bob isn&rsquo;t Anju&rsquo;s neighbor, since this graph is a directed graph.</li>
 </ul>
@@ -289,41 +289,41 @@ It&rsquo;s a very vivid picture, from which we can see this abstract concept.</p
 <div class="highlight"><pre class="chroma"><code class="language-Python" data-lang="Python"><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
 
 <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="n">search_queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span> <span class="c1"># creates a new queue </span>
-    <span class="n">search_queue</span> <span class="o">+=</span> <span class="n">graph</span><span class="p">[</span><span class="s2">&#34;you&#34;</span><span class="p">]</span> <span class="c1"># Adds all of your neighbors to the search queue </span>
-    <span class="n">searched</span> <span class="o">=</span> <span class="p">[]</span>    
-    <span class="k">while</span> <span class="n">search_queue</span><span class="p">:</span>    <span class="c1"># While the queue isn&#39;t empty </span>
-        <span class="n">person</span> <span class="o">=</span> <span class="n">search_queue</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>             <span class="c1"># grabs the first person off the queue </span>
+    <span class="n">search_queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span> <span class="c1"># creates a new queue</span>
+    <span class="n">search_queue</span> <span class="o">+=</span> <span class="n">graph</span><span class="p">[</span><span class="s2">&#34;you&#34;</span><span class="p">]</span> <span class="c1"># Adds all of your neighbors to the search queue</span>
+    <span class="n">searched</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">search_queue</span><span class="p">:</span>    <span class="c1"># While the queue isn&#39;t empty</span>
+        <span class="n">person</span> <span class="o">=</span> <span class="n">search_queue</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>             <span class="c1"># grabs the first person off the queue</span>
         <span class="k">if</span> <span class="n">person</span> <span class="ow">in</span> <span class="n">searched</span><span class="p">:</span>
-            <span class="k">continue</span> 
+            <span class="k">continue</span>
         <span class="k">if</span> <span class="n">person_is_seller</span><span class="p">(</span><span class="n">person</span><span class="p">):</span>                <span class="c1"># Checks whether the person is a mango seller</span>
             <span class="k">print</span> <span class="n">person</span> <span class="o">+</span> <span class="s2">&#34; is a mango seller!&#34;</span>    <span class="c1"># Yes, they&#39;re a mango seller.</span>
-            <span class="k">return</span> <span class="bp">True</span> 
+            <span class="k">return</span> <span class="bp">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">search_queue</span> <span class="o">+=</span> <span class="n">graph</span><span class="p">[</span><span class="n">person</span><span class="p">]</span>           <span class="c1"># No, they aren&#39;t. Add all of this person&#39;s friends to the search queue.</span>
             <span class="n">searched</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">False</span>                                    <span class="c1"># If you reached here, no one in the queue was a mongo seller. </span>
+    <span class="k">return</span> <span class="bp">False</span>                                    <span class="c1"># If you reached here, no one in the queue was a mongo seller.</span>
 
 <span class="k">def</span> <span class="nf">person_is_seller</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span> 
+    <span class="k">return</span> <span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span>
 
 
 <span class="n">graph</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">graph</span><span class="p">[</span><span class="s2">&#34;you&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;alice&#34;</span><span class="p">,</span> <span class="s2">&#34;bob&#34;</span><span class="p">,</span> <span class="s2">&#34;claire&#34;</span><span class="p">]</span> 
+<span class="n">graph</span><span class="p">[</span><span class="s2">&#34;you&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;alice&#34;</span><span class="p">,</span> <span class="s2">&#34;bob&#34;</span><span class="p">,</span> <span class="s2">&#34;claire&#34;</span><span class="p">]</span>
 <span class="n">graph</span><span class="p">[</span><span class="s2">&#34;bob&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;anuj&#34;</span><span class="p">,</span> <span class="s2">&#34;peggy&#34;</span><span class="p">]</span>
 <span class="n">graph</span><span class="p">[</span><span class="s2">&#34;alice&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;peggy&#34;</span><span class="p">]</span>
 <span class="n">graph</span><span class="p">[</span><span class="s2">&#34;claire&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;thom&#34;</span><span class="p">,</span> <span class="s2">&#34;jonny&#34;</span><span class="p">]</span>
-<span class="n">graph</span><span class="p">[</span><span class="s2">&#34;anuj&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> 
-<span class="n">graph</span><span class="p">[</span><span class="s2">&#34;peggy&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> 
-<span class="n">graph</span><span class="p">[</span><span class="s2">&#34;thom&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> 
-<span class="n">graph</span><span class="p">[</span><span class="s2">&#34;jonny&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> 
+<span class="n">graph</span><span class="p">[</span><span class="s2">&#34;anuj&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">graph</span><span class="p">[</span><span class="s2">&#34;peggy&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">graph</span><span class="p">[</span><span class="s2">&#34;thom&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">graph</span><span class="p">[</span><span class="s2">&#34;jonny&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="n">search</span><span class="p">(</span><span class="s2">&#34;you&#34;</span><span class="p">)</span>
 
 </code></pre></div><ul>
 <li>Golang</li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="nx">hash_collision_1ckage</span> <span class="nx">main</span>
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
 
