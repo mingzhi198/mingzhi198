@@ -1403,7 +1403,9 @@ However, it doesn&amp;rsquo;t need extra memory as we swap elements when require
 &lt;p&gt;Anyone who has played poker would understand what insert sort is.&lt;br&gt;
 Be cautious that elements to the left of the beginning index are already sorted, thus we can stop redundant comparison if the beginning indexed element is bigger than the previous one.&lt;/p&gt;
 &lt;p&gt;Here We do it in the following steps:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;1. We start from the beginning index, which is the second one of an array, compare it with the previous element, and switch these two elements if the previous one is bigger.
+&lt;pre&gt;&lt;code&gt;1. We start from the beginning index, which is the second one of an array,
+compare it with the previous element,
+and switch these two elements if the previous one is bigger.
 
 2. We set the one behind the beginning index as the new beginning index.
 
