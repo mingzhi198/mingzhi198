@@ -11,7 +11,7 @@
 1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.'>
 <meta property='og:url' content='/p/note-mysql/'>
 <meta property='og:site_name' content='Li. Mingzhi'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='database' /><meta property='article:tag' content='db' /><meta property='article:published_time' content='2021-02-26T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-02-26T19:00:52&#43;08:00'/>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='notes' /><meta property='article:tag' content='database' /><meta property='article:tag' content='db' /><meta property='article:published_time' content='2021-03-15T19:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-03-15T19:00:52&#43;08:00'/>
 <meta name="twitter:title" content="Note: MySQL">
 <meta name="twitter:description" content="[TOC]
 1. 事务 1.1 事务的四个重要特性(ACID)：  原子性（Atomicity）   事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。  一致性（Consistency）   指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。 例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。  隔离性（Isolation）   要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。 也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。 注：MySQL 通过锁机制来保证事务的隔离性。  持久性（Durability）   事务一旦提交，则其结果就是永久性的 1.2 事务的隔离级别  SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。  READ UNCOMMITTED（读未提交）   初始化测试数据库： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; create database test; use test; create table test(id int primary key); insert into test(id) values(1); 1. 打开终端1，开启一个事务，修改ID为1的记录更新为2： SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;; begin; update test set id = 2 where id = 1; select * from test; -- 此时看到一条ID为2的记录 2.">
@@ -188,7 +188,7 @@
 
 
 
-        <time class="article-time--published">Feb 26, 2021</time>
+        <time class="article-time--published">Mar 15, 2021</time>
     </footer></div>
 </header>
 
@@ -240,7 +240,7 @@
 最后一步读取到了 mysql 终端 1 中未提交的事务（没有 commit 提交动作），即产生了 脏读 ，大部分业务场景都不允许脏读出现，
 但是此隔离级别下数据库的并发是最好的。
 </code></pre><ul>
-<li>READ COMMITTED（读提交）<br>
+<li>READ COMMITTED（读已提交）<br>
 一个事务可以读取另一个已提交的事务，多次读取会造成不一样的结果，此现象称为不可重复读问题，Oracle 和 SQL Server 的默认隔离级别。</li>
 </ul>
 <pre><code>  1. 登录 mysql 终端 1，开启一个事务，将 ID 为 1 的记录更新为 2 ，并确认记录数变更过来。
@@ -322,7 +322,7 @@ MySQL 的 InnoDB 引擎可以通过 next-key locks 机制（参考下文 行锁�
 <td>可以出现</td>
 </tr>
 <tr>
-<td>读提交</td>
+<td>读已提交</td>
 <td>不允许出现</td>
 <td>可以出现</td>
 <td>可以出现</td>
@@ -472,7 +472,7 @@ InnoDB 使用 Next-key Locks 解决幻读问题。需要注意的是，如果索
 
 （1）使用共享表空间存储：所有的表和索引存放在同一个表空间中。
 
-（2）使用多表空间存储：表结构放在frm文件，数据和索引放在IBD文件中。分区表的话，每个分区对应单独的IBD文件，分区表的定义可以查看我的其他文章。使用分区表的好处在于提升查询效率。
+（2）使用多表空间存储：表结构放在frm文件，数据和索引放在IBD文件中。分区表的话，每个分区对应单独的IBD文件，分区表的定义可以查看其他文章。使用分区表的好处在于提升查询效率。
 </code></pre><ul>
 <li>对于InnoDB来说，最大的特点在于支持事务。但是这是以损失效率来换取的。</li>
 </ul>
@@ -503,7 +503,7 @@ InnoDB 使用 Next-key Locks 解决幻读问题。需要注意的是，如果索
 <img src="/post/jobs_knowledge/images/innodb_index.webp" alt="innodb_index"  /></p>
 <ul>
 <li>myisam<br>
-myisam也用B+树索引,但索引和存储数据的地址在一起，找到索引得到地址值，再通过地址找到对应的数据<br>
+myisam也用B+树索引,但索引和存储数据的地址在一起，找到索引的地址值，再通过地址找到对应的数据<br>
 <img src="/post/jobs_knowledge/images/myisam_index.webp" alt="myisam_index"  /></li>
 </ul>
 <h3 id="42-回表">4.2 回表</h3>
@@ -534,7 +534,7 @@ INSERT INTO user_test VALUES(NULL,'万宝',26,'男');
 -- 不需要从聚簇索引查询任何数据，此时叫做索引覆盖
 </code></pre><h3 id="44-最左匹配">4.4 最左匹配</h3>
 <p>主键(一般为一个列)&mdash;&mdash;&ndash;&gt;联合主键(多个列)<br>
-索引&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&ndash;&gt;联合索引(可能包含多个索引列)</p>
+索引&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;-&gt;联合索引(可能包含多个索引列)</p>
 <pre><code>-- 假设有一张表，有id，name，age，gender四个字段，id是主键，name，age是组合索引列
 -- 组合索引使用的时候必须先匹配name，然后匹配age
 
@@ -586,11 +586,15 @@ InnoDB存储引擎的数据库表对应两个文件，MYISAM存储引擎数据�
 <p>mysql设计的就是innoDB把你的数据和主键索引用B+Tree来组织的，没有主键他的数据就没有一个结构来存储。<br>
 建innoDB表的时候没有建主键，表也能建成功</p>
 <p>为什么推荐使用整型的主键？</p>
-<pre><code>我们想象一下查找过程，是把节点load到内存然后在内存里去比较大小，也就是在查找的过程中要不断的去进行数据的比对。假设UUID，既不自增也不是整形。问一下，是整形的1&lt;2比较的效率高还是字符串的“abc”和“abe”比较的效率高呢？显然是前者，因为字符串的比较是转换成ASICI一位一位的比，如果最后一位不一样，比到最后才比较出大小，就比整形比较慢多了，存储空间来说，整形更小。索引越节约资源越好。
+<pre><code>我们想象一下查找过程，是把节点load到内存然后在内存里去比较大小，也就是在查找的过程中要不断的去进行数据的比对。
+假设UUID，既不自增也不是整形。问一下，是整形的1&lt;2比较的效率高还是字符串的“abc”和“abe”比较的效率高呢？
+显然是前者，因为字符串的比较是转换成ASICI一位一位的比，如果最后一位不一样，比到最后才比较出大小，
+就比整形比较慢多了，存储空间来说，整形更小。索引越节约资源越好。
 </code></pre><ul>
 <li>为什么是自增的主键呢？</li>
 </ul>
-<pre><code>B-Tree的叶子节点之间是没有指针的，B+Tree优化后增加了叶子节点之间的指针，如果我们遍历数据，从当前节点遍历完之后，就可以根据节点间的指针快速找到下一个节点去遍历。
+<pre><code>B-Tree的叶子节点之间是没有指针的，B+Tree优化后增加了叶子节点之间的指针，
+如果我们遍历数据，从当前节点遍历完之后，就可以根据节点间的指针快速找到下一个节点去遍历。
 </code></pre><h2 id="6-分布式和数据同步">6. 分布式和数据同步</h2>
 <p>MySQL读写分离和数据同步原理</p>
 <h2 id="7-其它数据库">7. 其它数据库</h2>

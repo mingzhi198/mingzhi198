@@ -211,7 +211,7 @@ Hash tables are used for lookups on a much larger scale.</p>
 since it would have to run a simple search(O(n)) over the entire list.<br>
 However, you can get the value instantly if you store them in a hash table.<br>
 Thus, checking for duplicates is very fast with a hash table.</p>
-<h3 id="23-using-hash-tables-as">2.3 Using hash tables as</h3>
+<h3 id="23-using-hash-tables-as-caching">2.3 Using hash tables as caching</h3>
 <p>Caching is One of the final use of hash tables.<br>
 Caching is widely used in websites, since the servers don&rsquo;t have to do much work to find the requested data.<br>
 Thus, caching is a common way to make things faster.</p>
@@ -265,7 +265,7 @@ If multiple keys map to the same slot, start a linked list at that slot.<br>
 </table>
 <p>We can see from the figure above that hash tables are as fast as arrays at searching,<br>
 and are as fast as linked lists at inserts and delets.<br>
-Nevertheless, hash tables are slow(O(n)) at all of those operations.<br>
+Nevertheless, hash tables are slow(O(n)) at all of those operations in the worst cases.<br>
 In order not to hit the worst case performance with hash tables, we need to avoid collisions.</p>
 <ul>
 <li>A low load factor</li>

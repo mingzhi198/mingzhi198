@@ -243,7 +243,7 @@
 </code></pre><h4 id="5-在后续的交互中用session-key-和-mac-算法密钥对传输的内容进行加解密">5. 在后续的交互中，用session key 和 MAC 算法密钥对传输的内容进行加解密</h4>
 <pre><code>客户端：
   1. 用MAC密钥对内容进行摘要
-  2. 用 session key对摘要进行加密
+  2. 用 session key对内容进行加密
 服务端：
   1. 用sesion key对收到的数据进行解密
   2. 用 MAC 密钥验证内容的完整性
@@ -292,11 +292,12 @@ TIME-WAIT状态:</p>
 3. TCP四次挥手过程中，为了保证ACK和接收延迟数据，设置TIME-WAIT为2倍的MSL。
 </code></pre><h3 id="3-解决大量time-wait状态的方法">3. 解决大量TIME-WAIT状态的方法</h3>
 <pre><code>1. 客户端
-  HTTP请求的头部Connection设置为keep-alive, 这样服务端不会关闭连接，目前大量浏览器是这样处理的
+  使用长链接：HTTP请求的头部Connection设置为keep-alive, 这样服务端不会关闭连接，目前大量浏览器是这样处理的
 2. 服务端
   a. 允许time_wait状态的socket被重用
   b. 缩短time_wait的时间
-</code></pre><ol>
+</code></pre><h3 id="4-time-wait存在的目的">4. TIME-WAIT存在的目的</h3>
+<ol>
 <li>可靠的实现TCP的全双工连接</li>
 </ol>
 <pre><code>  TCP四次挥手关闭连接时，最后一个ACK是由主动关闭连接的一方发出的；
@@ -306,16 +307,17 @@ TIME-WAIT状态:</p>
 <li>处理延迟到达的报文</li>
 </ol>
 <pre><code>因为网络的不稳定性，TCP报文可能会迟延到达，
-为了避免延迟到达的报文被误认为是新TCP连接的数据，需要在允许新建TCP连接前，保持一个不可用的状态，等待延迟报文的消失，一般设置为2MSL（Maximum Segment Lifetime：最大生存时间）
+为了避免延迟到达的报文被误认为是新TCP连接的数据，需要在允许新建TCP连接前，保持一个不可用的状态，
+等待延迟报文的消失，一般设置为2MSL（Maximum Segment Lifetime：最大生存时间）
 </code></pre><p><img src="/post/jobs_knowledge/images/tcp_fin_timeout.png" alt="tcp_fin_timeout"  /></p>
-<h3 id="3-tcp协议控制算法">3. tcp协议控制算法</h3>
+<h3 id="5-tcp协议控制算法">5. tcp协议控制算法</h3>
 <p>####　1. 流量控制</p>
 <h4 id="2-拥塞控制">2. 拥塞控制</h4>
 <p>#####　１.慢启动<br>
 #####　２.拥塞避免<br>
 #####　３.拥塞发生<br>
 #####　４.快恢复</p>
-<p>###　４. tcp与udp的区别，为什么是可靠连接</p>
+<p>###　6. tcp与udp的区别，为什么是可靠连接</p>
 <ul>
 <li>引用<br>
 <a class="link" href="https://www.cioage.com/art/202008/623158.htm###"  target="_blank" rel="noopener"
@@ -366,24 +368,24 @@ TIME-WAIT状态:</p>
                 
                     
 <article class="">
-    <a href="/p/note-trees/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">Note: Trees</h2>
-        </div>
-    </a>
-</article>
-                
-                    
-<article class="">
     <a href="/p/note-mysql/">
         
         
 
         <div class="article-details">
             <h2 class="article-title">Note: MySQL</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/note-trees/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Note: Trees</h2>
         </div>
     </a>
 </article>

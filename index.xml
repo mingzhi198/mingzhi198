@@ -6,7 +6,435 @@
         <description>Recent content on Li. Mingzhi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 10 Mar 2021 18:00:52 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 15 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Note: MySQL</title>
+        <link>/p/note-mysql/</link>
+        <pubDate>Mon, 15 Mar 2021 19:00:52 +0800</pubDate>
+        
+        <guid>/p/note-mysql/</guid>
+        <description>&lt;p&gt;[TOC]&lt;/p&gt;
+&lt;h2 id=&#34;1-事务&#34;&gt;1. 事务&lt;/h2&gt;
+&lt;h3 id=&#34;11-事务的四个重要特性acid&#34;&gt;1.1 事务的四个重要特性(ACID)：&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;原子性（Atomicity）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;  事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;一致性（Consistency）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;    指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。
+    例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;隔离性（Isolation）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;    要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。
+    也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。
+
+    注：MySQL 通过锁机制来保证事务的隔离性。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;持久性（Durability）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;    事务一旦提交，则其结果就是永久性的
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;12-事务的隔离级别&#34;&gt;1.2 事务的隔离级别&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;    SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;READ UNCOMMITTED（读未提交）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;  初始化测试数据库：
+    SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;;
+    create database test;
+    use test;
+    create table test(id int primary key);
+    insert into test(id) values(1);
+  1. 打开终端1，开启一个事务，修改ID为1的记录更新为2：
+    SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;;
+    begin;
+    update test set id = 2 where id = 1;
+    select * from test; -- 此时看到一条ID为2的记录
+  2. 打开终端2，开启一个事务后查看表中的数据
+    SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;;
+    begin;
+    select * from test; -- 此时看到一条 ID 为 2 的记录
+
+最后一步读取到了 mysql 终端 1 中未提交的事务（没有 commit 提交动作），即产生了 脏读 ，大部分业务场景都不允许脏读出现，
+但是此隔离级别下数据库的并发是最好的。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;READ COMMITTED（读已提交）&lt;br&gt;
+一个事务可以读取另一个已提交的事务，多次读取会造成不一样的结果，此现象称为不可重复读问题，Oracle 和 SQL Server 的默认隔离级别。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;  1. 登录 mysql 终端 1，开启一个事务，将 ID 为 1 的记录更新为 2 ，并确认记录数变更过来。
+    SET @@session.transaction_isolation = &#39;READ-COMMITTED&#39;;
+    begin;
+    update test set id = 2 where id = 1;
+    select * from test; -- 此时看到一条记录为 2
+  2. 登录 mysql 终端 2，开启一个事务后，查看表中的数据。
+    begin;
+    select * from test; -- 此时看一条 ID 为 1 的记录
+  3. 登录 mysql 终端 1，提交事务。
+    commit;
+  4. 切换到 mysql 终端 2。
+    select * from test; -- 此时看到一条 ID 为 2 的记录
+
+mysql 终端 2 在开启了一个事务之后，在第一次读取 test 表（此时 mysql 终端 1 的事务还未提交）时 ID 为 1 ，
+在第二次读取 test 表（此时 mysql 终端 1 的事务已经提交）时 ID 已经变为 2 ，说明在此隔离级别下已经读取到已提交的事务。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;REPEATABLE READ（可重复读）&lt;br&gt;
+该隔离级别是 MySQL 默认的隔离级别，&lt;br&gt;
+在同一个事务里， select 的结果是事务开始时时间点的状态，因此，同样的 select 操作读到的结果会是一致的，&lt;br&gt;
+但是，会有 幻读 现象。&lt;br&gt;
+MySQL 的 InnoDB 引擎可以通过 next-key locks 机制（参考下文 行锁的算法 一节）来避免幻读。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;准备测试数据库表：
+    SET @@session.transaction_isolation = &#39;REPEATABLE-READ&#39;;
+    create database test;
+    use test;
+    create table test(id int primary key,name varchar(20));
+
+1. 登录 mysql 终端 1，开启一个事务
+  SET @@session.transaction_isolation = &#39;REPEATABLE-READ&#39;;
+  begin;
+  select * from test; -- 无记录
+2. 登录 mysql 终端 2，开启一个事务。
+  begin;
+  select * from test; -- 无记录
+3. 切换到 mysql 终端 1，增加一条记录并提交。
+  insert into test(id,name) values(1,&#39;a&#39;);
+  commit;
+4. 切换到 msyql 终端 2。
+  select * from test; --此时查询还是无记录
+  通过这一步可以证明，在该隔离级别下已经读取不到别的已提交的事务，如果想看到 mysql 终端 1 提交的事务，在 mysql 终端 2 将当前事务提交后再次查询就可以读取到 mysql 终端 1 提交的事务。
+5. 此时接着在 mysql 终端 2 插入一条数据。
+  insert into test(id,name) values(1,&#39;b&#39;); -- 此时报主键冲突的错误
+
+明明在第 5 步没有数据，为什么在这里会报错呢？其实这就是该隔离级别下可能产生的问题，MySQL 称之为 幻读 。注意我在这里强调的是 MySQL 数据库，Oracle 数据库对于幻读的定义可能有所不同。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;SERIALIZABLE（序列化）&lt;br&gt;
+在该隔离级别下事务都是串行顺序执行的，MySQL 数据库的 InnoDB 引擎会给读操作隐式加一把读共享锁，&lt;br&gt;
+从而避免了脏读、不可重读复读和幻读问题。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;1. 登录 mysql 终端 1，开启一个事务，并写入一条数据。
+  SET @@session.transaction_isolation = &#39;SERIALIZABLE&#39;;
+  begin;
+  insert into test(id) values(1);
+2. 登录 mysql 终端 2，开启一个事务。
+  begin;
+  select * from test; -- 此时会一直卡住
+3. 立马切换到 mysql 终端 1,提交事务。
+  commit;
+
+一旦事务提交，msyql 终端 2 会立马返回 ID 为 1 的记录，否则会一直卡住，直到超时，其中超时参数是由 innodb_lock_wait_timeout 控制。由于每条 select 语句都会加锁，所以该隔离级别的数据库并发能力最弱，
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;13-各个隔离级别下产生的一些问题&#34;&gt;1.3 各个隔离级别下产生的一些问题&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;隔离级别&lt;/th&gt;
+&lt;th&gt;脏读&lt;/th&gt;
+&lt;th&gt;不可重复读&lt;/th&gt;
+&lt;th&gt;幻读&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;读未提交&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;读已提交&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;可重复读&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;td&gt;可以出现&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;序列化&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;td&gt;不允许出现&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;2-锁&#34;&gt;2. 锁&lt;/h2&gt;
+&lt;h3 id=&#34;21-锁的类型&#34;&gt;2.1 锁的类型&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;共享锁 （也称为 S 锁）：允许事务读取一行数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;可以使用 SQL 语句 select * from tableName where... lock in share mode; 手动加 S 锁。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;独占锁 （也称为 X 锁）：允许事务删除或更新一行数据。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;可以使用 SQL 语句 select * from tableName where... for update; 手动加 X 锁。
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;S 锁和 S 锁是 兼容 的（即读共享），X 锁和其它锁都 不兼容&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;为了实现多粒度的锁机制，InnoDB 还有两种内部使用的 意向锁 ，由 InnoDB 自动添加，且都是表级别的锁。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;意向共享锁 （IS）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;事务即将给表中的各个行设置共享锁，事务给数据行加 S 锁前必须获得该表的 IS 锁。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;意向排他锁 （IX）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;事务即将给表中的各个行设置排他锁，事务给数据行加 X 锁前必须获得该表 IX 锁。
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;意向锁的主要目的是为了使得 行锁 和 表锁 共存。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;行级锁和表级意向锁的兼容性:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;锁类型&lt;/th&gt;
+&lt;th&gt;X&lt;/th&gt;
+&lt;th&gt;IX&lt;/th&gt;
+&lt;th&gt;S&lt;/th&gt;
+&lt;th&gt;IS&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;X&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IX&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;S&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IS&lt;/td&gt;
+&lt;td&gt;冲突&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;td&gt;兼容&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;22-锁的算法&#34;&gt;2.2 锁的算法&lt;/h3&gt;
+&lt;p&gt;InnoDB 存储引擎使用三种行锁的算法用来满足相关事务隔离级别的要求。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Record Locks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt; 单个行记录上的锁
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Gap Locks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;间隙锁，锁定一个范围，但不包括记录本身。GAP锁的目的，是为了防止同一事务的两次当前读，出现幻读的情况。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Next-key Locks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;1+2，锁定一个范围，并且锁定记录本身。对于行的查询，都是采用该方法，主要目的是解决幻读的问题。
+该锁就是 Record Locks 和 Gap Locks 的组合，即锁定一个范围并且锁定该记录本身。
+InnoDB 使用 Next-key Locks 解决幻读问题。需要注意的是，如果索引有唯一属性，则 InnnoDB 会自动将 Next-key Locks 降级为 Record Locks。
+举个例子，如果一个索引有 1, 3, 5 三个值，则该索引锁定的区间为 (-∞,1], (1,3], (3,5], (5,+ ∞) 。
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;23-锁的优化建议&#34;&gt;2.3 锁的优化建议&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;1. 合理设计索引，让 InnoDB 在索引键上面加锁的时候尽可能准确，尽可能的缩小锁定范围，避免造成不必要的锁定而影响其他 Query 的执行。
+2. 尽可能减少基于范围的数据检索过滤条件，避免因为间隙锁带来的负面影响而锁定了不该锁定的记录。
+3. 尽量控制事务的大小，减少锁定的资源量和锁定时间长度。
+4. 在业务环境允许的情况下，尽量使用较低级别的事务隔离，以减少 MySQL 因为实现事务隔离级别所带来的附加成本
+&lt;/code&gt;&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id=&#34;3-存储引擎&#34;&gt;3. 存储引擎&lt;/h2&gt;
+&lt;h3 id=&#34;31-myisam&#34;&gt;3.1 MyISAM&lt;/h3&gt;
+&lt;p&gt;使用这个存储引擎，每个MyISAM在磁盘上存储成三个文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;（1）frm文件：存储表的定义数据
+（2）MYD文件：存放表具体记录的数据
+（3）MYI文件：存储索引
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;frm和MYI可以存放在不同的目录下。MYI文件用来存储索引，但仅保存记录所在页的指针，索引的结构是B+树结构。&lt;br&gt;
+下面这张图就是MYI文件保存的机制：&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/myisam_myi_index.jpg&#34; alt=&#34;myi&#34;  /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;从这张图可以发现，这个存储引擎通过MYI的B+树结构来查找记录页，再根据记录页查找记录。
+并且支持全文索引、B树索引和数据压缩。
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;32-myisam-支持的三种数据类型&#34;&gt;3.2 MyISAM 支持的三种数据类型&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;（1）静态固定长度表
+这种方式的优点在于存储速度非常快，容易发生缓存，而且表发生损坏后也容易修复。缺点是占空间。这也是默认的存储格式。
+
+（2）动态可变长表
+优点是节省空间，但是一旦出错恢复起来比较麻烦。
+
+（3）压缩表
+上面说到支持数据压缩，说明肯定也支持这个格式。在数据文件发生错误时候，可以使用check table工具来检查，而且还可以使用repair table工具来恢复。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;MyISAM不支持事务，但是这也意味着他的存储速度更快&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;32-innodb&#34;&gt;3.2 InnoDB&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;InnoDB是默认的数据库存储引擎，他的主要特点有：
+（1）可以通过自动增长列，方法是auto_increment。
+
+（2）支持事务。默认的事务隔离级别为可重复度，通过MVCC（并发版本控制）来实现的。
+
+（3）使用的锁粒度为行级锁，可以支持更高的并发；
+
+（4）支持外键约束；外键约束其实降低了表的查询速度，但是增加了表之间的耦合度。
+
+（5）配合一些热备工具可以支持在线热备份；
+
+（6）在InnoDB中存在着缓冲管理，通过缓冲池，将索引和数据全部缓存起来，加快查询的速度；
+
+（7）对于InnoDB类型的表，其数据的物理组织形式是聚簇表。所有的数据按照主键来组织。数据和索引放在一块，都位于B+数的叶子节点上；
+
+当然InnoDB的存储表和索引也有下面两种形式：
+
+（1）使用共享表空间存储：所有的表和索引存放在同一个表空间中。
+
+（2）使用多表空间存储：表结构放在frm文件，数据和索引放在IBD文件中。分区表的话，每个分区对应单独的IBD文件，分区表的定义可以查看其他文章。使用分区表的好处在于提升查询效率。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;对于InnoDB来说，最大的特点在于支持事务。但是这是以损失效率来换取的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;33-memory&#34;&gt;3.3 Memory&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;将数据存在内存，为了提高数据的访问速度，每一个表实际上和一个磁盘文件关联。文件是frm。
+
+（1）支持的数据类型有限制，比如：不支持TEXT和BLOB类型，对于字符串类型的数据，只支持固定长度的行，VARCHAR会被自动存储为CHAR类型；
+
+（2）支持的锁粒度为表级锁。所以，在访问量比较大时，表级锁会成为MEMORY存储引擎的瓶颈；
+
+（3）由于数据是存放在内存中，一旦服务器出现故障，数据都会丢失；
+
+（4）查询的时候，如果有用到临时表，而且临时表中有BLOB，TEXT类型的字段，那么这个临时表就会转化为MyISAM类型的表，性能会急剧降低；
+
+（5）默认使用hash索引。
+
+（6）如果一个内部表很大，会转化为磁盘表。
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;4-索引&#34;&gt;4. 索引&lt;/h2&gt;
+&lt;h3 id=&#34;41-聚簇索引和非聚簇索引辅助索引&#34;&gt;4.1 聚簇索引和非聚簇索引(辅助索引)&lt;/h3&gt;
+&lt;p&gt;判断是否是聚簇索引就看数据和索引是否在一个文件中&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;innodb&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;1. 只能有一个聚簇索引，但是有很多非聚簇索引
+2. 向innodb插入数据的时候，必须要包含一个索引的key值
+3. 这个索引的key值，可以是主键，如果没有主键，那么就是唯一键，如果没有唯一键，那么就是一个自生成的6字节的rowid
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;innodb的索引用的B+树, 索引和数据存储在一起，找到索引即可读取对应的数据&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/innodb_index.webp&#34; alt=&#34;innodb_index&#34;  /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;myisam&lt;br&gt;
+myisam也用B+树索引,但索引和存储数据的地址在一起，找到索引的地址值，再通过地址找到对应的数据&lt;br&gt;
+&lt;img src=&#34;/post/jobs_knowledge/images/myisam_index.webp&#34; alt=&#34;myisam_index&#34;  /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;42-回表&#34;&gt;4.2 回表&lt;/h3&gt;
+&lt;p&gt;我们创建一张案例表演示一下什么是回表&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;CREATE TABLE user_test(
+id INT PRIMARY KEY AUTO_INCREMENT,-- id为主键
+uname VARCHAR(20) ,
+age INT,
+gender VARCHAR(10),
+ KEY `idx_uname` (`uname`) -- 索引选择为名字
+)ENGINE = INNODB;
+
+INSERT INTO user_test VALUES(1,&#39;张三&#39;,18,&#39;男&#39;);
+INSERT INTO user_test VALUES(NULL,&#39;马冬梅&#39;,19,&#39;女&#39;);
+INSERT INTO user_test VALUES(NULL,&#39;赵四&#39;,18,&#39;男&#39;);
+INSERT INTO user_test VALUES(NULL,&#39;王老七&#39;,22,&#39;男&#39;);
+INSERT INTO user_test VALUES(NULL,&#39;刘燕&#39;,16,&#39;女&#39;);
+INSERT INTO user_test VALUES(NULL,&#39;万宝&#39;,26,&#39;男&#39;);
+&lt;/code&gt;&lt;/pre&gt;&lt;pre&gt;&lt;code class=&#34;language-select&#34; data-lang=&#34;select&#34;&gt;-- 当我们表中有主键索引的时候，我们再去设置一个uname为索引，那么此时这条sql语句的查询过程应该如下：
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/select_all.webp&#34; alt=&#34;select_all&#34;  /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;首先先根据uname索引查询到id，再根据id查询到行的信息
+这样的操作走了两棵B+树，就是回表
+当根据普通索引查询到聚簇索引的key值之后，再根据key值在聚簇索引中获取数据
+我们可以发现这样的操作是很浪费时间的，因此我们日常操作的时候，尽量减少回表的次数
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;43-索引覆盖&#34;&gt;4.3 索引覆盖&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;select id,uname from table where uname = &#39;张三&#39;;
+-- 根据uname 可以直接查询到id，uname两个列的值，直接返回即可
+-- 不需要从聚簇索引查询任何数据，此时叫做索引覆盖
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;44-最左匹配&#34;&gt;4.4 最左匹配&lt;/h3&gt;
+&lt;p&gt;主键(一般为一个列)&amp;mdash;&amp;mdash;&amp;ndash;&amp;gt;联合主键(多个列)&lt;br&gt;
+索引&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;-&amp;gt;联合索引(可能包含多个索引列)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-- 假设有一张表，有id，name，age，gender四个字段，id是主键，name，age是组合索引列
+-- 组合索引使用的时候必须先匹配name，然后匹配age
+
+select * from table where name = ? and age = ? ;-- 生效
+select * from table where name = ?;-- 生效
+select * from table where age = ? ;-- 不生效
+select * from table where age = ? and name = ? ;-- 生效
+
+--在mysql内部有优化器会调整对应的顺序
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;45-索引下推&#34;&gt;4.5 索引下推&lt;/h3&gt;
+&lt;p&gt;mysql5.7之后，默认支持的一个特点&lt;br&gt;
+举一个例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-- mysql里的三层架构:
+-- 客户端:JDBC
+-- 服务端:server
+-- 存储引擎:数据存储
+
+select * from table where name = ? and age = ? ;
+在没有索引下推之前，根据name从存储引擎中获取符合规则的数据，在server层对age进行过滤
+有索引下推之后，根据name、age两个条件从存储引擎中获取对应的数据
+
+分析：有索引下推的好处，如果我们有50条数据，我们通过过滤会得到10条数据，如果没有索引下推，会先获取50条再去排除得到10条，而有了下推之后，我们会直接在存储引擎就过滤成了10条
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;46-索引和数据文件&#34;&gt;4.6 索引和数据文件&lt;/h3&gt;
+&lt;p&gt;MySQL的数据位置在/var/lib/mysql/目录;&lt;br&gt;
+InnoDB存储引擎的数据库表对应两个文件，MYISAM存储引擎数据库表对应3个文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.frm文件是存储的是表结构，两个存储引擎都一样
+.ibd文件是InnoDB的索引+数据
+.MYI（I：index）和.MYD（D：data）文件分别是MYISAM的索引字段的索引结构和数据文件，
+也就是说MYISAM存储引擎的索引和数据是分开的，而InnoDB存储引擎的数据和索引是在一个文件里的。
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;5-innodb和myisam的一些不同&#34;&gt;5. InnoDB和MYISAM的一些不同&lt;/h3&gt;
+&lt;h4 id=&#34;51-myisam索引实现非聚集&#34;&gt;5.1 MYISAM索引实现（非聚集）&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;索引文件和数据文件是分离的（非聚集）&lt;/li&gt;
+&lt;li&gt;数据、行记录是存储在MYD文件:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;假如col1是索引字段, 那么这一列是存储在以B+Tree的结构来组织的MYI文件里;
+然后他的叶子节点的data部分存储的是索引所在行记录的磁盘文件地址，
+根据磁盘文件地址指针就可以从MYD文件里快速的找到我们的这一行记录。
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;51-innodb索引实现聚集&#34;&gt;5.1 InnoDB索引实现（聚集）&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;表数据文件本身就是按B+Tree组织的一个索引结构文件&lt;/li&gt;
+&lt;li&gt;聚集索引-叶子节点包含了完整的数据记录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;.frm文件和MYISAM一样都是表结构文件，
+.ibd文件就是MYISAM的MYI和MYD文件的合并，索引文件和数据文件都存储到一个文件。
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;InnoDB索引B+树的叶子节点和MYISAM有点区别，它存储的是索引所在行的所有字段。&lt;br&gt;
+这样就不用回表了，性能比MYISAM高，而MYISAM查找到索引所在行记录的磁盘地址后还要回MYD文件读取一次。&lt;/p&gt;
+&lt;h4 id=&#34;52-为什么innodb表必须有主键并且推荐使用整型的自增主键&#34;&gt;5.2 为什么InnoDB表必须有主键，并且推荐使用整型的自增主键？&lt;/h4&gt;
+&lt;p&gt;mysql设计的就是innoDB把你的数据和主键索引用B+Tree来组织的，没有主键他的数据就没有一个结构来存储。&lt;br&gt;
+建innoDB表的时候没有建主键，表也能建成功&lt;/p&gt;
+&lt;p&gt;为什么推荐使用整型的主键？&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;我们想象一下查找过程，是把节点load到内存然后在内存里去比较大小，也就是在查找的过程中要不断的去进行数据的比对。
+假设UUID，既不自增也不是整形。问一下，是整形的1&amp;lt;2比较的效率高还是字符串的“abc”和“abe”比较的效率高呢？
+显然是前者，因为字符串的比较是转换成ASICI一位一位的比，如果最后一位不一样，比到最后才比较出大小，
+就比整形比较慢多了，存储空间来说，整形更小。索引越节约资源越好。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;为什么是自增的主键呢？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;B-Tree的叶子节点之间是没有指针的，B+Tree优化后增加了叶子节点之间的指针，
+如果我们遍历数据，从当前节点遍历完之后，就可以根据节点间的指针快速找到下一个节点去遍历。
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;6-分布式和数据同步&#34;&gt;6. 分布式和数据同步&lt;/h2&gt;
+&lt;p&gt;MySQL读写分离和数据同步原理&lt;/p&gt;
+&lt;h2 id=&#34;7-其它数据库&#34;&gt;7. 其它数据库&lt;/h2&gt;
+&lt;h4 id=&#34;mongodb&#34;&gt;MongoDB&lt;/h4&gt;
+&lt;h4 id=&#34;elasticsearch&#34;&gt;ElasticSearch&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;引用&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://www.cnblogs.com/zhoujinyi/p/3435982.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.cnblogs.com/zhoujinyi/p/3435982.html&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://developer.ibm.com/zh/technologies/databases/articles/os-mysql-transaction-isolation-levels-and-locks/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;IBM：MySQL事务隔离级别和锁&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/102147497&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://zhuanlan.zhihu.com/p/102147497&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://www.jianshu.com/p/63bda04adf38&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.jianshu.com/p/63bda04adf38&lt;/a&gt;&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://mp.weixin.qq.com/s?__biz=MzUxNTQyOTIxNA==&amp;amp;mid=2247484041&amp;amp;idx=1&amp;amp;sn=76d3bf1772f9e3c796ad3d8a089220fa&amp;amp;chksm=f9b784b8cec00dae3d52318f6cb2bdee39ad975bf79469b72a499ceca1c5d57db5cbbef914ea&amp;amp;token=2025456560&amp;amp;lang=zh_CN#rd&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://mp.weixin.qq.com/s?__biz=MzUxNTQyOTIxNA==&amp;amp;mid=2247484041&amp;amp;idx=1&amp;amp;sn=76d3bf1772f9e3c796ad3d8a089220fa&amp;amp;chksm=f9b784b8cec00dae3d52318f6cb2bdee39ad975bf79469b72a499ceca1c5d57db5cbbef914ea&amp;amp;token=2025456560&amp;amp;lang=zh_CN#rd&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>分布式: 一致性协议Raft</title>
         <link>/p/%E5%88%86%E5%B8%83%E5%BC%8F-%E4%B8%80%E8%87%B4%E6%80%A7%E5%8D%8F%E8%AE%AEraft/</link>
         <pubDate>Wed, 10 Mar 2021 18:00:52 +0800</pubDate>
@@ -1353,7 +1781,7 @@ MySQL中, InnoDB 页的大小默认是 16k:&lt;br&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;5-在后续的交互中用session-key-和-mac-算法密钥对传输的内容进行加解密&#34;&gt;5. 在后续的交互中，用session key 和 MAC 算法密钥对传输的内容进行加解密&lt;/h4&gt;
 &lt;pre&gt;&lt;code&gt;客户端：
   1. 用MAC密钥对内容进行摘要
-  2. 用 session key对摘要进行加密
+  2. 用 session key对内容进行加密
 服务端：
   1. 用sesion key对收到的数据进行解密
   2. 用 MAC 密钥验证内容的完整性
@@ -1402,11 +1830,12 @@ TIME-WAIT状态:&lt;/p&gt;
 3. TCP四次挥手过程中，为了保证ACK和接收延迟数据，设置TIME-WAIT为2倍的MSL。
 &lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;3-解决大量time-wait状态的方法&#34;&gt;3. 解决大量TIME-WAIT状态的方法&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;1. 客户端
-  HTTP请求的头部Connection设置为keep-alive, 这样服务端不会关闭连接，目前大量浏览器是这样处理的
+  使用长链接：HTTP请求的头部Connection设置为keep-alive, 这样服务端不会关闭连接，目前大量浏览器是这样处理的
 2. 服务端
   a. 允许time_wait状态的socket被重用
   b. 缩短time_wait的时间
-&lt;/code&gt;&lt;/pre&gt;&lt;ol&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;4-time-wait存在的目的&#34;&gt;4. TIME-WAIT存在的目的&lt;/h3&gt;
+&lt;ol&gt;
 &lt;li&gt;可靠的实现TCP的全双工连接&lt;/li&gt;
 &lt;/ol&gt;
 &lt;pre&gt;&lt;code&gt;  TCP四次挥手关闭连接时，最后一个ACK是由主动关闭连接的一方发出的；
@@ -1416,446 +1845,23 @@ TIME-WAIT状态:&lt;/p&gt;
 &lt;li&gt;处理延迟到达的报文&lt;/li&gt;
 &lt;/ol&gt;
 &lt;pre&gt;&lt;code&gt;因为网络的不稳定性，TCP报文可能会迟延到达，
-为了避免延迟到达的报文被误认为是新TCP连接的数据，需要在允许新建TCP连接前，保持一个不可用的状态，等待延迟报文的消失，一般设置为2MSL（Maximum Segment Lifetime：最大生存时间）
+为了避免延迟到达的报文被误认为是新TCP连接的数据，需要在允许新建TCP连接前，保持一个不可用的状态，
+等待延迟报文的消失，一般设置为2MSL（Maximum Segment Lifetime：最大生存时间）
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/tcp_fin_timeout.png&#34; alt=&#34;tcp_fin_timeout&#34;  /&gt;&lt;/p&gt;
-&lt;h3 id=&#34;3-tcp协议控制算法&#34;&gt;3. tcp协议控制算法&lt;/h3&gt;
+&lt;h3 id=&#34;5-tcp协议控制算法&#34;&gt;5. tcp协议控制算法&lt;/h3&gt;
 &lt;p&gt;####　1. 流量控制&lt;/p&gt;
 &lt;h4 id=&#34;2-拥塞控制&#34;&gt;2. 拥塞控制&lt;/h4&gt;
 &lt;p&gt;#####　１.慢启动&lt;br&gt;
 #####　２.拥塞避免&lt;br&gt;
 #####　３.拥塞发生&lt;br&gt;
 #####　４.快恢复&lt;/p&gt;
-&lt;p&gt;###　４. tcp与udp的区别，为什么是可靠连接&lt;/p&gt;
+&lt;p&gt;###　6. tcp与udp的区别，为什么是可靠连接&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;引用&lt;br&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://www.cioage.com/art/202008/623158.htm###&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://www.cioage.com/art/202008/623158.htm###&lt;/a&gt;　&lt;br&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://www.zhihu.com/question/298214130&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://www.zhihu.com/question/298214130&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        </item>
-        <item>
-        <title>Note: MySQL</title>
-        <link>/p/note-mysql/</link>
-        <pubDate>Fri, 26 Feb 2021 19:00:52 +0800</pubDate>
-        
-        <guid>/p/note-mysql/</guid>
-        <description>&lt;p&gt;[TOC]&lt;/p&gt;
-&lt;h2 id=&#34;1-事务&#34;&gt;1. 事务&lt;/h2&gt;
-&lt;h3 id=&#34;11-事务的四个重要特性acid&#34;&gt;1.1 事务的四个重要特性(ACID)：&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;原子性（Atomicity）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;  事务开始后所有操作，要么全部做完，要么全部不做，不可能停滞在中间环节。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;一致性（Consistency）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;    指事务将数据库从一种状态转变为另一种一致的的状态。事务开始前和结束后，数据库的完整性约束没有被破坏。
-    例如工号带有唯一属性，如果经过一个修改工号的事务后，工号变的非唯一了，则表明一致性遭到了破坏。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;隔离性（Isolation）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;    要求每个读写事务的对象对其他事务的操作对象能互相分离，即该事务提交前对其他事务不可见。
-    也可以理解为多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。
-
-    注：MySQL 通过锁机制来保证事务的隔离性。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;持久性（Durability）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;    事务一旦提交，则其结果就是永久性的
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;12-事务的隔离级别&#34;&gt;1.2 事务的隔离级别&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;    SQL 标准定义的四种隔离级别被 ANSI（美国国家标准学会）和 ISO/IEC（国际标准）采用，每种级别对事务的处理能力会有不同程度的影响。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;READ UNCOMMITTED（读未提交）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;  初始化测试数据库：
-    SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;;
-    create database test;
-    use test;
-    create table test(id int primary key);
-    insert into test(id) values(1);
-  1. 打开终端1，开启一个事务，修改ID为1的记录更新为2：
-    SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;;
-    begin;
-    update test set id = 2 where id = 1;
-    select * from test; -- 此时看到一条ID为2的记录
-  2. 打开终端2，开启一个事务后查看表中的数据
-    SET @@session.transaction_isolation = &#39;READ-UNCOMMITTED&#39;;
-    begin;
-    select * from test; -- 此时看到一条 ID 为 2 的记录
-
-最后一步读取到了 mysql 终端 1 中未提交的事务（没有 commit 提交动作），即产生了 脏读 ，大部分业务场景都不允许脏读出现，
-但是此隔离级别下数据库的并发是最好的。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;READ COMMITTED（读提交）&lt;br&gt;
-一个事务可以读取另一个已提交的事务，多次读取会造成不一样的结果，此现象称为不可重复读问题，Oracle 和 SQL Server 的默认隔离级别。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;  1. 登录 mysql 终端 1，开启一个事务，将 ID 为 1 的记录更新为 2 ，并确认记录数变更过来。
-    SET @@session.transaction_isolation = &#39;READ-COMMITTED&#39;;
-    begin;
-    update test set id = 2 where id = 1;
-    select * from test; -- 此时看到一条记录为 2
-  2. 登录 mysql 终端 2，开启一个事务后，查看表中的数据。
-    begin;
-    select * from test; -- 此时看一条 ID 为 1 的记录
-  3. 登录 mysql 终端 1，提交事务。
-    commit;
-  4. 切换到 mysql 终端 2。
-    select * from test; -- 此时看到一条 ID 为 2 的记录
-
-mysql 终端 2 在开启了一个事务之后，在第一次读取 test 表（此时 mysql 终端 1 的事务还未提交）时 ID 为 1 ，
-在第二次读取 test 表（此时 mysql 终端 1 的事务已经提交）时 ID 已经变为 2 ，说明在此隔离级别下已经读取到已提交的事务。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;REPEATABLE READ（可重复读）&lt;br&gt;
-该隔离级别是 MySQL 默认的隔离级别，&lt;br&gt;
-在同一个事务里， select 的结果是事务开始时时间点的状态，因此，同样的 select 操作读到的结果会是一致的，&lt;br&gt;
-但是，会有 幻读 现象。&lt;br&gt;
-MySQL 的 InnoDB 引擎可以通过 next-key locks 机制（参考下文 行锁的算法 一节）来避免幻读。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;准备测试数据库表：
-    SET @@session.transaction_isolation = &#39;REPEATABLE-READ&#39;;
-    create database test;
-    use test;
-    create table test(id int primary key,name varchar(20));
-
-1. 登录 mysql 终端 1，开启一个事务
-  SET @@session.transaction_isolation = &#39;REPEATABLE-READ&#39;;
-  begin;
-  select * from test; -- 无记录
-2. 登录 mysql 终端 2，开启一个事务。
-  begin;
-  select * from test; -- 无记录
-3. 切换到 mysql 终端 1，增加一条记录并提交。
-  insert into test(id,name) values(1,&#39;a&#39;);
-  commit;
-4. 切换到 msyql 终端 2。
-  select * from test; --此时查询还是无记录
-  通过这一步可以证明，在该隔离级别下已经读取不到别的已提交的事务，如果想看到 mysql 终端 1 提交的事务，在 mysql 终端 2 将当前事务提交后再次查询就可以读取到 mysql 终端 1 提交的事务。
-5. 此时接着在 mysql 终端 2 插入一条数据。
-  insert into test(id,name) values(1,&#39;b&#39;); -- 此时报主键冲突的错误
-
-明明在第 5 步没有数据，为什么在这里会报错呢？其实这就是该隔离级别下可能产生的问题，MySQL 称之为 幻读 。注意我在这里强调的是 MySQL 数据库，Oracle 数据库对于幻读的定义可能有所不同。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;SERIALIZABLE（序列化）&lt;br&gt;
-在该隔离级别下事务都是串行顺序执行的，MySQL 数据库的 InnoDB 引擎会给读操作隐式加一把读共享锁，&lt;br&gt;
-从而避免了脏读、不可重读复读和幻读问题。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;1. 登录 mysql 终端 1，开启一个事务，并写入一条数据。
-  SET @@session.transaction_isolation = &#39;SERIALIZABLE&#39;;
-  begin;
-  insert into test(id) values(1);
-2. 登录 mysql 终端 2，开启一个事务。
-  begin;
-  select * from test; -- 此时会一直卡住
-3. 立马切换到 mysql 终端 1,提交事务。
-  commit;
-
-一旦事务提交，msyql 终端 2 会立马返回 ID 为 1 的记录，否则会一直卡住，直到超时，其中超时参数是由 innodb_lock_wait_timeout 控制。由于每条 select 语句都会加锁，所以该隔离级别的数据库并发能力最弱，
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;13-各个隔离级别下产生的一些问题&#34;&gt;1.3 各个隔离级别下产生的一些问题&lt;/h3&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;隔离级别&lt;/th&gt;
-&lt;th&gt;脏读&lt;/th&gt;
-&lt;th&gt;不可重复读&lt;/th&gt;
-&lt;th&gt;幻读&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;读未提交&lt;/td&gt;
-&lt;td&gt;可以出现&lt;/td&gt;
-&lt;td&gt;可以出现&lt;/td&gt;
-&lt;td&gt;可以出现&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;读提交&lt;/td&gt;
-&lt;td&gt;不允许出现&lt;/td&gt;
-&lt;td&gt;可以出现&lt;/td&gt;
-&lt;td&gt;可以出现&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;可重复读&lt;/td&gt;
-&lt;td&gt;不允许出现&lt;/td&gt;
-&lt;td&gt;不允许出现&lt;/td&gt;
-&lt;td&gt;可以出现&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;序列化&lt;/td&gt;
-&lt;td&gt;不允许出现&lt;/td&gt;
-&lt;td&gt;不允许出现&lt;/td&gt;
-&lt;td&gt;不允许出现&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h2 id=&#34;2-锁&#34;&gt;2. 锁&lt;/h2&gt;
-&lt;h3 id=&#34;21-锁的类型&#34;&gt;2.1 锁的类型&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;共享锁 （也称为 S 锁）：允许事务读取一行数据。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;可以使用 SQL 语句 select * from tableName where... lock in share mode; 手动加 S 锁。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;独占锁 （也称为 X 锁）：允许事务删除或更新一行数据。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;可以使用 SQL 语句 select * from tableName where... for update; 手动加 X 锁。
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;S 锁和 S 锁是 兼容 的（即读共享），X 锁和其它锁都 不兼容&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;为了实现多粒度的锁机制，InnoDB 还有两种内部使用的 意向锁 ，由 InnoDB 自动添加，且都是表级别的锁。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;意向共享锁 （IS）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;事务即将给表中的各个行设置共享锁，事务给数据行加 S 锁前必须获得该表的 IS 锁。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;意向排他锁 （IX）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;事务即将给表中的各个行设置排他锁，事务给数据行加 X 锁前必须获得该表 IX 锁。
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;意向锁的主要目的是为了使得 行锁 和 表锁 共存。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;行级锁和表级意向锁的兼容性:&lt;/li&gt;
-&lt;/ul&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;锁类型&lt;/th&gt;
-&lt;th&gt;X&lt;/th&gt;
-&lt;th&gt;IX&lt;/th&gt;
-&lt;th&gt;S&lt;/th&gt;
-&lt;th&gt;IS&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;X&lt;/td&gt;
-&lt;td&gt;冲突&lt;/td&gt;
-&lt;td&gt;冲突&lt;/td&gt;
-&lt;td&gt;冲突&lt;/td&gt;
-&lt;td&gt;冲突&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;IX&lt;/td&gt;
-&lt;td&gt;冲突&lt;/td&gt;
-&lt;td&gt;兼容&lt;/td&gt;
-&lt;td&gt;冲突&lt;/td&gt;
-&lt;td&gt;兼容&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;S&lt;/td&gt;
-&lt;td&gt;冲突&lt;/td&gt;
-&lt;td&gt;冲突&lt;/td&gt;
-&lt;td&gt;兼容&lt;/td&gt;
-&lt;td&gt;兼容&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;IS&lt;/td&gt;
-&lt;td&gt;冲突&lt;/td&gt;
-&lt;td&gt;兼容&lt;/td&gt;
-&lt;td&gt;兼容&lt;/td&gt;
-&lt;td&gt;兼容&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h3 id=&#34;22-锁的算法&#34;&gt;2.2 锁的算法&lt;/h3&gt;
-&lt;p&gt;InnoDB 存储引擎使用三种行锁的算法用来满足相关事务隔离级别的要求。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Record Locks&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt; 单个行记录上的锁
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;Gap Locks&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;间隙锁，锁定一个范围，但不包括记录本身。GAP锁的目的，是为了防止同一事务的两次当前读，出现幻读的情况。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;Next-key Locks&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;1+2，锁定一个范围，并且锁定记录本身。对于行的查询，都是采用该方法，主要目的是解决幻读的问题。
-该锁就是 Record Locks 和 Gap Locks 的组合，即锁定一个范围并且锁定该记录本身。
-InnoDB 使用 Next-key Locks 解决幻读问题。需要注意的是，如果索引有唯一属性，则 InnnoDB 会自动将 Next-key Locks 降级为 Record Locks。
-举个例子，如果一个索引有 1, 3, 5 三个值，则该索引锁定的区间为 (-∞,1], (1,3], (3,5], (5,+ ∞) 。
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;23-锁的优化建议&#34;&gt;2.3 锁的优化建议&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;1. 合理设计索引，让 InnoDB 在索引键上面加锁的时候尽可能准确，尽可能的缩小锁定范围，避免造成不必要的锁定而影响其他 Query 的执行。
-2. 尽可能减少基于范围的数据检索过滤条件，避免因为间隙锁带来的负面影响而锁定了不该锁定的记录。
-3. 尽量控制事务的大小，减少锁定的资源量和锁定时间长度。
-4. 在业务环境允许的情况下，尽量使用较低级别的事务隔离，以减少 MySQL 因为实现事务隔离级别所带来的附加成本
-&lt;/code&gt;&lt;/pre&gt;&lt;hr&gt;
-&lt;h2 id=&#34;3-存储引擎&#34;&gt;3. 存储引擎&lt;/h2&gt;
-&lt;h3 id=&#34;31-myisam&#34;&gt;3.1 MyISAM&lt;/h3&gt;
-&lt;p&gt;使用这个存储引擎，每个MyISAM在磁盘上存储成三个文件。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;（1）frm文件：存储表的定义数据
-（2）MYD文件：存放表具体记录的数据
-（3）MYI文件：存储索引
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;frm和MYI可以存放在不同的目录下。MYI文件用来存储索引，但仅保存记录所在页的指针，索引的结构是B+树结构。&lt;br&gt;
-下面这张图就是MYI文件保存的机制：&lt;br&gt;
-&lt;img src=&#34;/post/jobs_knowledge/images/myisam_myi_index.jpg&#34; alt=&#34;myi&#34;  /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;从这张图可以发现，这个存储引擎通过MYI的B+树结构来查找记录页，再根据记录页查找记录。
-并且支持全文索引、B树索引和数据压缩。
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;32-myisam-支持的三种数据类型&#34;&gt;3.2 MyISAM 支持的三种数据类型&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;（1）静态固定长度表
-这种方式的优点在于存储速度非常快，容易发生缓存，而且表发生损坏后也容易修复。缺点是占空间。这也是默认的存储格式。
-
-（2）动态可变长表
-优点是节省空间，但是一旦出错恢复起来比较麻烦。
-
-（3）压缩表
-上面说到支持数据压缩，说明肯定也支持这个格式。在数据文件发生错误时候，可以使用check table工具来检查，而且还可以使用repair table工具来恢复。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;MyISAM不支持事务，但是这也意味着他的存储速度更快&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&#34;32-innodb&#34;&gt;3.2 InnoDB&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;InnoDB是默认的数据库存储引擎，他的主要特点有：
-（1）可以通过自动增长列，方法是auto_increment。
-
-（2）支持事务。默认的事务隔离级别为可重复度，通过MVCC（并发版本控制）来实现的。
-
-（3）使用的锁粒度为行级锁，可以支持更高的并发；
-
-（4）支持外键约束；外键约束其实降低了表的查询速度，但是增加了表之间的耦合度。
-
-（5）配合一些热备工具可以支持在线热备份；
-
-（6）在InnoDB中存在着缓冲管理，通过缓冲池，将索引和数据全部缓存起来，加快查询的速度；
-
-（7）对于InnoDB类型的表，其数据的物理组织形式是聚簇表。所有的数据按照主键来组织。数据和索引放在一块，都位于B+数的叶子节点上；
-
-当然InnoDB的存储表和索引也有下面两种形式：
-
-（1）使用共享表空间存储：所有的表和索引存放在同一个表空间中。
-
-（2）使用多表空间存储：表结构放在frm文件，数据和索引放在IBD文件中。分区表的话，每个分区对应单独的IBD文件，分区表的定义可以查看我的其他文章。使用分区表的好处在于提升查询效率。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;对于InnoDB来说，最大的特点在于支持事务。但是这是以损失效率来换取的。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&#34;33-memory&#34;&gt;3.3 Memory&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;将数据存在内存，为了提高数据的访问速度，每一个表实际上和一个磁盘文件关联。文件是frm。
-
-（1）支持的数据类型有限制，比如：不支持TEXT和BLOB类型，对于字符串类型的数据，只支持固定长度的行，VARCHAR会被自动存储为CHAR类型；
-
-（2）支持的锁粒度为表级锁。所以，在访问量比较大时，表级锁会成为MEMORY存储引擎的瓶颈；
-
-（3）由于数据是存放在内存中，一旦服务器出现故障，数据都会丢失；
-
-（4）查询的时候，如果有用到临时表，而且临时表中有BLOB，TEXT类型的字段，那么这个临时表就会转化为MyISAM类型的表，性能会急剧降低；
-
-（5）默认使用hash索引。
-
-（6）如果一个内部表很大，会转化为磁盘表。
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;4-索引&#34;&gt;4. 索引&lt;/h2&gt;
-&lt;h3 id=&#34;41-聚簇索引和非聚簇索引辅助索引&#34;&gt;4.1 聚簇索引和非聚簇索引(辅助索引)&lt;/h3&gt;
-&lt;p&gt;判断是否是聚簇索引就看数据和索引是否在一个文件中&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;innodb&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;1. 只能有一个聚簇索引，但是有很多非聚簇索引
-2. 向innodb插入数据的时候，必须要包含一个索引的key值
-3. 这个索引的key值，可以是主键，如果没有主键，那么就是唯一键，如果没有唯一键，那么就是一个自生成的6字节的rowid
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;innodb的索引用的B+树, 索引和数据存储在一起，找到索引即可读取对应的数据&lt;br&gt;
-&lt;img src=&#34;/post/jobs_knowledge/images/innodb_index.webp&#34; alt=&#34;innodb_index&#34;  /&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;myisam&lt;br&gt;
-myisam也用B+树索引,但索引和存储数据的地址在一起，找到索引得到地址值，再通过地址找到对应的数据&lt;br&gt;
-&lt;img src=&#34;/post/jobs_knowledge/images/myisam_index.webp&#34; alt=&#34;myisam_index&#34;  /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&#34;42-回表&#34;&gt;4.2 回表&lt;/h3&gt;
-&lt;p&gt;我们创建一张案例表演示一下什么是回表&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;CREATE TABLE user_test(
-id INT PRIMARY KEY AUTO_INCREMENT,-- id为主键
-uname VARCHAR(20) ,
-age INT,
-gender VARCHAR(10),
- KEY `idx_uname` (`uname`) -- 索引选择为名字
-)ENGINE = INNODB;
-
-INSERT INTO user_test VALUES(1,&#39;张三&#39;,18,&#39;男&#39;);
-INSERT INTO user_test VALUES(NULL,&#39;马冬梅&#39;,19,&#39;女&#39;);
-INSERT INTO user_test VALUES(NULL,&#39;赵四&#39;,18,&#39;男&#39;);
-INSERT INTO user_test VALUES(NULL,&#39;王老七&#39;,22,&#39;男&#39;);
-INSERT INTO user_test VALUES(NULL,&#39;刘燕&#39;,16,&#39;女&#39;);
-INSERT INTO user_test VALUES(NULL,&#39;万宝&#39;,26,&#39;男&#39;);
-&lt;/code&gt;&lt;/pre&gt;&lt;pre&gt;&lt;code class=&#34;language-select&#34; data-lang=&#34;select&#34;&gt;-- 当我们表中有主键索引的时候，我们再去设置一个uname为索引，那么此时这条sql语句的查询过程应该如下：
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;/post/jobs_knowledge/images/select_all.webp&#34; alt=&#34;select_all&#34;  /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;首先先根据uname索引查询到id，再根据id查询到行的信息
-这样的操作走了两棵B+树，就是回表
-当根据普通索引查询到聚簇索引的key值之后，再根据key值在聚簇索引中获取数据
-我们可以发现这样的操作是很浪费时间的，因此我们日常操作的时候，尽量减少回表的次数
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;43-索引覆盖&#34;&gt;4.3 索引覆盖&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;select id,uname from table where uname = &#39;张三&#39;;
--- 根据uname 可以直接查询到id，uname两个列的值，直接返回即可
--- 不需要从聚簇索引查询任何数据，此时叫做索引覆盖
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;44-最左匹配&#34;&gt;4.4 最左匹配&lt;/h3&gt;
-&lt;p&gt;主键(一般为一个列)&amp;mdash;&amp;mdash;&amp;ndash;&amp;gt;联合主键(多个列)&lt;br&gt;
-索引&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;mdash;&amp;ndash;&amp;gt;联合索引(可能包含多个索引列)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;-- 假设有一张表，有id，name，age，gender四个字段，id是主键，name，age是组合索引列
--- 组合索引使用的时候必须先匹配name，然后匹配age
-
-select * from table where name = ? and age = ? ;-- 生效
-select * from table where name = ?;-- 生效
-select * from table where age = ? ;-- 不生效
-select * from table where age = ? and name = ? ;-- 生效
-
---在mysql内部有优化器会调整对应的顺序
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;45-索引下推&#34;&gt;4.5 索引下推&lt;/h3&gt;
-&lt;p&gt;mysql5.7之后，默认支持的一个特点&lt;br&gt;
-举一个例子：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;-- mysql里的三层架构:
--- 客户端:JDBC
--- 服务端:server
--- 存储引擎:数据存储
-
-select * from table where name = ? and age = ? ;
-在没有索引下推之前，根据name从存储引擎中获取符合规则的数据，在server层对age进行过滤
-有索引下推之后，根据name、age两个条件从存储引擎中获取对应的数据
-
-分析：有索引下推的好处，如果我们有50条数据，我们通过过滤会得到10条数据，如果没有索引下推，会先获取50条再去排除得到10条，而有了下推之后，我们会直接在存储引擎就过滤成了10条
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;46-索引和数据文件&#34;&gt;4.6 索引和数据文件&lt;/h3&gt;
-&lt;p&gt;MySQL的数据位置在/var/lib/mysql/目录;&lt;br&gt;
-InnoDB存储引擎的数据库表对应两个文件，MYISAM存储引擎数据库表对应3个文件。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;.frm文件是存储的是表结构，两个存储引擎都一样
-.ibd文件是InnoDB的索引+数据
-.MYI（I：index）和.MYD（D：data）文件分别是MYISAM的索引字段的索引结构和数据文件，
-也就是说MYISAM存储引擎的索引和数据是分开的，而InnoDB存储引擎的数据和索引是在一个文件里的。
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;5-innodb和myisam的一些不同&#34;&gt;5. InnoDB和MYISAM的一些不同&lt;/h3&gt;
-&lt;h4 id=&#34;51-myisam索引实现非聚集&#34;&gt;5.1 MYISAM索引实现（非聚集）&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;索引文件和数据文件是分离的（非聚集）&lt;/li&gt;
-&lt;li&gt;数据、行记录是存储在MYD文件:&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;假如col1是索引字段, 那么这一列是存储在以B+Tree的结构来组织的MYI文件里;
-然后他的叶子节点的data部分存储的是索引所在行记录的磁盘文件地址，
-根据磁盘文件地址指针就可以从MYD文件里快速的找到我们的这一行记录。
-&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;51-innodb索引实现聚集&#34;&gt;5.1 InnoDB索引实现（聚集）&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;表数据文件本身就是按B+Tree组织的一个索引结构文件&lt;/li&gt;
-&lt;li&gt;聚集索引-叶子节点包含了完整的数据记录&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;.frm文件和MYISAM一样都是表结构文件，
-.ibd文件就是MYISAM的MYI和MYD文件的合并，索引文件和数据文件都存储到一个文件。
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;InnoDB索引B+树的叶子节点和MYISAM有点区别，它存储的是索引所在行的所有字段。&lt;br&gt;
-这样就不用回表了，性能比MYISAM高，而MYISAM查找到索引所在行记录的磁盘地址后还要回MYD文件读取一次。&lt;/p&gt;
-&lt;h4 id=&#34;52-为什么innodb表必须有主键并且推荐使用整型的自增主键&#34;&gt;5.2 为什么InnoDB表必须有主键，并且推荐使用整型的自增主键？&lt;/h4&gt;
-&lt;p&gt;mysql设计的就是innoDB把你的数据和主键索引用B+Tree来组织的，没有主键他的数据就没有一个结构来存储。&lt;br&gt;
-建innoDB表的时候没有建主键，表也能建成功&lt;/p&gt;
-&lt;p&gt;为什么推荐使用整型的主键？&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;我们想象一下查找过程，是把节点load到内存然后在内存里去比较大小，也就是在查找的过程中要不断的去进行数据的比对。假设UUID，既不自增也不是整形。问一下，是整形的1&amp;lt;2比较的效率高还是字符串的“abc”和“abe”比较的效率高呢？显然是前者，因为字符串的比较是转换成ASICI一位一位的比，如果最后一位不一样，比到最后才比较出大小，就比整形比较慢多了，存储空间来说，整形更小。索引越节约资源越好。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;为什么是自增的主键呢？&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;B-Tree的叶子节点之间是没有指针的，B+Tree优化后增加了叶子节点之间的指针，如果我们遍历数据，从当前节点遍历完之后，就可以根据节点间的指针快速找到下一个节点去遍历。
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;6-分布式和数据同步&#34;&gt;6. 分布式和数据同步&lt;/h2&gt;
-&lt;p&gt;MySQL读写分离和数据同步原理&lt;/p&gt;
-&lt;h2 id=&#34;7-其它数据库&#34;&gt;7. 其它数据库&lt;/h2&gt;
-&lt;h4 id=&#34;mongodb&#34;&gt;MongoDB&lt;/h4&gt;
-&lt;h4 id=&#34;elasticsearch&#34;&gt;ElasticSearch&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;引用&lt;br&gt;
-&lt;a class=&#34;link&#34; href=&#34;https://www.cnblogs.com/zhoujinyi/p/3435982.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://www.cnblogs.com/zhoujinyi/p/3435982.html&lt;/a&gt;&lt;br&gt;
-&lt;a class=&#34;link&#34; href=&#34;https://developer.ibm.com/zh/technologies/databases/articles/os-mysql-transaction-isolation-levels-and-locks/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;IBM：MySQL事务隔离级别和锁&lt;/a&gt;&lt;br&gt;
-&lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/102147497&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://zhuanlan.zhihu.com/p/102147497&lt;/a&gt;&lt;br&gt;
-&lt;a class=&#34;link&#34; href=&#34;https://www.jianshu.com/p/63bda04adf38&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://www.jianshu.com/p/63bda04adf38&lt;/a&gt;&lt;br&gt;
-&lt;a class=&#34;link&#34; href=&#34;https://mp.weixin.qq.com/s?__biz=MzUxNTQyOTIxNA==&amp;amp;mid=2247484041&amp;amp;idx=1&amp;amp;sn=76d3bf1772f9e3c796ad3d8a089220fa&amp;amp;chksm=f9b784b8cec00dae3d52318f6cb2bdee39ad975bf79469b72a499ceca1c5d57db5cbbef914ea&amp;amp;token=2025456560&amp;amp;lang=zh_CN#rd&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://mp.weixin.qq.com/s?__biz=MzUxNTQyOTIxNA==&amp;amp;mid=2247484041&amp;amp;idx=1&amp;amp;sn=76d3bf1772f9e3c796ad3d8a089220fa&amp;amp;chksm=f9b784b8cec00dae3d52318f6cb2bdee39ad975bf79469b72a499ceca1c5d57db5cbbef914ea&amp;amp;token=2025456560&amp;amp;lang=zh_CN#rd&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
         </item>
@@ -2742,15 +2748,15 @@ It&amp;rsquo;s a very vivid picture, from which we can see this abstract concept
 &lt;li&gt;We can map a node to all its neighbors by using a hash table.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Here is an example of Golang:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Golang&#34; data-lang=&#34;Golang&#34;&gt;&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;map&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; 
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Golang&#34; data-lang=&#34;Golang&#34;&gt;&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;map&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; 
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;jonny}
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;graph[&amp;#34;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;anuj&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;] = []string{}
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;graph[&amp;#34;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;peggy&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;] = []string{}
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;graph[&amp;#34;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;thom&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;] = []string{}
-&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;graph[&amp;#34;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;jonny&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;jonny&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;jonny&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
 &lt;li&gt;In the example above, Anuj is Bob&amp;rsquo;s neighbor, however, Bob isn&amp;rsquo;t Anju&amp;rsquo;s neighbor, since this graph is a directed graph.&lt;/li&gt;
 &lt;/ul&gt;
@@ -2761,41 +2767,41 @@ It&amp;rsquo;s a very vivid picture, from which we can see this abstract concept
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;collections&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;deque&lt;/span&gt;
 
 &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;search&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;deque&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# creates a new queue &lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# Adds all of your neighbors to the search queue &lt;/span&gt;
-    &lt;span class=&#34;n&#34;&gt;searched&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;    
-    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;# While the queue isn&amp;#39;t empty &lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;person&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;popleft&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;# grabs the first person off the queue &lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;deque&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# creates a new queue&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# Adds all of your neighbors to the search queue&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;searched&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;# While the queue isn&amp;#39;t empty&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;person&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;popleft&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;             &lt;span class=&#34;c1&#34;&gt;# grabs the first person off the queue&lt;/span&gt;
         &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;person&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;searched&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;continue&lt;/span&gt; 
+            &lt;span class=&#34;k&#34;&gt;continue&lt;/span&gt;
         &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;person_is_seller&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;person&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;                &lt;span class=&#34;c1&#34;&gt;# Checks whether the person is a mango seller&lt;/span&gt;
             &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;person&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34; is a mango seller!&amp;#34;&lt;/span&gt;    &lt;span class=&#34;c1&#34;&gt;# Yes, they&amp;#39;re a mango seller.&lt;/span&gt;
-            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt; 
+            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;
         &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
             &lt;span class=&#34;n&#34;&gt;search_queue&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;person&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;# No, they aren&amp;#39;t. Add all of this person&amp;#39;s friends to the search queue.&lt;/span&gt;
             &lt;span class=&#34;n&#34;&gt;searched&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;append&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;person&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;                                    &lt;span class=&#34;c1&#34;&gt;# If you reached here, no one in the queue was a mongo seller. &lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;                                    &lt;span class=&#34;c1&#34;&gt;# If you reached here, no one in the queue was a mongo seller.&lt;/span&gt;
 
 &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;person_is_seller&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;m&amp;#39;&lt;/span&gt; 
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;m&amp;#39;&lt;/span&gt;
 
 
 &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; 
+&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;bob&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;alice&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;claire&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;jonny&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt; 
-&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt; 
-&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt; 
-&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;jonny&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt; 
+&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;anuj&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;peggy&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;thom&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;jonny&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
 
 &lt;span class=&#34;n&#34;&gt;search&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;you&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
 &lt;li&gt;Golang&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Golang&#34; data-lang=&#34;Golang&#34;&gt;&lt;span class=&#34;nx&#34;&gt;hash_collision_1ckage&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Golang&#34; data-lang=&#34;Golang&#34;&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
 
 &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
 
@@ -2901,7 +2907,7 @@ Hash tables are used for lookups on a much larger scale.&lt;/p&gt;
 since it would have to run a simple search(O(n)) over the entire list.&lt;br&gt;
 However, you can get the value instantly if you store them in a hash table.&lt;br&gt;
 Thus, checking for duplicates is very fast with a hash table.&lt;/p&gt;
-&lt;h3 id=&#34;23-using-hash-tables-as&#34;&gt;2.3 Using hash tables as&lt;/h3&gt;
+&lt;h3 id=&#34;23-using-hash-tables-as-caching&#34;&gt;2.3 Using hash tables as caching&lt;/h3&gt;
 &lt;p&gt;Caching is One of the final use of hash tables.&lt;br&gt;
 Caching is widely used in websites, since the servers don&amp;rsquo;t have to do much work to find the requested data.&lt;br&gt;
 Thus, caching is a common way to make things faster.&lt;/p&gt;
@@ -2955,7 +2961,7 @@ If multiple keys map to the same slot, start a linked list at that slot.&lt;br&g
 &lt;/table&gt;
 &lt;p&gt;We can see from the figure above that hash tables are as fast as arrays at searching,&lt;br&gt;
 and are as fast as linked lists at inserts and delets.&lt;br&gt;
-Nevertheless, hash tables are slow(O(n)) at all of those operations.&lt;br&gt;
+Nevertheless, hash tables are slow(O(n)) at all of those operations in the worst cases.&lt;br&gt;
 In order not to hit the worst case performance with hash tables, we need to avoid collisions.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;A low load factor&lt;/li&gt;
@@ -3039,7 +3045,7 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;sumR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sumR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:])&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
 &lt;li&gt;Golang&lt;/li&gt;
@@ -3056,9 +3062,9 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Python&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;countEleR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; 
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;countEleR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;countEleR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:])&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
 &lt;li&gt;Find the maximum number in a list&lt;/li&gt;
@@ -3066,14 +3072,14 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Python&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;findMaxR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt; 
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;findMaxR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
         &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
     &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;findMaxR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:])&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;arr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ret&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
 &lt;li&gt;Write the D&amp;amp;C code for Binary Search&lt;/li&gt;
 &lt;/ol&gt;
@@ -3082,13 +3088,13 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;binarySearchR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;low&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;low&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt; 
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;None&lt;/span&gt;
 
     &lt;span class=&#34;n&#34;&gt;mid&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;low&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;
     &lt;span class=&#34;n&#34;&gt;guess&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mid&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;guess&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; 
-        &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mid&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; 
-    &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; 
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;guess&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mid&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
         &lt;span class=&#34;n&#34;&gt;low&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mid&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;binarySearchR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;low&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;high&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
@@ -3117,8 +3123,8 @@ Then we are left with a land of 10 * 10, which is the answer.&lt;/p&gt;
 &lt;p&gt;Tip: When we got a recursive function involving an array, the base case is often an empty array or an array with one element.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2 id=&#34;3-quick-sort&#34;&gt;3. Quick Sort&lt;/h2&gt;
-&lt;p&gt;3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life.&lt;br&gt;
-The base case for quicksort are arrays that are empty and arrays with just one element.&lt;br&gt;
+&lt;h3 id=&#34;31-quicksort-is-a-sorting-algorithm-which-is-much-faster-than-selection-sort-and-commonly-used-in-life&#34;&gt;3.1 Quicksort is a sorting algorithm, which is much faster than selection sort and commonly used in life.&lt;/h3&gt;
+&lt;p&gt;The base case for quicksort are arrays that are empty and arrays with just one element.&lt;br&gt;
 Using D&amp;amp;C, we can break down a array until we get the base case.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Here are the steps for quick sort:&lt;/li&gt;
@@ -3131,7 +3137,7 @@ Using D&amp;amp;C, we can break down a array until we get the base case.&lt;/p&g
 &lt;li&gt;The sub-arrays get sorted, and then we combine the whole thing to get a sorted array.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;3.2  Here we can see one example from the book.&lt;/p&gt;
+&lt;h3 id=&#34;32--here-we-can-see-one-example-from-the-book&#34;&gt;3.2  Here we can see one example from the book.&lt;/h3&gt;
 &lt;p&gt;After partitioning, we get three parts: numbers less than the pivot, the pivot and numbers greater than the pivot.&lt;/p&gt;
 &lt;figure&gt;
     &lt;img src=&#34;/post/grokking_algorithm/images/quick_sort_m1.png&#34; width=&#34;50%&#34;/&gt; 
@@ -3251,7 +3257,7 @@ Since quicksort doesn&amp;rsquo;t to see whether the input array is already sort
 &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;Since we&amp;rsquo;re not splitting the array into two parts, one of the sub-arrays is always empty.&lt;br&gt;
-As we always get O(n) in every level of the stack, we finally get O(n)*O(n)O(n^2)time.&lt;br&gt;
+As we always get O(n) in every level of the stack, we finally get O(n)*O(n) = O(n^2) time.&lt;br&gt;
 Therefore, the call stack is so long that it takes O(n^2) time.&lt;/p&gt;
 &lt;p&gt;On the other hand, if we make the middle element as the pivot, the call stack would be much shorter(O(logn).&lt;br&gt;
 Therefore, we get operation time O(nlogn).&lt;/p&gt;
@@ -3265,9 +3271,9 @@ Therefore, we get operation time O(nlogn).&lt;/p&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code&gt;Thank you for your effort to read this part of this passage.
 What are included in this passage are my study notes about algorithm.
-If you want to know more details about it, I strongly recommend you this book: 
+If you want to know more details about it, I strongly recommend you this book:
 grokking algoriths: An illustrated guide for programmers and other curious people.
-The author illustrate algorithms with pictures, which make people easily understand difficult questions.
+The author illustrates algorithms with pictures, which make people easily understand difficult questions.
 &lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;summary&#34;&gt;Summary&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;D&amp;amp;C works by splitting a problem into smaller parts. And the base case is usually an array with no or only one element.&lt;/li&gt;
