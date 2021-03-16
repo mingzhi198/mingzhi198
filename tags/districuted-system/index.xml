@@ -36,11 +36,11 @@ recvx和sendx是根据循环链表buf的变动而改变的。
     </item>
     
     <item>
-      <title>Golang: 调度模型</title>
-      <link>/p/golang-%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B/</link>
+      <title>Golang: GMP调度模型</title>
+      <link>/p/golang-gmp%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B/</link>
       <pubDate>Mon, 08 Mar 2021 15:00:52 +0800</pubDate>
       
-      <guid>/p/golang-%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B/</guid>
+      <guid>/p/golang-gmp%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B/</guid>
       <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.   1. Goroutine Goroutine = Golang + Coroutine。Goroutine是golang实现的协程，是用户级线程。
 Goroutine具有以下特点：
  相比线程，其启动的代价很小，以很小栈空间启动（2Kb左右） 能够动态地伸缩栈的大小，最大可以支持到Gb级别 工作在用户态，切换成很小 与线程关系是n:m，即可以在n个系统线程上多工调度m个Goroutine  2. 进程、线程、Goroutine 在仅支持进程的操作系统中，进程是拥有资源和独立调度的基本单位。

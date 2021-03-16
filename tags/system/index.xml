@@ -8,11 +8,11 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 09 Mar 2021 15:00:52 +0800</lastBuildDate><atom:link href="/tags/system/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>System: 僵尸进程和孤独进程</title>
-      <link>/p/system-%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%AD%A4%E7%8B%AC%E8%BF%9B%E7%A8%8B/</link>
+      <title>System: 僵尸进程和孤儿进程</title>
+      <link>/p/system-%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B/</link>
       <pubDate>Tue, 09 Mar 2021 15:00:52 +0800</pubDate>
       
-      <guid>/p/system-%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%AD%A4%E7%8B%AC%E8%BF%9B%E7%A8%8B/</guid>
+      <guid>/p/system-%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E5%92%8C%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B/</guid>
       <description>Statement  This article is my study notes about distributed systems. Please refer to the original work for more details and indicate the source for reprinting.  进程 进程就是运行起来的一个程序，但是进程并不局限于执行起来的代码，他的作用范围还有很多，如存放数据的内存地址空间，执行线程，打开的文件，挂起的信号，处理器状态等。
 进程在创建的时候开始存活，Linux系统会调用fork()方法复制一个现有进程来创建一个全新的进程，新产生的进程为子进程，创建者进程为父进程。当程序结束运行时，通过exit()系统调用退出执行，该进程占用的资源包括内存空间，线程等被释放掉。
 2. 进程终结 当进程终结时候，系统需要释放他所占有的所有资源。进程通过exit()系统调用结束进程，这个调用可能是来自进程内部的exit()，也可能来自外部的信号。在结束时候，该进程会使用该系统调用释放自己的空间，包括引用的文件，内存描述符，还会给自己的父进程发送信号，给自己的子进程寻找一个父进程等操作。
