@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. How to reverse a list? We can reverse linked list in two ways, which is iteration and recursion.
+1.1 Iteration 1. We define three pointer variables: prev, cur, next and header, prev points to the previous node, which points to NULL at the beginning of the iteration.'><title>Algorithm: 3. Reverse Linked List</title>
+
+<link rel='canonical' href='/p/algorithm-3.-reverse-linked-list/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Algorithm: 3. Reverse Linked List'>
+<meta property='og:description' content='Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. How to reverse a list? We can reverse linked list in two ways, which is iteration and recursion.
+1.1 Iteration 1. We define three pointer variables: prev, cur, next and header, prev points to the previous node, which points to NULL at the beginning of the iteration.'>
+<meta property='og:url' content='/p/algorithm-3.-reverse-linked-list/'>
+<meta property='og:site_name' content='Li. Mingzhi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='algorithm' /><meta property='article:tag' content='linked list' /><meta property='article:published_time' content='2021-03-23T15:00:52&#43;08:00'/><meta property='article:modified_time' content='2021-03-23T15:00:52&#43;08:00'/>
+<meta name="twitter:title" content="Algorithm: 3. Reverse Linked List">
+<meta name="twitter:description" content="Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. How to reverse a list? We can reverse linked list in two ways, which is iteration and recursion.
+1.1 Iteration 1. We define three pointer variables: prev, cur, next and header, prev points to the previous node, which points to NULL at the beginning of the iteration.">
+    </head>
+    <body class="">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "auto");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.body.dataset.scheme = 'dark';
+        } else {
+            document.body.dataset.scheme = 'light';
+        }
+    })();
+</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    
+                    
+                    
+                        
+                        <img src="/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+
+                
+            </figure>
+        
+        <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
+    </header>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/p/resume/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/archives/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/search/index.html'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <div id="article-toolbar">
+        <a href="" class="back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+            <span>Back</span>
+        </a>
+    </div>
+
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/algorithm/" >
+                Algorithm
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/algorithm-3.-reverse-linked-list/">Algorithm: 3. Reverse Linked List</a>
+    </h2>
+
+    <footer class="article-time">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <time class="article-time--published">Mar 23, 2021</time>
+    </footer></div>
+</header>
+
+    <section class="article-content">
+    <h1 id="statement">Statement</h1>
+<ul>
+<li>This article is my study notes about algorithms.</li>
+<li>Please refer to the original work for more details and indicate the source for reprinting.</li>
+</ul>
+<h3 id="1-how-to-reverse-a-list">1. How to reverse a list?</h3>
+<p>We can reverse linked list in two ways, which is iteration and recursion.</p>
+<h4 id="11-iteration">1.1 Iteration</h4>
+<pre><code>1. We define three pointer variables: prev, cur, next and header,
+prev points to the previous node, which points to NULL at the beginning of the iteration.
+cur points to the current node,
+next points to the next node.
+header tells us where the first node is.
+
+2. We make next point to current node's next node,
+	make the current node's next pointer point to the previous node,
+
+3. make the prev point to current node, and make the cur point the next node.
+
+4. Repeat until the last node(the cur points to NULL).
+</code></pre><p>Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL<br>
+Output: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL<br>
+<img src="/post/algorithm/images/reverse_linked_list.jpg" alt="reverse_linked_list"  /></p>
+<h4 id="12-recursion">1.2 Recursion</h4>
+<ol>
+<li>base case: the last node, whose next is null.</li>
+<li>reverse nodes after head node recursively.</li>
+</ol>
+<p>func ReverseListR(head *Node) *Node {<br>
+if nil == head.Next {<br>
+return head<br>
+}</p>
+<pre><code>last := ReverseListR(head.Next)
+head.Next.Next = head
+head.Next = nil
+return last
+</code></pre>
+<p>}</p>
+<blockquote>
+<p>last := ReverseListR(head.Next)</p>
+</blockquote>
+<p><img src="/post/algorithm/images/reverse_linked_list_r1.jpg" alt="r1"  /></p>
+<blockquote>
+<p>After ReverseListR, we get the following linked list</p>
+</blockquote>
+<p><img src="/post/algorithm/images/reverse_linked_list_r2.jpg" alt="r2"  /></p>
+<blockquote>
+<p>head.Next.Next = head</p>
+</blockquote>
+<p><img src="/post/algorithm/images/reverse_linked_list_r3.jpg" alt="r3"  /></p>
+<blockquote>
+<p>head.Next = nil</p>
+</blockquote>
+<p><img src="/post/algorithm/images/reverse_linked_list_r4.jpg" alt="r4"  /></p>
+<h3 id="2-implementation">2. Implementation</h3>
+<h4 id="21-iteration">2.1 Iteration</h4>
+<ul>
+<li>C</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-C" data-lang="C"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">next</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="nf">reverse_list</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">l</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nb">NULL</span> <span class="o">==</span> <span class="n">l</span> <span class="o">||</span> <span class="nb">NULL</span> <span class="o">==</span> <span class="n">l</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">l</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">cur</span> <span class="o">=</span> <span class="n">l</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">prev</span><span class="p">,</span> <span class="o">*</span><span class="n">next</span><span class="p">,</span> <span class="o">*</span><span class="n">header</span><span class="p">;</span>
+  <span class="n">prev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="k">while</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">cur</span><span class="p">;</span>
+    <span class="n">next</span> <span class="o">=</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">prev</span><span class="p">;</span>
+    <span class="n">prev</span> <span class="o">=</span> <span class="n">cur</span><span class="p">;</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">next</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">header</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="nf">construct_node_list</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">last</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">header</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">nd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+    <span class="n">nd</span><span class="o">-&gt;</span><span class="n">val</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+    <span class="n">nd</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NULL</span> <span class="o">==</span> <span class="n">header</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">header</span> <span class="o">=</span> <span class="n">nd</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NULL</span> <span class="o">!=</span> <span class="n">last</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">last</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">nd</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">nd</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">header</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">print_list</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">l</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">l</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">cur</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%p, val: %d, next: %p</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">cur</span><span class="p">,</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">,</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">);</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">)</span><span class="n">p</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">l</span> <span class="o">=</span> <span class="n">construct_node_list</span><span class="p">();</span>
+  <span class="n">print_list</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+  <span class="n">l</span> <span class="o">=</span> <span class="n">reverse_list</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+  <span class="n">print_list</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>Golang</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">type</span> <span class="nx">Node</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">Val</span>  <span class="kt">int</span>
+	<span class="nx">Next</span> <span class="o">*</span><span class="nx">Node</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">ReverseList</span><span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">Node</span><span class="p">)</span> <span class="o">*</span><span class="nx">Node</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="kc">nil</span> <span class="o">==</span> <span class="nx">l</span> <span class="o">||</span> <span class="kc">nil</span> <span class="o">==</span> <span class="nx">l</span><span class="p">.</span><span class="nx">Next</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">l</span>
+	<span class="p">}</span>
+
+	<span class="nx">cur</span> <span class="o">:=</span> <span class="nx">l</span>
+	<span class="kd">var</span> <span class="nx">prev</span><span class="p">,</span> <span class="nx">next</span><span class="p">,</span> <span class="nx">header</span> <span class="o">*</span><span class="nx">Node</span>
+	<span class="nx">prev</span> <span class="p">=</span> <span class="kc">nil</span>
+	<span class="k">for</span> <span class="kc">nil</span> <span class="o">!=</span> <span class="nx">cur</span> <span class="p">{</span>
+		<span class="nx">header</span> <span class="p">=</span> <span class="nx">cur</span>
+		<span class="nx">next</span> <span class="p">=</span> <span class="nx">cur</span><span class="p">.</span><span class="nx">Next</span>
+		<span class="nx">cur</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">prev</span>
+		<span class="nx">prev</span> <span class="p">=</span> <span class="nx">cur</span>
+		<span class="nx">cur</span> <span class="p">=</span> <span class="nx">next</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">header</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">ConstructList</span><span class="p">()</span> <span class="o">*</span><span class="nx">Node</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">prev</span><span class="p">,</span> <span class="nx">header</span> <span class="o">*</span><span class="nx">Node</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">nd</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">Node</span><span class="p">{</span>
+			<span class="nx">Val</span><span class="p">:</span>  <span class="nx">i</span><span class="p">,</span>
+			<span class="nx">Next</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="kc">nil</span> <span class="o">==</span> <span class="nx">header</span> <span class="p">{</span>
+			<span class="nx">header</span> <span class="p">=</span> <span class="nx">nd</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="kc">nil</span> <span class="o">!=</span> <span class="nx">prev</span> <span class="p">{</span>
+			<span class="nx">prev</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">nd</span>
+		<span class="p">}</span>
+		<span class="nx">prev</span> <span class="p">=</span> <span class="nx">nd</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">header</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">PrintList</span><span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">Node</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">cur</span> <span class="o">:=</span> <span class="nx">l</span>
+	<span class="k">for</span> <span class="kc">nil</span> <span class="o">!=</span> <span class="nx">cur</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%p, val: %d, next: %p\n&#34;</span><span class="p">,</span> <span class="nx">cur</span><span class="p">,</span> <span class="nx">cur</span><span class="p">.</span><span class="nx">Val</span><span class="p">,</span> <span class="nx">cur</span><span class="p">.</span><span class="nx">Next</span><span class="p">)</span>
+		<span class="nx">cur</span> <span class="p">=</span> <span class="nx">cur</span><span class="p">.</span><span class="nx">Next</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">l</span> <span class="o">:=</span> <span class="nf">ConstructList</span><span class="p">()</span>
+	<span class="nf">PrintList</span><span class="p">(</span><span class="nx">l</span><span class="p">)</span>
+	<span class="nx">l</span> <span class="p">=</span> <span class="nf">ReverseList</span><span class="p">(</span><span class="nx">l</span><span class="p">)</span>
+	<span class="nf">PrintList</span><span class="p">(</span><span class="nx">l</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><h4 id="22-recursion">2.2 Recursion</h4>
+<div class="highlight"><pre class="chroma"><code class="language-Golang" data-lang="Golang"><span class="kd">func</span> <span class="nf">ReverseListR</span><span class="p">(</span><span class="nx">head</span> <span class="o">*</span><span class="nx">Node</span><span class="p">)</span> <span class="o">*</span><span class="nx">Node</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="kc">nil</span> <span class="o">==</span> <span class="nx">head</span><span class="p">.</span><span class="nx">Next</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">head</span>
+	<span class="p">}</span>
+
+	<span class="nx">last</span> <span class="o">:=</span> <span class="nf">ReverseListR</span><span class="p">(</span><span class="nx">head</span><span class="p">.</span><span class="nx">Next</span><span class="p">)</span>
+	<span class="nx">head</span><span class="p">.</span><span class="nx">Next</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">head</span>
+	<span class="nx">head</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="kc">nil</span>
+	<span class="k">return</span> <span class="nx">last</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>Reference<br>
+<a class="link" href="https://zhuanlan.zhihu.com/p/86745433"  target="_blank" rel="noopener"
+    >https://zhuanlan.zhihu.com/p/86745433</a><br>
+<a class="link" href="https://leetcode-cn.com/problems/reverse-linked-list/"  target="_blank" rel="noopener"
+    >leetcode</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/algorithm/">algorithm</a>
+        
+            <a href="/tags/linked-list/">linked list</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/algorithm-1.-bubble-sort/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Algorithm: 1. Bubble Sort</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/algorithm-2.-insert-sort/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Algorithm: 2. Insert Sort</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 Li. Mingzhi
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

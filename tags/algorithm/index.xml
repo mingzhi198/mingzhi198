@@ -6,7 +6,17 @@
     <description>Recent content in algorithm on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 05 Mar 2021 14:30:27 +0800</lastBuildDate><atom:link href="/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 23 Mar 2021 15:00:52 +0800</lastBuildDate><atom:link href="/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Algorithm: 3. Reverse Linked List</title>
+      <link>/p/algorithm-3.-reverse-linked-list/</link>
+      <pubDate>Tue, 23 Mar 2021 15:00:52 +0800</pubDate>
+      
+      <guid>/p/algorithm-3.-reverse-linked-list/</guid>
+      <description>Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. How to reverse a list? We can reverse linked list in two ways, which is iteration and recursion.
+1.1 Iteration 1. We define three pointer variables: prev, cur, next and header, prev points to the previous node, which points to NULL at the beginning of the iteration.</description>
+    </item>
+    
     <item>
       <title>Algorithm: 1. Bubble Sort</title>
       <link>/p/algorithm-1.-bubble-sort/</link>

@@ -6,22 +6,22 @@
     <description>Recent content in Categories on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Mar 2021 19:00:52 +0800</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 23 Mar 2021 15:00:52 +0800</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Algorithm</title>
+      <link>/categories/algorithm/</link>
+      <pubDate>Tue, 23 Mar 2021 15:00:52 +0800</pubDate>
+      
+      <guid>/categories/algorithm/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>notes</title>
       <link>/categories/notes/</link>
       <pubDate>Mon, 15 Mar 2021 19:00:52 +0800</pubDate>
       
       <guid>/categories/notes/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Algorithm</title>
-      <link>/categories/algorithm/</link>
-      <pubDate>Fri, 05 Mar 2021 14:30:27 +0800</pubDate>
-      
-      <guid>/categories/algorithm/</guid>
       <description></description>
     </item>
     
