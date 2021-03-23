@@ -6,7 +6,19 @@
     <description>Recent content in bubble sort on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 05 Mar 2021 14:30:27 +0800</lastBuildDate><atom:link href="/tags/bubble-sort/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 23 Mar 2021 14:30:27 +0800</lastBuildDate><atom:link href="/tags/bubble-sort/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Algorithm: 2. Remove Char From String</title>
+      <link>/p/algorithm-2.-remove-char-from-string/</link>
+      <pubDate>Tue, 23 Mar 2021 14:30:27 +0800</pubDate>
+      
+      <guid>/p/algorithm-2.-remove-char-from-string/</guid>
+      <description>Statement  This article is my study notes about algorithms. Please refer to the original work for more details and indicate the source for reprinting.  1. How to remove charcter from a string? Basically, we have two pinters, i and j;
+i is the index of iteration, and j is the index of the target character.
+After the iteration, we set the bit indexed by j to &amp;lsquo;\0&amp;rsquo;;
+2. Implementation #include &amp;lt;stdio.</description>
+    </item>
+    
     <item>
       <title>Algorithm: 1. Bubble Sort</title>
       <link>/p/algorithm-1.-bubble-sort/</link>
