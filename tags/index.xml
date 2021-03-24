@@ -6,13 +6,22 @@
     <description>Recent content in Tags on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Mar 2021 15:00:52 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Mar 2021 18:36:08 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>algorithm</title>
       <link>/tags/algorithm/</link>
-      <pubDate>Tue, 23 Mar 2021 15:00:52 +0800</pubDate>
+      <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
       
       <guid>/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>recursion</title>
+      <link>/tags/recursion/</link>
+      <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
+      
+      <guid>/tags/recursion/</guid>
       <description></description>
     </item>
     
@@ -283,15 +292,6 @@
       <pubDate>Wed, 09 Dec 2020 08:32:27 +0800</pubDate>
       
       <guid>/tags/quick-sort/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>recursion</title>
-      <link>/tags/recursion/</link>
-      <pubDate>Tue, 08 Dec 2020 18:36:08 +0800</pubDate>
-      
-      <guid>/tags/recursion/</guid>
       <description></description>
     </item>
     

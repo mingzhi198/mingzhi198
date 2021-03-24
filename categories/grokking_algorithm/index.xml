@@ -6,7 +6,24 @@
     <description>Recent content in grokking_algorithm on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 13 Dec 2020 23:44:52 +0800</lastBuildDate><atom:link href="/categories/grokking_algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Mar 2021 18:36:08 +0800</lastBuildDate><atom:link href="/categories/grokking_algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>cp2. InnoDB</title>
+      <link>/p/cp2.-innodb/</link>
+      <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
+      
+      <guid>/p/cp2.-innodb/</guid>
+      <description>Statement  这篇文件是我从这本书中的学习笔记: MySQL技术内幕（InnoDB存储引擎）. 非商业用途转载请注明出处，若要更详细了解书中内容，请参考原作。  1. InnoDB体系结构 InnoDB存储引擎有多个内存块组成的一个大的内存池，负责如下工作：
+ 维护所有进程/线程要访问的内部数据结构 缓存磁盘上的数据 重做日志(redo log)缓冲  1.1. 后台线程  Master Thread  核心线程，负责将缓冲池中的数据异步刷新到磁盘，保证数据的一致性 IO Thread
+InnoDB存储引擎大量使用了AIO（Async IO)来处理写IO请求；
+InnoDB 1.0版本之前共有4个IO Thread: write, read, insert buffer and log IO thread   查看InnoDB中的 IO Thread:
+ show engine innodb status\G 3. Purge Thread
+事务被提交后，其所使用的undolog可能不再需要，Purge Thread可以回收已经使用并分配的undo页。
+从InnoDB 1.2版本开始，支持多个 Purge Thread, 从而加入undo页的回收；
+另外 Purge Thread 离散地读取 undo 页，可以利用磁盘的随机读取性能。
+mysql root@127.0.0.1:test&amp;gt; show variables like &amp;#39;innodb_purge_threads&amp;#39; \G ***************************[ 1.</description>
+    </item>
+    
     <item>
       <title>GA: 7. Dijkstra&#39;s algorithm</title>
       <link>/p/ga-7.-dijkstras-algorithm/</link>

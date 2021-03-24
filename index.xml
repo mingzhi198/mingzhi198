@@ -6,7 +6,323 @@
         <description>Recent content on Li. Mingzhi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Tue, 23 Mar 2021 15:00:52 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 24 Mar 2021 18:36:08 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>cp2. InnoDB</title>
+        <link>/p/cp2.-innodb/</link>
+        <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
+        
+        <guid>/p/cp2.-innodb/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇文件是我从这本书中的学习笔记: MySQL技术内幕（InnoDB存储引擎）.&lt;/li&gt;
+&lt;li&gt;非商业用途转载请注明出处，若要更详细了解书中内容，请参考原作。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;1-innodb体系结构&#34;&gt;1. InnoDB体系结构&lt;/h2&gt;
+&lt;p&gt;InnoDB存储引擎有多个内存块组成的一个大的内存池，负责如下工作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;维护所有进程/线程要访问的内部数据结构&lt;/li&gt;
+&lt;li&gt;缓存磁盘上的数据&lt;/li&gt;
+&lt;li&gt;重做日志(redo log)缓冲&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;11-后台线程&#34;&gt;1.1. 后台线程&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Master Thread&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;核心线程，负责将缓冲池中的数据异步刷新到磁盘，保证数据的一致性
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;IO Thread&lt;br&gt;
+InnoDB存储引擎大量使用了AIO（Async IO)来处理写IO请求；&lt;br&gt;
+InnoDB 1.0版本之前共有4个IO Thread: write, read, insert buffer and log IO thread&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;查看InnoDB中的 IO Thread:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-mysql&#34; data-lang=&#34;mysql&#34;&gt;&lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;kp&#34;&gt;engine&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;/post/mysql_innodb/images/innodb_io_thread.png&#34; alt=&#34;io_thrads&#34;  /&gt;&lt;br&gt;
+3. Purge Thread&lt;br&gt;
+事务被提交后，其所使用的undolog可能不再需要，Purge Thread可以回收已经使用并分配的undo页。&lt;br&gt;
+从InnoDB 1.2版本开始，支持多个 Purge Thread, 从而加入undo页的回收；&lt;br&gt;
+另外 Purge Thread 离散地读取 undo 页，可以利用磁盘的随机读取性能。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-mysql&#34; data-lang=&#34;mysql&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_purge_threads&amp;#39;&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_purge_threads&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;         &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;Page Cleaner Thread&lt;br&gt;
+作用：将之前版本中脏页的刷新操作放到单独的单纯中完成； 其目的是为了减轻原Master Thread的工作，&lt;br&gt;
+及对用户查询线程的阻塞，从而提高Innodb存储引擎的性能。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;12-内存&#34;&gt;1.2 内存&lt;/h3&gt;
+&lt;h4 id=&#34;1-缓冲池&#34;&gt;1. 缓冲池&lt;/h4&gt;
+&lt;p&gt;读操作：将从磁盘中读到的页放到缓冲池中，这一过程被称为将页‘FIX’到缓冲池中。&lt;br&gt;
+后面再读相同的页时，首先判断该页是否在缓冲池中，若被命中则读取，否则读取磁盘上的页。&lt;/p&gt;
+&lt;p&gt;写操作：首先修改缓冲池中的页，然后再以一定的频率刷新到磁盘上。&lt;br&gt;
+页从缓冲池到磁盘上的刷新操作是通过一种Checkpoint的机制操作的，以提高数据库的整体性能。&lt;/p&gt;
+&lt;p&gt;查看InnoDB存储引擎的缓冲池大学：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-mysql&#34; data-lang=&#34;mysql&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_buffer_pool_size&amp;#39;&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_buffer_pool_size&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;         &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;134217728&lt;/span&gt;
+
+&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;set&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;009&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;缓冲池中缓存的数据页类型：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;索引页&lt;/li&gt;
+&lt;li&gt;数据页&lt;/li&gt;
+&lt;li&gt;undo页&lt;/li&gt;
+&lt;li&gt;插入缓冲(insert buffer)&lt;/li&gt;
+&lt;li&gt;自适应哈希索引(adaptive hash index)&lt;/li&gt;
+&lt;li&gt;InnoDB存储的锁信息(lock info)&lt;/li&gt;
+&lt;li&gt;数据字典信息（data dictionary)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mysql_innodb/images/innodb_cache_objects.png&#34; alt=&#34;innodb_cache_obj&#34;  /&gt;&lt;/p&gt;
+&lt;p&gt;从 InnoDB 1.0.x开始，可以存在多个缓冲池实例，每个页根据哈希值平均分配到不同的缓冲池实例中，&lt;br&gt;
+进而减少了数据库内部的资源竞争，增加其并发处理能力。&lt;/p&gt;
+&lt;p&gt;我们可以通过 information_schema架构下的表 INNODB_BUFFER_POOL_STATS 来查看缓冲的状态：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-MySQL&#34; data-lang=&#34;MySQL&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;information_schema&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;select&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;POOL_ID&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;POOL_SIZE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;FREE_BUFFERS&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;DATABASE_PAG&lt;/span&gt;
+                                         &lt;span class=&#34;n&#34;&gt;ES&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_buffer_pool_stats&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;POOL_ID&lt;/span&gt;        &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;POOL_SIZE&lt;/span&gt;      &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8192&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;FREE_BUFFERS&lt;/span&gt;   &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;7207&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;DATABASE_PAGES&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;977&lt;/span&gt;
+
+&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;set&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;003&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;2-lru-list-free-list-和-flush-list&#34;&gt;2. LRU List, Free List 和 Flush List&lt;/h4&gt;
+&lt;p&gt;数据库中的缓冲池一般通过LRU（Latest Recent Used: 最新最近使用)算法来管理的：&lt;br&gt;
+最频繁使用的页在LRU列表的前端，当缓冲池不能存放新读取到的页时，将首先释放LRU列表尾端的页。&lt;/p&gt;
+&lt;p&gt;InnoDB的LRU列表中加入了 midpoint 位置：&lt;br&gt;
+新读取的页，并非直接放入LRU列表的首部，而是放到midpoint位置。此算法被称为 midpoint insertion strategy.&lt;br&gt;
+该默认位置在LRU列表长度的5/8处。&lt;/p&gt;
+&lt;p&gt;查看midpoint参数：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-mysql&#34; data-lang=&#34;mysql&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;information_schema&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_old_blocks_pct&amp;#39;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_old_blocks_pct&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;         &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;37&lt;/span&gt;
+
+&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;set&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;010&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;37表示新读取的页插入到LRU列表尾部37%的位置；在InnoDB存储引擎中，把midpoint后面的列表称为old列表，&lt;br&gt;
+之前的列表称为new列表。即new列表中的页都是最为活跃的热点数据。&lt;/p&gt;
+&lt;p&gt;为什么不将读取的页放到LRU列表首部？&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;若直接将读取的页放到LRU首部，则某些SQL操作会使缓冲池中的页被刷新出，从而影响缓冲池的效率。
+如:索引或数据的扫描操作。
+若大量的非活跃操作被放入LRU列表的首部，则会把热点数据页从LRU列表中移除，从而导致InnoDB在下一次读取该页时再次访问磁盘。
+
+InnoDB存储引擎引入了 innodb_old_blocks_time， 用于表示页读取到 midpoint 位置后，需要等多久才会被加入到LRU列表的热端，从而尽可能使得LRU列表中的热点数据不被刷出。
+
+若用户预估活跃的热点数据不止63（100－37），可以执行下面的语句来减少热点页被刷出的概率:
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;SET GLOBAL innodb_old_blocks_pct=20;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;LRU列表创建流程：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1. LRU列表在DB刚启动时是空的，页都存放在Free列表中
+2. 当需要从缓冲池中分页时，从Free列表中查找是否有可用的空闲页
+3. 若有则将该页从Free列表中删除，放到LRU列表中
+4. 否则根据LRU算法，淘汰LRU列表末尾的页，将该内存空间分配给新页
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;当页从LRU列表的old部分加入到new部分时，此时发生的操作被称为 page made young； 而因为innodb_old_blocks_time的设置而导致没有从old部分移动到new部分的操作被称为page not made young。&lt;/p&gt;
+&lt;p&gt;查看LRU列表及Free列表的状态:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;SHOW ENGINE INNODB STATUS \G&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-mysql&#34; data-lang=&#34;mysql&#34;&gt;&lt;span class=&#34;o&#34;&gt;--------------------&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;--
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;BUFFER POOL AND MEMORY
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;--------------------&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;--
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;Total large memory allocated 136970240
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Dictionary&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;memory&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;allocated&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;424766&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;size&lt;/span&gt;   &lt;span class=&#34;mi&#34;&gt;8192&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Free&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffers&lt;/span&gt;       &lt;span class=&#34;mi&#34;&gt;7208&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;Database&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;     &lt;span class=&#34;mi&#34;&gt;977&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Old&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;database&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;380&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Modified&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;db&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;  &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Pending&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;reads&lt;/span&gt;      &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Pending&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;writes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;LRU&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;list&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;single&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;page&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Pages&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;made&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;young&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;young&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;00&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;youngs&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;00&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;non&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;youngs&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Pages&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;read&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;835&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;created&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;142&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;written&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;160&lt;/span&gt;
+&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;00&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;reads&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;00&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;creates&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;00&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;writes&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;hit&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;rate&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1000&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1000&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;young&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;making&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;rate&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1000&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1000&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Pages&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;read&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ahead&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;00&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;evicted&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;without&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;access&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;00&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Random&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;read&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ahead&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;00&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;LRU&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;977&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;unzip_LRU&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;I&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;O&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cur&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;unzip&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cur&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当前Buffer pool size共有 8192 个页，即 8192 *16K=128M, 共128MB的缓冲池。&lt;br&gt;
+Free buffers 表示当前 Free 列表中页的数量，&lt;br&gt;
+Database pages 表示 LRU 列表中页的数量。&lt;br&gt;
+Free buffers + Database pages 并不等于 Buffer pool size：&lt;br&gt;
+因为缓冲池中的页还可能会被分配给其它页： 自适应哈希索引、 Lock信息、 Insert Buffer等。&lt;br&gt;
+这些页不需要LRU算法维护，因此不存在于LRU列表中。&lt;/p&gt;
+&lt;p&gt;pages made young: LRU列表中页移动到前端的次数&lt;br&gt;
+youngs/s, non-youngs/s表示每秒这两人类操作的次数。&lt;br&gt;
+Buffer pool hit rate: 缓冲率的命中率，上面例子中为100％，表示缓冲池运行状态良好。通过该值不应小于95%.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;若发生其值小于95％，则需要观察是否是由于全表扫描引起的LRU列表被污染的问题。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;InnoDB从 1.0.x 开始支持压缩页的功能，将原来16KB的页压缩为 1KB、2KB、4KB 和 8KB。&lt;br&gt;
+通过 unzip_LRU 列表来管理 非 16KB 的页。但 LRU中的页是包含了 unzip_LRU列表中的页的。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;unzip_LRU如何从缓冲池中分配内存?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;unzip_LRU对不同大小的压缩页的分别管理；&lt;br&gt;
+通过伙伴算法进行内存的分配。&lt;br&gt;
+例如从缓冲池中申请 4KB 大小的页&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1. 检查 4KB 的 unzip_LRU 列表
+2. 若有， 则直接使用
+3. 否则， 检查 8KB 的 unzip_LRU 列表
+4. 若得到空闲页，则将页分布 2 个 4KB 页，存放到 4KB 的 unzip_LRU 列表
+5. 否则，从 LRU 列表中申请一个 16KB 的页，将页分为 1 个 8KB、2 个 4KB 的页，分别放到对应的 unzip_LRU 列表中。
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;脏页(dirty page)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;在LRU列表中的页被修改后，被称为脏页，即缓冲池中的页和磁盘上的页的数据产生了不一致。
+DB会通过 Checkpoint 机制将脏页刷新到磁盘；
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;而 Flush 列表中的页为 脏页列表&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;LRU 列表管理缓冲池中页的可用性；Flush 列表用来管理将页刷新回磁盘， 二者互不影响。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;上面 INNODB_BUFFER_PAGE_LRU 中的 Modified db pages 显示了脏页的数量。&lt;/p&gt;
+&lt;h4 id=&#34;3-重做日志缓冲redo-log-buffer&#34;&gt;3. 重做日志缓冲(redo log buffer)&lt;/h4&gt;
+&lt;p&gt;InnoDB存储引擎先将重做日志信息放入重做日志缓冲区，再按一定频率将其刷新到重做日志文件。&lt;br&gt;
+用户只要保证每秒产生的事务量不超过缓冲区大小即可，因为InnoDB一般会每一秒将重做日志缓冲刷新到日志文件。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;查看重做日志缓冲区大小&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-MySQL&#34; data-lang=&#34;MySQL&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_log_buffer_size&amp;#39;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_log_buffer_size&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;         &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;16777216&lt;/span&gt;
+
+&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;set&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;006&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;一般 8～16MB 的重做日志缓冲池足以满足大部分的应用。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;重做日志缓冲刷新到磁盘重做日志的三种情况：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Master Thread 每一秒           将重做日志缓冲刷新到重做日志文件&lt;/li&gt;
+&lt;li&gt;每个事务提交时会                 将重做日志缓冲刷新到重做日志文件&lt;/li&gt;
+&lt;li&gt;当重做日志缓冲池剩余空间小于1/2时， 将重做日志缓冲刷新到重做日志文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;4-额外的内存池&#34;&gt;4. 额外的内存池&lt;/h4&gt;
+&lt;p&gt;InnoDB通过 内存堆(heap) 对内存进行管理；&lt;br&gt;
+在对一些数据结构本身的内存进行分配时，需要从 &lt;!-- raw HTML omitted --&gt;[额外的内存池]&lt;!-- raw HTML omitted --&gt; 中进行申请，&lt;br&gt;
+当&lt;!-- raw HTML omitted --&gt; 该区域&lt;!-- raw HTML omitted --&gt; 的内存不够时，会从缓冲池中进行申请。&lt;br&gt;
+例如，分配了缓冲池(innodb_buffer_pool)，&lt;br&gt;
+每个缓冲池中的&lt;!-- raw HTML omitted --&gt;帧缓冲(frame buffer)&lt;!-- raw HTML omitted --&gt;和对应的 &lt;!-- raw HTML omitted --&gt;缓冲控制对象(buffer control block)&lt;!-- raw HTML omitted --&gt;，&lt;br&gt;
+这些对象记录了 LRU， 锁， 等待信息；而这个对象的内存需要从&lt;!-- raw HTML omitted --&gt;[额外内存池]&lt;!-- raw HTML omitted --&gt;中申请。&lt;br&gt;
+故在申请了很大的InnoDB缓冲池时，应相应增加该值。&lt;/p&gt;
+&lt;h2 id=&#34;2-checkpoint技术&#34;&gt;2 Checkpoint技术&lt;/h2&gt;
+&lt;p&gt;缓冲池的设计目的是为了协调CPU速度与磁盘速度的鸿沟，因此页的操作是先在缓冲池中完成的。&lt;br&gt;
+为了避免宕机导致的缓冲池数据丢失的问题，事务数据库系统采用了 Write Ahead Log 策略：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;当事务提交时，先写重做日志，再修改页。&lt;br&gt;
+当数据丢失时，通过重做日志来完成数据所恢复。这就是事务ACID中的D（Durability持久性)的要求。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Checkpoint的目的是解决以下几个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;缩短数据库的恢复时间&lt;/li&gt;
+&lt;li&gt;缓冲池不够用时，将脏页刷新到磁盘&lt;/li&gt;
+&lt;li&gt;重做日志不可时，刷新脏页&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;数据库只需对 Checkpoint 后的重做日志进行恢复，这样大缩短了恢复时间。&lt;br&gt;
+当缓冲区不够用时，根据LRU算法会溢出最近最少使用的页，若此页为脏页，则强制执行 Checkpoint, 将脏页刷新到磁盘。&lt;br&gt;
+重做日志不可用是因为当前事务数据库系统对重做日志的设计是循环使用的，并非无限增长的。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;重做日志可以被重用的部分是指这些日志已经不再需要，若数据库宕机，数据库恢复操盘不需要这部分的重做日志，因此这部分可以被覆盖重用。&lt;br&gt;
+若宕机时重做日志还需要使用，则强制产生 Checkpoint, 将缓冲池中的页至少刷新到当前重做日志的位置。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;InnoDB是通过 LSN(Log Sequence Number)来票房版本的，LSN 是8字节的数字，其单位是字节。&lt;br&gt;
+第个页、重做日志、和 Checkpoint 都有 LSN。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;通过命令 SHOW ENGINE INNODB STATUS 查看 LSN：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-MySQL&#34; data-lang=&#34;MySQL&#34;&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;--
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;LOG
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;--
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;Log sequence number          3723483701
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;assigned&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;up&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;to&lt;/span&gt;    &lt;span class=&#34;mi&#34;&gt;3723483701&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;completed&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;up&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;to&lt;/span&gt;   &lt;span class=&#34;mi&#34;&gt;3723483701&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;written&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;up&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;to&lt;/span&gt;            &lt;span class=&#34;mi&#34;&gt;3723483701&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Log&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flushed&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;up&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;to&lt;/span&gt;            &lt;span class=&#34;mi&#34;&gt;3723483701&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Added&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;up&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;to&lt;/span&gt;      &lt;span class=&#34;mi&#34;&gt;3723483701&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Pages&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flushed&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;up&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;to&lt;/span&gt;          &lt;span class=&#34;mi&#34;&gt;3723483701&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Last&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;checkpoint&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;at&lt;/span&gt;           &lt;span class=&#34;mi&#34;&gt;3723483701&lt;/span&gt;
+&lt;span class=&#34;mi&#34;&gt;13&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;log&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;o&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;s done, 0.00 log i/o&amp;#39;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;second&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;两种 Checkpoint:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Sharp Checkpoint&lt;br&gt;
+Sharp Checkpoint是默认的工作方式：在数据库关闭时，将所有的脏页都刷新到磁盘。&lt;br&gt;
+参数 innodb_fast_shutdown=1。&lt;br&gt;
+但若在数据库运行时使用 Sharp Checkpoint, 会大大影响数据库的可用性。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fuzzy Checkpoint&lt;br&gt;
+InnoDB存储引擎内部使用 Fuzzy Checkpoint 进行页的刷新: 只刷新一部分脏页到磁盘。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;InnoDB中的几种 Fuzzy Checkpoint:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Master Thread Checkpoint&lt;br&gt;
+以将近每秒或每十秒的速度从缓冲池的脏页列表中刷新一定比例的页到磁盘，此过程是异步的，用户查询线程不会阻塞。&lt;/li&gt;
+&lt;li&gt;FLUSH_LRU_LIST Checkpoint&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;InnoDB存储引擎需要保证LRU列表中需要有将近100个空闲页可供使用。
+在InnoDB 1.1.x版本之前，需要检查 LRU 列表中是否有足够的可用空间操作发生的用户查询线程中，这会阻塞用户的查询操作；
+若没有100个可用的空闲页，InnoDB会将 LRU 列表尾端的页移除。
+若这些页中有脏页，则需要进行 Checkpoint, 而这些页是来自 LRU列表的，因此称为 FLUSH_LRU_LIST.
+
+在 InnoDB 1.2.x版本开始，该检查被放在了一个单独的 Page Cleaner 线程中进行，
+用户可以通过 innodb_lru_scan_depth 控制 LRU列表中可用页的数量，默认值为1024。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Async/Sync Flush Checkpoint&lt;br&gt;
+重做日志不可用时，需要强制将一些页刷新到磁盘，此时脏页是从脏页列表中选取的。&lt;br&gt;
+若将已经写入重做日志的LSN记为 redo_lsn, 已经刷新到到磁盘最新页的LSN记录为 checkpoint_lsn, 则：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;checkpoint_age = redo_lsn - checkpoint_lsn&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;再定义以下变量:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;async_water_mark = 75% * total_redo_log_file_size&lt;br&gt;
+sync_water_mark  = 90% * total_redo_log_file_size&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;若每个重做文件的大小为1G，且定义了两个重做日志文件，则重做日志文件的总大小为2GB；
+因此 async_water_mark = 1.5GB, sync_water_mark = 1.8GB，则:
+1. 若 checkpoint_age &amp;lt; async_water_mark, 不需要刷新脏页到磁盘
+2. 若 async_water_mark &amp;lt; checkpoint_age &amp;lt; sync_water_mark, 则触发 Async Flush,
+从Flush列表中刷新足够的脏页到磁盘，使用刷新后满足 checkpoint_age &amp;lt; async_water_mark.
+3. 若 checkpoint_age &amp;gt; sync_water_mark, 此场景很少发生，除非设置的重做日志文件太小，且在进行 LOAD DATA 的 BULK INSERT 操作。此时触发 Sync Flush操作，使用刷新后满足 checkpoint_age &amp;lt; async_water_mark。
+
+从InnoDB 1.2.x版本开始， 这部分刷新操作也放到了单独的 Page Cleaner Thread中，故不会阻塞查询线程。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Dirty Page too much Checkpoint&lt;br&gt;
+脏页的数量太多导致Checkpoint，保证缓冲池中有足够可用的页。&lt;br&gt;
+控制参数：innodb_max_dirty_pages_pct&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-MySQL&#34; data-lang=&#34;MySQL&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_max_dirty_pages_pct&amp;#39;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_max_dirty_pages_pct&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;         &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;90&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;000000&lt;/span&gt;
+
+&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;set&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;010&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Value为90表示：当缓冲池中脏页的数量占据90%时，强制进行 Checkpoint, 刷新部分脏页到磁盘。&lt;/p&gt;
+&lt;h2 id=&#34;3-master-thread-工作方式&#34;&gt;3. Master Thread 工作方式&lt;/h2&gt;
+</description>
+        </item>
+        <item>
         <title>Algorithm: 3. Reverse Linked List</title>
         <link>/p/algorithm-3.-reverse-linked-list/</link>
         <pubDate>Tue, 23 Mar 2021 15:00:52 +0800</pubDate>
