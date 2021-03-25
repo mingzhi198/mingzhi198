@@ -2,31 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>/tags/algorithm/</loc>
-    <lastmod>2021-03-24T18:36:08+08:00</lastmod>
-  </url><url>
     <loc>/categories/</loc>
     <lastmod>2021-03-24T18:36:08+08:00</lastmod>
   </url><url>
     <loc>/p/cp2.-innodb/</loc>
     <lastmod>2021-03-24T18:36:08+08:00</lastmod>
   </url><url>
-    <loc>/categories/grokking_algorithm/</loc>
+    <loc>/tags/innodb/</loc>
     <lastmod>2021-03-24T18:36:08+08:00</lastmod>
   </url><url>
     <loc>/</loc>
     <lastmod>2021-03-24T18:36:08+08:00</lastmod>
   </url><url>
-    <loc>/post/</loc>
+    <loc>/tags/mysql/</loc>
     <lastmod>2021-03-24T18:36:08+08:00</lastmod>
   </url><url>
-    <loc>/tags/recursion/</loc>
+    <loc>/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</loc>
+    <lastmod>2021-03-24T18:36:08+08:00</lastmod>
+  </url><url>
+    <loc>/post/</loc>
     <lastmod>2021-03-24T18:36:08+08:00</lastmod>
   </url><url>
     <loc>/tags/</loc>
     <lastmod>2021-03-24T18:36:08+08:00</lastmod>
   </url><url>
     <loc>/categories/algorithm/</loc>
+    <lastmod>2021-03-23T15:00:52+08:00</lastmod>
+  </url><url>
+    <loc>/tags/algorithm/</loc>
     <lastmod>2021-03-23T15:00:52+08:00</lastmod>
   </url><url>
     <loc>/p/algorithm-3.-reverse-linked-list/</loc>
@@ -164,6 +167,9 @@
     <loc>/p/ga-7.-dijkstras-algorithm/</loc>
     <lastmod>2020-12-13T23:44:52+08:00</lastmod>
   </url><url>
+    <loc>/categories/grokking_algorithm/</loc>
+    <lastmod>2020-12-13T23:44:52+08:00</lastmod>
+  </url><url>
     <loc>/tags/bfs/</loc>
     <lastmod>2020-12-10T23:02:27+08:00</lastmod>
   </url><url>
@@ -195,6 +201,9 @@
     <lastmod>2020-12-09T08:32:27+08:00</lastmod>
   </url><url>
     <loc>/p/ga-3.-recursion/</loc>
+    <lastmod>2020-12-08T18:36:08+08:00</lastmod>
+  </url><url>
+    <loc>/tags/recursion/</loc>
     <lastmod>2020-12-08T18:36:08+08:00</lastmod>
   </url><url>
     <loc>/tags/git/</loc>

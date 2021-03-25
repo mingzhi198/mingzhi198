@@ -320,6 +320,514 @@ sync_water_mark  = 90% * total_redo_log_file_size&lt;/p&gt;
 &lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;010&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Value为90表示：当缓冲池中脏页的数量占据90%时，强制进行 Checkpoint, 刷新部分脏页到磁盘。&lt;/p&gt;
 &lt;h2 id=&#34;3-master-thread-工作方式&#34;&gt;3. Master Thread 工作方式&lt;/h2&gt;
+&lt;p&gt;ＩnnoDB存储引擎的主要工作都是在一个单独的后台线程Master Thread中完成的。&lt;/p&gt;
+&lt;h3 id=&#34;31-ｉnnodb-10x版本之前的master-thread&#34;&gt;3.1 ＩnnoDB 1.0.x版本之前的Master Thread&lt;/h3&gt;
+&lt;p&gt;Master Thread 具有最高的线程优先级别，内部由多个循环(loop)组成:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;主循环(loop)&lt;/li&gt;
+&lt;li&gt;后台循环(background loop)&lt;/li&gt;
+&lt;li&gt;刷新循环(flush loop)&lt;/li&gt;
+&lt;li&gt;暂停循环(suspend loop)&lt;br&gt;
+Master Thread会根据数据库运行状态在这些循环中进行切换。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;311-主循环loop&#34;&gt;3.1.1 主循环(loop)&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;大多数的操作是在这个循环中，其中有两大部分的操作: 每秒钟和每10秒的操作。&lt;br&gt;
+Loop循环是通过thread sleep来实现，这意味着不精确的操作在负载大的情况下会有延迟。&lt;br&gt;
+但InnoDB通过其它方法来尽量保证这个频率。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;每秒一次的操作包括：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;日志缓冲刷新到磁盘，即使这个事务还未提交（总是）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;即使某个事务还未提交，InnoDB存储引擎仍然会每秒将重做日志缓冲中的内容刷新到重做日志文件；
+所以再大的事务提交的时间也是很短的。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;合并插入缓冲(可能)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;合并插入缓冲(Insert Buffer)并不是每秒都会发生的；InnoDB会判断当前一秒内发生的IO次数是否小于5次，
+若小于5次，InnoDB认为当前的IO压力很小，可以执行合并插入缓冲的操作。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;至多刷新100个InnoDB的缓冲池中的脏页到磁盘(可能)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;InnoDB存储引擎通过判断当前缓冲池中脏页的比例(buf_get_modified_ratio_pct)是否超过了配置文件中innodb_max_dirty_pages_pct这个参数(默认为90％)；
+若超过了这个阈值，则需要将100个脏页到磁盘中。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;如果当前无用户活动，则切换到background loop(可能)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;每10秒的操作：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;刷新100个脏页到磁盘(可能的情况下)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;合并至多5个插入缓冲(总是)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;将日志缓冲刷新到磁盘（总是）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;删除无用的Undo页(总是)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;刷新100个或10个脏页到磁盘(总是)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;若过去10秒内磁盘的IO操作是否小于200，则InnoDB认为当前有足够的磁盘IO操作能力，因此将100个脏页刷新到磁盘；&lt;br&gt;
+然后InnoDB会合并插入缓冲，这次的合并插入缓冲操作总是会在这个阶段进行。&lt;br&gt;
+之后，InnoDB会进行一次将日志缓冲刷新到磁盘的操作。&lt;br&gt;
+接着InnoDB会执行full purge操作: 删除无用的Undo页;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;对表进行update、delete操作时，原先的行被标记为删除, 但为了一致性读的关系(consistent read),需要保留这些行的版本信息。
+但在full purge过程中，InnoDB会判断当前事务系统中已被删除的行是否可以被删除（比如有时会有查询操作需要读取之前版本的undo信息），若是，则InnoDB会立即将其删除。
+InnoDB在执行pull purge时，每次最多尝试回收20个undo页。
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;然后，InnoDB会判断缓冲池中脏页的比例(buf_get_modified_ratio_pct), 若有超过70％的脏页，则刷新100个脏页到磁盘； 否则只需刷新10％的脏页到磁盘。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;312-background-loop&#34;&gt;3.1.2 background loop&lt;/h4&gt;
+&lt;p&gt;若当前无用户活动(数据库空闲时)或数据库关闭(shutdown),则会切换到这个循环。&lt;br&gt;
+background loop会执行以下操作:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;删除无用的Undo页(总是)&lt;/li&gt;
+&lt;li&gt;合并20个插入缓冲(总是)&lt;/li&gt;
+&lt;li&gt;跳回到主循环(总是)&lt;/li&gt;
+&lt;li&gt;不断刷新100个页直到符合条件(可能，跳到flush loop中完成)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;若flush loop中也无事可做，InnoDB会切换到suspend_loop, 将 Master Thread 挂起，等等事件的发生。&lt;br&gt;
+若用户启用了InnoDB存储引擎，但没有使用任何InnoDB存储引擎的表，则 Master Thread 将问题处于挂起状态。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;master thread 完整伪代码:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;master_thread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(){&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;nl&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;thread_sleep&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;log&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;to&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;disk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;last_one_second_ios&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;at&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;most&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;insert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;buf_get_modified_ratio_pct&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_max_dirty_pages_pct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;no&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;user&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;activity&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;background&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+  &lt;span class=&#34;c1&#34;&gt;// do things once per ten second;
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;last_ten_seconds_ios&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;200&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;at&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;most&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;insert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;log&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;to&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;disk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;full&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;purge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;buf_get_modified_ratio_pct&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;70&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;background&lt;/span&gt; &lt;span class=&#34;nl&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;full&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;purge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;insert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffers&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;idle&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;nl&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;buf_get_modified_ratio_pct&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_max_dirty_pages_pct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+  &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;suspend&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;suspend&lt;/span&gt; &lt;span class=&#34;nl&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+  &lt;span class=&#34;n&#34;&gt;suspend_thread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+  &lt;span class=&#34;n&#34;&gt;waiting&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;events&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;32-innodb-12x版本之前的-master-thread&#34;&gt;3.2 InnoDB 1.2.x版本之前的 Master Thread&lt;/h3&gt;
+&lt;p&gt;在 1.0.x之前的Master Thread实现中，InnoDB对于IO是有限制的: 在缓冲池向磁盘刷新时做了一定的硬编码(hard coding)。&lt;br&gt;
+但这种限制限制了InnoDB对（SSD）磁盘IO的性能，尤其是写入性能。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;伪代码显示，InnoDB最大只会刷新100个脏页到磁盘，合并20个插入缓冲。
+但在写入密集型的应用中，每秒会产生大于100个的脏页，和大于20个的插入缓冲，此时Master Thread将会很慢。
+同时，若从宕机中恢复时，由于大量数据未刷新到磁盘，会导致恢复的时间太久；尤其是insert buffer。
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;321-innodb_io_capacity&#34;&gt;3.2.1 innodb_io_capacity&lt;/h4&gt;
+&lt;p&gt;但在InnoDB Pluin(InnoDB1.0.x版本开始)中提供了参数 innodb_io_capacity,其表示磁盘IO的吞吐时不时，默认值为200。&lt;br&gt;
+要刷新到磁盘的页的数量，根据 innodb_io_capacity 的百分比来进行控制：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在合并插入缓冲时，合并插入缓冲的数量为 innodb_io_capacity 值的 5％&lt;/li&gt;
+&lt;li&gt;在从缓冲区刷新脏页时，刷新脏页的数量为 innodb_io_capacity&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;若用户使用了高性能磁盘，可以调高 innodb_io_capacity的值，使其符合磁盘IO的吞吐量。&lt;/p&gt;
+&lt;h4 id=&#34;322-innodb_max_dirty_pages_pct&#34;&gt;3.2.2 innodb_max_dirty_pages_pct&lt;/h4&gt;
+&lt;p&gt;另外，innodb_max_dirty_pages_pct 的默认值在 InnoDB 1.0.x 版本之前是90，有点太大了；&lt;br&gt;
+InnoDB在每秒刷新缓冲池和flush loop时会判断该值，若该值大于innodb_max_dirty_pages_pct，才刷新100个脏页，&lt;br&gt;
+若有很大的内存或数据库服务器的压力过大，此时刷新脏页的速度反而会下降；同时宕机恢复阶段会耗时更久。&lt;br&gt;
+经过测试， innodb_max_dirty_pages_pct默认值变为了75；这样即加快了刷新脏页的频率，又保证了磁盘IO的负载。&lt;/p&gt;
+&lt;h4 id=&#34;323-innodb_adaptive_flushing自适应地刷新&#34;&gt;3.2.3 innodb_adaptive_flushing（自适应地刷新)&lt;/h4&gt;
+&lt;p&gt;该值影响每秒刷新脏页的数量，InnoDB会通过一个 buf_flush_get_desired_flush_rate 函数来判断需要刷新脏页最合适的数量。&lt;br&gt;
+buf_flush_get_desired_flush_rate 通过判断产生重做日志的速度来决定最合适的刷新脏页数量。&lt;br&gt;
+因此，当脏页在缓冲池中的比例小于 innodb_max_dirty_pages_pct 时，也会刷新一定量的脏页。&lt;/p&gt;
+&lt;h4 id=&#34;324-innodb_purge_batch_size&#34;&gt;3.2.4 innodb_purge_batch_size&lt;/h4&gt;
+&lt;p&gt;该参数控制每次full purge回收的Undo页的数量，其默认值为20，可以动态地对其进行修改。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-MySQL&#34; data-lang=&#34;MySQL&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_max_dirty_pages_pct&amp;#39;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_max_dirty_pages_pct&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;         &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;90&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;000000&lt;/span&gt;
+
+&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;set&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;010&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_purge_batch_size&amp;#39;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_purge_batch_size&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;         &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;300&lt;/span&gt;
+
+&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;set&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;009&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;set&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;global&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_purge_batch_size&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;500&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Query&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;OK&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;rows&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;affected&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;000&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从 InnoDB 1.0.x 版本开始， Master Thread 的伪代码会变为：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;master_thread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(){&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;nl&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;thread_sleep&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;log&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;to&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;disk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;last_one_second_ios&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_io_capacity&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_io_capacity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;insert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;buf_get_modified_ratio_pct&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_max_dirty_pages_pct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_io_capacity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;enable&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;adaptive_flush&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;desired&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;amount&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;no&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;user&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;activity&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;background&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+  &lt;span class=&#34;c1&#34;&gt;// do things once per ten second;
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;last_ten_seconds_ios&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_io_capacity&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_io_capacity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_io_capacity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;insert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;log&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;to&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;disk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;full&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;purge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;buf_get_modified_ratio_pct&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;70&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_io_capacity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_io_capacity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;background&lt;/span&gt; &lt;span class=&#34;nl&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;full&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;purge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_io_capacity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;insert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffers&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;idle&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+      &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;nl&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pool&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;100&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_io_capacity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dirty&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pages&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;buf_get_modified_ratio_pct&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_max_dirty_pages_pct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flush&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;suspend&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;suspend&lt;/span&gt; &lt;span class=&#34;nl&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+  &lt;span class=&#34;n&#34;&gt;suspend_thread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+  &lt;span class=&#34;n&#34;&gt;waiting&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;events&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+  &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;查看 master thread 的状态&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mysql_innodb/images/master_thread_status_1.0.x.png&#34; alt=&#34;master_thread_status_1.0.x&#34;  /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;45 1_second：  主循环进行了45次
+45 sleeps:    每秒挂起的操作进行了45次，说明负载不大
+4 10_second:  10秒一次的活动进行了4次，符合 1:10.
+6 background: background loop 进行了6次
+6 flush:      flush loop也进行了6次
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;33-innodb-12x版本的-master-thread&#34;&gt;3.3 InnoDB 1.2.x版本的 Master Thread&lt;/h3&gt;
+&lt;p&gt;InnoDB 1.2.x再次对 Master Thread 进行了优化。&lt;br&gt;
+伪代码&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;InnoDB&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;idle&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+  &lt;span class=&#34;n&#34;&gt;srv_master_do_idle_tasks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;     &lt;span class=&#34;c1&#34;&gt;// 之前版本中每10秒的操作
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+  &lt;span class=&#34;n&#34;&gt;srv_master_do_active_tasks&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;   &lt;span class=&#34;c1&#34;&gt;// 之前每秒中的操作
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;srv_master_do_idle_tasks() 是之前版本中每10秒的操作，&lt;br&gt;
+srv_master_do_active_tasks() 是之前每秒中的操作，&lt;br&gt;
+同时对于刷新脏页的操作，从 Master Thread 线程分享到一个单独的 Page Cleaner Thread，&lt;br&gt;
+从而减轻了 Master Thread 的工作，提高了系统的并发性。&lt;/p&gt;
+&lt;h2 id=&#34;4-innodb-关键特性&#34;&gt;4. InnoDB 关键特性&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;插入缓冲(Insert Buffer)&lt;/li&gt;
+&lt;li&gt;两次写(Double Write)&lt;/li&gt;
+&lt;li&gt;自适应哈希索引(Adaptive Hash Index)&lt;/li&gt;
+&lt;li&gt;异步IO(Async IO)&lt;/li&gt;
+&lt;li&gt;刷新邻接页(Flush Neighbor Page)&lt;br&gt;
+上述特性为InnoDB存储引擎带来更好的性能和可靠性。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;41-插入缓冲&#34;&gt;4.1 插入缓冲&lt;/h3&gt;
+&lt;h4 id=&#34;1-insert-buffer&#34;&gt;1. Insert Buffer&lt;/h4&gt;
+&lt;p&gt;Insert Buffer 和数据页一样，是物理页的一个组成部分。&lt;br&gt;
+在InnoDB中，主键是行唯一的标识符，行记录的插入顺序是按主键递增的顺序进行插入的；&lt;br&gt;
+因此插入聚集索引(Primary Key)是按顺序的，不需要磁盘的随机读取。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;但若主键类是 UUID 这样的类，则插入和辅助索引一样，都是随机的&lt;br&gt;
+若插入的自增主键是指定的值，而不是NULL，则也可能导致非连续插入。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;若数据表中有一个非唯一聚集索引，则在进行插入操作时，数据页的存放还是按主键进行顺序存放的，&lt;br&gt;
+但是对于非聚集索引叶子节点的插入不是顺序的，这时需要离散地访问非聚集索引页，&lt;br&gt;
+由于随机读取的存在导致了插入操作的性能下降。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在某些情况下，辅助索引的插入是(比较)顺序的，如时间字段。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;对于非聚集索引的插入和更新操作，并非每次都直接插入到索引中，而是先判断插入的非聚集索引页是否在缓冲池中，&lt;br&gt;
+若在，则直接插入；否则先放入到一个 Insert Buffer 对象中。&lt;br&gt;
+然后以一定的频率和情况进行 Insert Buffer 和 辅助索引叶子节点的 merge 操作，&lt;br&gt;
+通过将多个插入合并到一个操作中，大大提高了非聚集索引的插入性能。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Insert Buffer 的使用需要同时满足以下两个条件:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;索引是辅助索引 (secondary index)&lt;/li&gt;
+&lt;li&gt;索引不是唯一的 (not unique)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;但若程序进行大量的插入操作，且都涉及了不唯一的非聚集索引(使用了 Insert Buffer)，若此时数据库宕机，&lt;br&gt;
+会有大量的 Insert Buffer 未合并到非聚集索引中去，此时恢复时间会很长。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;辅助索引不能是唯一的， 因为在插入缓冲时，数据库并不去查找索引页来判断插入记录的唯一性一。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mysql_innodb/images/insert_buffer_status.png&#34; alt=&#34;insert_buffer_status&#34;  /&gt;&lt;br&gt;
+上图中显示了插入缓冲的状态信息：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;seg size:       当前 Insert Buffer 的大小为11336 x 16KB = 177MB
+free list len:  空闲列表的长度
+size：          已经合并记录页的数量
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;黑体部分第2行显示了插入性能的提高:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;inserts：      插入的记录数
+merged recs:  合并的插入记录数
+merges:       合并的次数，即实际读取页的次数
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;merges : merged recs 大约为 1:3, 表示插入缓冲将对于非聚集索引页的离散IO逻辑请求大约降低了2/3。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Insert Buffer存在一个问题：在写密集的情况下，插入缓冲会战胜过多的缓冲池内存(innodb_buffer_pool),&lt;br&gt;
+默认最大可占用1/2的缓冲池内存。这将对其它操作带来一定的影响。&lt;br&gt;
+修改 IBUF_POOL_SIZE_PER_MAX_SIZE 可对插入缓冲的大小进行控制，如将其值改为3，则最大用1/3的缓冲池内存。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;2-change-buffer&#34;&gt;2. Change Buffer&lt;/h4&gt;
+&lt;p&gt;InnoDB 从1.0.x开始引入了 Change Buffer, 可以对 DML操作(INSERT, DELETE, UPDATE)都进行缓冲: Insert Buffer, Delete Buffer, Purge Buffer。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Change Buffer适用的对象也是非唯一的辅助索引&lt;br&gt;
+对一条记录的UPDATE操作分为两个过程:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;将记录票房为已删除&lt;/li&gt;
+&lt;li&gt;真正将记录删除&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Delete Buffer 对应UPDATE操作的第一个过程: 将记录标记为删除&lt;br&gt;
+Purge Buffer 对应UPDATE操作的第二个过程: 将记录真正地删除&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;1-innodb_change_buffering-参数&#34;&gt;1. innodb_change_buffering 参数&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;参数 innodb_change_buffering 用来开发各种Buffer的选项: inserts, deletes, purges, changes, all, none。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;inserts, deletes, purges 为前面讨论过的三种情况，&lt;br&gt;
+changes 表示启用inserts 和 deletes&lt;br&gt;
+all 表示启用所有&lt;br&gt;
+none表示都不启用&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;该参数默认值为 all&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;2-innodb_change_buffer_max_size-参数&#34;&gt;2. innodb_change_buffer_max_size 参数&lt;/h5&gt;
+&lt;p&gt;参数 innodb_change_buffer_max_size 用来控制 Change Buffer 可使用的最大内存数量&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-MySQL&#34; data-lang=&#34;MySQL&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_change_buffer_max_size&amp;#39;&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_change_buffer_max_size&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;         &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;25&lt;/span&gt;
+
+&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;set&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;011&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;默认值为25，表示最多使用1/4的缓冲池内存空间，该参数的最大有效值为50&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;通过命令 SHOW ENGINE INNODB STATUS 查看状态：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;-------------------------------------
+INSERT BUFFER AND ADAPTIVE HASH INDEX
+-------------------------------------
+Ibuf: size 1, free list len 3078, seg size 3080, 0 merges
+merged operations:
+ insert 0, delete mark 0, delete 0
+discarded operations:
+ insert 0, delete mark 0, delete 0
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;merged operations 和 discard operations 下面显示 Change Buffer 中每个操作的次数:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;insert 表示 Insert Buffer
+delete mark 表示 Delete Buffer
+delete 表示 Purge Buffer
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;discard operations 表示当Change Buffer 发生 merge 时，表已经被删除，无需将记录 merge 到辅助索引中。&lt;/p&gt;
+&lt;h4 id=&#34;3-insert-buffer-的内部实现&#34;&gt;3. Insert Buffer 的内部实现&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;Insert Buffer的数据结构是一棵B+树。&lt;br&gt;
+在MySQL4.1之前的版本中，每张表都有一棵Insert Buffer B+树； 但在现在的版本中，只有一棵全局Insert Buffer B+树，负责对所有的表的辅助索引进行Insert Buffer。&lt;br&gt;
+这棵B+树位于共享表空间中，默认为 ibdata1中。&lt;br&gt;
+因此，若试图通过独立表空间ibd文件恢复表中数据是地，会导致 CHECK TABLE 失败，因为表的辅助索引中的数据可能还在 Insert Buffer中，所以对 ibd 文件进行恢复后，还要进行 REPAIR TABLE 操作来重建表上的所有辅助索引。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Insert Buffer 的 B+村中，非叶子节点存放的是查询键值(search key)， 构造如下图:&lt;br&gt;
+&lt;img src=&#34;/post/mysql_innodb/images/insert_buffer_tree_not_leaf.png&#34; alt=&#34;insert_buffer_tree_not_leaf&#34;  /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;search key 共占用9个字节:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;space 占用4字节，表示待插入记录所在表的表空间id, InnoDb存储引擎的每个表有一个唯一的 space id，可以通过 space id查询得知是哪张表。&lt;/li&gt;
+&lt;li&gt;marker 占用 1 字节，用来兼容老版本的 Insert Buffer&lt;/li&gt;
+&lt;li&gt;offset 占用 4 字节，表示页所在的偏移量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;当一个辅助索引要插入到页(space, offset)时，若该页不在缓冲池中，则InnoDB会先按上述规则构造一个search key,
+然后查询 Insert Buffer 这棵B+树，再将这条记录插入到 Insert Buffer B+ 树的叶子节点中。
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;对于插入到叶子节点的记录，并非直接将待插入的记录插入，面是需要根据如下的规则进行构造:&lt;br&gt;
+&lt;img src=&#34;/post/mysql_innodb/images/insert_buffer_tree_leaf.png&#34; alt=&#34;insert_buffer_tree_leaf&#34;  /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;metadata 占用 4 字节，其内容如下表所示:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;字节&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;IBUF_REC_OFFSET_COUNT&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IBUF_REC_OFFSET_TYPE&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IBUF_REC_OFFSET_FLAGS&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;IBUF_REC_OFFSET_COUNT 保存两个字节的整数，用来排序每个记录进入Insert Buffer的顺序。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;从 Insert Buffer 叶子节点的第5列开始(secondary index record)，就是实际插入记录的各个字段了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Insert Buffer Bitmap&lt;br&gt;
+启用Insert Buffer 索引后，辅助索引页(space, page_no)中的记录可能被插入到 Insert Buffer B+树中，&lt;br&gt;
+为保证Merge Insert Buffer页成功，要有一个特殊的页（Insert Buffer Bitmap）来标记每个辅助索引页(space, page_no)的可用空间。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;每个Insert Buffer Bitmap页可追踪16384个辅助索引页，即256个区(Extent).&lt;br&gt;
+每个Insert Buffer Bitmap页都在在16364个页的第二个页中。&lt;br&gt;
+每个辅助索引页在 Insert Buffer Bitmap 页中占用 4 位，由下表中的三个部分组成：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;大小(bit)&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;IBUF_BITMAP_FREE&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;表示该辅助索引页中的可用空间数量，可取值为:&lt;!-- raw HTML omitted --&gt;０: 无可用剩余空间　&lt;!-- raw HTML omitted --&gt;1：剩余空间大于1/32页(512字节)&lt;!-- raw HTML omitted --&gt;2: 剩余空间大于1/16页&lt;!-- raw HTML omitted --&gt;3: 剩余空间大于1/8页&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IBUF_BITMAP_BUFFERED&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1 表示该辅助索引页有记录被缓存到 Insert Buffer B+树中&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IBUF_BITMAP_IBUF&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1 表示该页为 Insert Buffer B+树的索引页&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;4 Merge Insert Buffer&lt;br&gt;
+若要实现插入记录的辅助索引页不在缓冲池中，则须将辅助索引记录先插入到这棵B＋树中，&lt;br&gt;
+Merge Insert Buffer的操作可能发生在以下几种情况下:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;辅助索引页被读取到缓冲池时&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;在执行正常的SELECT查询操作时，要检查Insert Buffer Bitmap页，然后确认该辅助索引页是否有记录在Insert Buffer B+树中；
+若有，则将B+树中该页的记录插入到该辅助索引页中；
+对该页多次的记录操作通过一次操作合并到了原有的辅助页中，会大幅提高性能。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Insert Buffer Bitmap 页追踪到该辅助索引页无可用空间时&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;若插入辅助索引记录时检测到插入记录后可用空间小于1/32页，则会强制进行一次合并操作: 强制读取辅助索引页，将Insert Buffer B+树中该页的记录及待插入的记录插入到辅助索引页中。
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;Master Thread&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;在Master Thread线程中每秒或每十少会进行一次 Merge Insert Buffer 的操作，但每次merge的页数量不同。
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;虽然辅助索引页是排好序的，但对于 Insert Buffer 页的选择，InnoDB随机地选择Insert Buffer B+树的一个页，读取该页中的space及之后所需要数量的页。&lt;br&gt;
+若进行 merge 时，要进行 merge 的胶已经被删除，则可以直接选择已经被 Insert/Change Buffer 的数据记录。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;4.2 两次写&lt;/p&gt;
 </description>
         </item>
         <item>
