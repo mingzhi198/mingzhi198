@@ -14,8 +14,8 @@
         <guid>/p/cp2.-innodb/</guid>
         <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
 &lt;ul&gt;
-&lt;li&gt;这篇文件是我从这本书中的学习笔记: MySQL技术内幕（InnoDB存储引擎）.&lt;/li&gt;
-&lt;li&gt;非商业用途转载请注明出处，若要更详细了解书中内容，请参考原作。&lt;/li&gt;
+&lt;li&gt;该文是在下在看书过程中的学习笔记，仅限于学习交流，禁止用于商业用途。&lt;/li&gt;
+&lt;li&gt;非商业用途转载请注明出处，若要详细了解书中内容，请参考原作: MySQL技术内幕（InnoDB存储引擎）。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;1-innodb体系结构&#34;&gt;1. InnoDB体系结构&lt;/h2&gt;
 &lt;p&gt;InnoDB存储引擎有多个内存块组成的一个大的内存池，负责如下工作：&lt;/p&gt;
@@ -24,34 +24,28 @@
 &lt;li&gt;缓存磁盘上的数据&lt;/li&gt;
 &lt;li&gt;重做日志(redo log)缓冲&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&#34;11-后台线程&#34;&gt;1.1. 后台线程&lt;/h3&gt;
-&lt;ol&gt;
-&lt;li&gt;Master Thread&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre&gt;&lt;code&gt;核心线程，负责将缓冲池中的数据异步刷新到磁盘，保证数据的一致性
-&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;2&#34;&gt;
-&lt;li&gt;IO Thread&lt;br&gt;
-InnoDB存储引擎大量使用了AIO（Async IO)来处理写IO请求；&lt;br&gt;
-InnoDB 1.0版本之前共有4个IO Thread: write, read, insert buffer and log IO thread&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h3 id=&#34;11-后台线程&#34;&gt;1.1 后台线程&lt;/h3&gt;
+&lt;h4 id=&#34;1-master-thread&#34;&gt;1. Master Thread&lt;/h4&gt;
+&lt;p&gt;核心线程，负责将缓冲池中的数据异步刷新到磁盘，保证数据的一致性&lt;/p&gt;
+&lt;h4 id=&#34;2-io-thread&#34;&gt;2. IO Thread&lt;/h4&gt;
+&lt;p&gt;InnoDB存储引擎大量使用了AIO（Async IO)来处理写IO请求；&lt;br&gt;
+InnoDB 1.0版本之前共有4个IO Thread: write, read, insert buffer and log IO thread&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;查看InnoDB中的 IO Thread:&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-mysql&#34; data-lang=&#34;mysql&#34;&gt;&lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;kp&#34;&gt;engine&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;/post/mysql_innodb/images/innodb_io_thread.png&#34; alt=&#34;io_thrads&#34;  /&gt;&lt;br&gt;
-3. Purge Thread&lt;br&gt;
-事务被提交后，其所使用的undolog可能不再需要，Purge Thread可以回收已经使用并分配的undo页。&lt;br&gt;
-从InnoDB 1.2版本开始，支持多个 Purge Thread, 从而加入undo页的回收；&lt;br&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;/post/mysql_innodb/images/innodb_io_thread.png&#34; alt=&#34;io_thrads&#34;  /&gt;&lt;/p&gt;
+&lt;h4 id=&#34;3-purge-thread&#34;&gt;3. Purge Thread&lt;/h4&gt;
+&lt;p&gt;事务被提交后，其所用的 undolog 可能不再需要，Purge Thread 可以回收已经使用并分配的 undo 页。&lt;br&gt;
+从InnoDB 1.2版本开始，支持多个 Purge Thread, 从而加快undo页的回收；&lt;br&gt;
 另外 Purge Thread 离散地读取 undo 页，可以利用磁盘的随机读取性能。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-mysql&#34; data-lang=&#34;mysql&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_purge_threads&amp;#39;&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
 &lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_purge_threads&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;         &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
-&lt;li&gt;Page Cleaner Thread&lt;br&gt;
-作用：将之前版本中脏页的刷新操作放到单独的单纯中完成； 其目的是为了减轻原Master Thread的工作，&lt;br&gt;
-及对用户查询线程的阻塞，从而提高Innodb存储引擎的性能。&lt;/li&gt;
-&lt;/ol&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;4-page-cleaner-thread&#34;&gt;4. Page Cleaner Thread&lt;/h4&gt;
+&lt;p&gt;作用：将之前版本中脏页的刷新操作放到单独的单纯中完成； 其目的是为了减轻原Master Thread的工作，&lt;br&gt;
+及对用户查询线程的阻塞，从而提高Innodb存储引擎的性能。&lt;/p&gt;
 &lt;h3 id=&#34;12-内存&#34;&gt;1.2 内存&lt;/h3&gt;
 &lt;h4 id=&#34;1-缓冲池&#34;&gt;1. 缓冲池&lt;/h4&gt;
 &lt;p&gt;读操作：将从磁盘中读到的页放到缓冲池中，这一过程被称为将页‘FIX’到缓冲池中。&lt;br&gt;
@@ -114,20 +108,16 @@ InnoDB 1.0版本之前共有4个IO Thread: write, read, insert buffer and log IO
 InnoDB存储引擎引入了 innodb_old_blocks_time， 用于表示页读取到 midpoint 位置后，需要等多久才会被加入到LRU列表的热端，从而尽可能使得LRU列表中的热点数据不被刷出。
 
 若用户预估活跃的热点数据不止63（100－37），可以执行下面的语句来减少热点页被刷出的概率:
-&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
-&lt;p&gt;SET GLOBAL innodb_old_blocks_pct=20;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;LRU列表创建流程：&lt;/p&gt;
+mysql&amp;gt; SET GLOBAL innodb_old_blocks_pct=20;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;LRU列表创建流程：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;1. LRU列表在DB刚启动时是空的，页都存放在Free列表中
 2. 当需要从缓冲池中分页时，从Free列表中查找是否有可用的空闲页
 3. 若有则将该页从Free列表中删除，放到LRU列表中
 4. 否则根据LRU算法，淘汰LRU列表末尾的页，将该内存空间分配给新页
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;当页从LRU列表的old部分加入到new部分时，此时发生的操作被称为 page made young； 而因为innodb_old_blocks_time的设置而导致没有从old部分移动到new部分的操作被称为page not made young。&lt;/p&gt;
 &lt;p&gt;查看LRU列表及Free列表的状态:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;SHOW ENGINE INNODB STATUS \G&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-mysql&#34; data-lang=&#34;mysql&#34;&gt;&lt;span class=&#34;o&#34;&gt;--------------------&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;--
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-mysql&#34; data-lang=&#34;mysql&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;SHOW&lt;/span&gt; &lt;span class=&#34;kp&#34;&gt;ENGINE&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;INNODB&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;STATUS&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;--------------------&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;--
 &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;BUFFER POOL AND MEMORY
 &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;--------------------&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;--
 &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;Total large memory allocated 136970240
@@ -212,14 +202,14 @@ DB会通过 Checkpoint 机制将脏页刷新到磁盘；
 每个缓冲池中的&lt;!-- raw HTML omitted --&gt;帧缓冲(frame buffer)&lt;!-- raw HTML omitted --&gt;和对应的 &lt;!-- raw HTML omitted --&gt;缓冲控制对象(buffer control block)&lt;!-- raw HTML omitted --&gt;，&lt;br&gt;
 这些对象记录了 LRU， 锁， 等待信息；而这个对象的内存需要从&lt;!-- raw HTML omitted --&gt;[额外内存池]&lt;!-- raw HTML omitted --&gt;中申请。&lt;br&gt;
 故在申请了很大的InnoDB缓冲池时，应相应增加该值。&lt;/p&gt;
-&lt;h2 id=&#34;2-checkpoint技术&#34;&gt;2 Checkpoint技术&lt;/h2&gt;
+&lt;h2 id=&#34;2-checkpoint技术&#34;&gt;2. Checkpoint技术&lt;/h2&gt;
 &lt;p&gt;缓冲池的设计目的是为了协调CPU速度与磁盘速度的鸿沟，因此页的操作是先在缓冲池中完成的。&lt;br&gt;
 为了避免宕机导致的缓冲池数据丢失的问题，事务数据库系统采用了 Write Ahead Log 策略：&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;当事务提交时，先写重做日志，再修改页。&lt;br&gt;
 当数据丢失时，通过重做日志来完成数据所恢复。这就是事务ACID中的D（Durability持久性)的要求。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;Checkpoint的目的是解决以下几个问题：&lt;/p&gt;
+&lt;h3 id=&#34;21-checkpoint的目的&#34;&gt;2.1 Checkpoint的目的&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;缩短数据库的恢复时间&lt;/li&gt;
 &lt;li&gt;缓冲池不够用时，将脏页刷新到磁盘&lt;/li&gt;
@@ -251,29 +241,17 @@ DB会通过 Checkpoint 机制将脏页刷新到磁盘；
 &lt;span class=&#34;n&#34;&gt;Pages&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flushed&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;up&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;to&lt;/span&gt;          &lt;span class=&#34;mi&#34;&gt;3723483701&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;Last&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;checkpoint&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;at&lt;/span&gt;           &lt;span class=&#34;mi&#34;&gt;3723483701&lt;/span&gt;
 &lt;span class=&#34;mi&#34;&gt;13&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;log&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;o&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;s done, 0.00 log i/o&amp;#39;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;second&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
-&lt;p&gt;两种 Checkpoint:&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;Sharp Checkpoint&lt;br&gt;
-Sharp Checkpoint是默认的工作方式：在数据库关闭时，将所有的脏页都刷新到磁盘。&lt;br&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;22-两种-checkpoint&#34;&gt;2.2 两种 Checkpoint&lt;/h3&gt;
+&lt;h4 id=&#34;221-sharp-checkpoint&#34;&gt;2.2.1 Sharp Checkpoint&lt;/h4&gt;
+&lt;p&gt;Sharp Checkpoint是默认的工作方式：在数据库关闭时，将所有的脏页都刷新到磁盘。&lt;br&gt;
 参数 innodb_fast_shutdown=1。&lt;br&gt;
 但若在数据库运行时使用 Sharp Checkpoint, 会大大影响数据库的可用性。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Fuzzy Checkpoint&lt;br&gt;
-InnoDB存储引擎内部使用 Fuzzy Checkpoint 进行页的刷新: 只刷新一部分脏页到磁盘。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;InnoDB中的几种 Fuzzy Checkpoint:&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;Master Thread Checkpoint&lt;br&gt;
-以将近每秒或每十秒的速度从缓冲池的脏页列表中刷新一定比例的页到磁盘，此过程是异步的，用户查询线程不会阻塞。&lt;/li&gt;
-&lt;li&gt;FLUSH_LRU_LIST Checkpoint&lt;/li&gt;
-&lt;/ul&gt;
+&lt;h4 id=&#34;222-fuzzy-checkpoint&#34;&gt;2.2.2 Fuzzy Checkpoint&lt;/h4&gt;
+&lt;p&gt;InnoDB存储引擎内部使用 Fuzzy Checkpoint 进行页的刷新: 只刷新一部分脏页到磁盘。&lt;/p&gt;
+&lt;h3 id=&#34;23-innodb中的几种-fuzzy-checkpoint&#34;&gt;2.3 InnoDB中的几种 Fuzzy Checkpoint:&lt;/h3&gt;
+&lt;h4 id=&#34;231-master-thread-checkpoint&#34;&gt;2.3.1 Master Thread Checkpoint&lt;/h4&gt;
+&lt;p&gt;以将近每秒或每十秒的速度从缓冲池的脏页列表中刷新一定比例的页到磁盘，此过程是异步的，用户查询线程不会阻塞。&lt;/p&gt;
+&lt;h4 id=&#34;232-flush_lru_list-checkpoint&#34;&gt;2.3.2 FLUSH_LRU_LIST Checkpoint&lt;/h4&gt;
 &lt;pre&gt;&lt;code&gt;InnoDB存储引擎需要保证LRU列表中需要有将近100个空闲页可供使用。
 在InnoDB 1.1.x版本之前，需要检查 LRU 列表中是否有足够的可用空间操作发生的用户查询线程中，这会阻塞用户的查询操作；
 若没有100个可用的空闲页，InnoDB会将 LRU 列表尾端的页移除。
@@ -336,73 +314,37 @@ Master Thread会根据数据库运行状态在这些循环中进行切换。&lt;
 Loop循环是通过thread sleep来实现，这意味着不精确的操作在负载大的情况下会有延迟。&lt;br&gt;
 但InnoDB通过其它方法来尽量保证这个频率。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;每秒一次的操作包括：&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;ul&gt;
-&lt;li&gt;
+&lt;li&gt;每秒一次的操作包括：&lt;/li&gt;
+&lt;/ul&gt;
 &lt;ol&gt;
 &lt;li&gt;日志缓冲刷新到磁盘，即使这个事务还未提交（总是）&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
 &lt;pre&gt;&lt;code&gt;即使某个事务还未提交，InnoDB存储引擎仍然会每秒将重做日志缓冲中的内容刷新到重做日志文件；
 所以再大的事务提交的时间也是很短的。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;ol start=&#34;2&#34;&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;2&#34;&gt;
 &lt;li&gt;合并插入缓冲(可能)&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
 &lt;pre&gt;&lt;code&gt;合并插入缓冲(Insert Buffer)并不是每秒都会发生的；InnoDB会判断当前一秒内发生的IO次数是否小于5次，
 若小于5次，InnoDB认为当前的IO压力很小，可以执行合并插入缓冲的操作。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;ol start=&#34;3&#34;&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;3&#34;&gt;
 &lt;li&gt;至多刷新100个InnoDB的缓冲池中的脏页到磁盘(可能)&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
 &lt;pre&gt;&lt;code&gt;InnoDB存储引擎通过判断当前缓冲池中脏页的比例(buf_get_modified_ratio_pct)是否超过了配置文件中innodb_max_dirty_pages_pct这个参数(默认为90％)；
 若超过了这个阈值，则需要将100个脏页到磁盘中。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;ol start=&#34;4&#34;&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;4&#34;&gt;
 &lt;li&gt;如果当前无用户活动，则切换到background loop(可能)&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;每10秒的操作：&lt;/p&gt;
-&lt;/blockquote&gt;
 &lt;ul&gt;
-&lt;li&gt;
+&lt;li&gt;每10秒的操作：&lt;/li&gt;
+&lt;/ul&gt;
 &lt;ol&gt;
 &lt;li&gt;刷新100个脏页到磁盘(可能的情况下)&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;ol start=&#34;2&#34;&gt;
 &lt;li&gt;合并至多5个插入缓冲(总是)&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;ol start=&#34;3&#34;&gt;
 &lt;li&gt;将日志缓冲刷新到磁盘（总是）&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;ol start=&#34;4&#34;&gt;
 &lt;li&gt;删除无用的Undo页(总是)&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;ol start=&#34;5&#34;&gt;
 &lt;li&gt;刷新100个或10个脏页到磁盘(总是)&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
 &lt;blockquote&gt;
 &lt;p&gt;若过去10秒内磁盘的IO操作是否小于200，则InnoDB认为当前有足够的磁盘IO操作能力，因此将100个脏页刷新到磁盘；&lt;br&gt;
 然后InnoDB会合并插入缓冲，这次的合并插入缓冲操作总是会在这个阶段进行。&lt;br&gt;
@@ -428,9 +370,7 @@ background loop会执行以下操作:&lt;/p&gt;
 &lt;p&gt;若flush loop中也无事可做，InnoDB会切换到suspend_loop, 将 Master Thread 挂起，等等事件的发生。&lt;br&gt;
 若用户启用了InnoDB存储引擎，但没有使用任何InnoDB存储引擎的表，则 Master Thread 将问题处于挂起状态。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;master thread 完整伪代码:&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;h4 id=&#34;313-master-thread-完整伪代码&#34;&gt;3.1.3 master thread 完整伪代码:&lt;/h4&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C&#34; data-lang=&#34;C&#34;&gt;&lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;master_thread&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(){&lt;/span&gt;
   &lt;span class=&#34;k&#34;&gt;goto&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
 &lt;span class=&#34;nl&#34;&gt;loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
@@ -614,7 +554,7 @@ srv_master_do_active_tasks() 是之前每秒中的操作，&lt;br&gt;
 上述特性为InnoDB存储引擎带来更好的性能和可靠性。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;41-插入缓冲&#34;&gt;4.1 插入缓冲&lt;/h3&gt;
-&lt;h4 id=&#34;1-insert-buffer&#34;&gt;1. Insert Buffer&lt;/h4&gt;
+&lt;h4 id=&#34;411-insert-buffer&#34;&gt;4.1.1 Insert Buffer&lt;/h4&gt;
 &lt;p&gt;Insert Buffer 和数据页一样，是物理页的一个组成部分。&lt;br&gt;
 在InnoDB中，主键是行唯一的标识符，行记录的插入顺序是按主键递增的顺序进行插入的；&lt;br&gt;
 因此插入聚集索引(Primary Key)是按顺序的，不需要磁盘的随机读取。&lt;/p&gt;
@@ -661,7 +601,7 @@ merges:       合并的次数，即实际读取页的次数
 默认最大可占用1/2的缓冲池内存。这将对其它操作带来一定的影响。&lt;br&gt;
 修改 IBUF_POOL_SIZE_PER_MAX_SIZE 可对插入缓冲的大小进行控制，如将其值改为3，则最大用1/3的缓冲池内存。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h4 id=&#34;2-change-buffer&#34;&gt;2. Change Buffer&lt;/h4&gt;
+&lt;h4 id=&#34;412-change-buffer&#34;&gt;4.1.2 Change Buffer&lt;/h4&gt;
 &lt;p&gt;InnoDB 从1.0.x开始引入了 Change Buffer, 可以对 DML操作(INSERT, DELETE, UPDATE)都进行缓冲: Insert Buffer, Delete Buffer, Purge Buffer。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Change Buffer适用的对象也是非唯一的辅助索引&lt;br&gt;
@@ -675,7 +615,13 @@ merges:       合并的次数，即实际读取页的次数
 &lt;p&gt;Delete Buffer 对应UPDATE操作的第一个过程: 将记录标记为删除&lt;br&gt;
 Purge Buffer 对应UPDATE操作的第二个过程: 将记录真正地删除&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h5 id=&#34;1-innodb_change_buffering-参数&#34;&gt;1. innodb_change_buffering 参数&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;innodb_change_buffering 参数&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;blockquote&gt;
 &lt;p&gt;参数 innodb_change_buffering 用来开发各种Buffer的选项: inserts, deletes, purges, changes, all, none。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -686,8 +632,14 @@ none表示都不启用&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;该参数默认值为 all&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h5 id=&#34;2-innodb_change_buffer_max_size-参数&#34;&gt;2. innodb_change_buffer_max_size 参数&lt;/h5&gt;
-&lt;p&gt;参数 innodb_change_buffer_max_size 用来控制 Change Buffer 可使用的最大内存数量&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;innodb_change_buffer_max_size 参数&lt;br&gt;
+参数 innodb_change_buffer_max_size 用来控制 Change Buffer 可使用的最大内存数量&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-MySQL&#34; data-lang=&#34;MySQL&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_change_buffer_max_size&amp;#39;&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
 &lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_change_buffer_max_size&lt;/span&gt;
@@ -714,15 +666,17 @@ discarded operations:
 delete mark 表示 Delete Buffer
 delete 表示 Purge Buffer
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;discard operations 表示当Change Buffer 发生 merge 时，表已经被删除，无需将记录 merge 到辅助索引中。&lt;/p&gt;
-&lt;h4 id=&#34;3-insert-buffer-的内部实现&#34;&gt;3. Insert Buffer 的内部实现&lt;/h4&gt;
-&lt;blockquote&gt;
+&lt;h4 id=&#34;413-insert-buffer-的内部实现&#34;&gt;4.1.3 Insert Buffer 的内部实现&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
 &lt;ol&gt;
-&lt;li&gt;Insert Buffer的数据结构是一棵B+树。&lt;br&gt;
-在MySQL4.1之前的版本中，每张表都有一棵Insert Buffer B+树； 但在现在的版本中，只有一棵全局Insert Buffer B+树，负责对所有的表的辅助索引进行Insert Buffer。&lt;br&gt;
-这棵B+树位于共享表空间中，默认为 ibdata1中。&lt;br&gt;
-因此，若试图通过独立表空间ibd文件恢复表中数据是地，会导致 CHECK TABLE 失败，因为表的辅助索引中的数据可能还在 Insert Buffer中，所以对 ibd 文件进行恢复后，还要进行 REPAIR TABLE 操作来重建表上的所有辅助索引。&lt;/li&gt;
+&lt;li&gt;Insert Buffer的数据结构是一棵B+树。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在MySQL4.1之前的版本中，每张表都有一棵Insert Buffer B+树； 但在现在的版本中，只有一棵全局Insert Buffer B+树，负责对所有的表的辅助索引进行Insert Buffer。&lt;br&gt;
+这棵B+树位于共享表空间中，默认为 ibdata1中。&lt;br&gt;
+因此，若试图通过独立表空间ibd文件恢复表中数据是地，会导致 CHECK TABLE 失败，因为表的辅助索引中的数据可能还在 Insert Buffer中，所以对 ibd 文件进行恢复后，还要进行 REPAIR TABLE 操作来重建表上的所有辅助索引。&lt;/p&gt;
 &lt;p&gt;Insert Buffer 的 B+村中，非叶子节点存放的是查询键值(search key)， 构造如下图:&lt;br&gt;
 &lt;img src=&#34;/post/mysql_innodb/images/insert_buffer_tree_not_leaf.png&#34; alt=&#34;insert_buffer_tree_not_leaf&#34;  /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
@@ -768,13 +722,15 @@ delete 表示 Purge Buffer
 &lt;blockquote&gt;
 &lt;p&gt;从 Insert Buffer 叶子节点的第5列开始(secondary index record)，就是实际插入记录的各个字段了。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
 &lt;ol start=&#34;2&#34;&gt;
-&lt;li&gt;Insert Buffer Bitmap&lt;br&gt;
-启用Insert Buffer 索引后，辅助索引页(space, page_no)中的记录可能被插入到 Insert Buffer B+树中，&lt;br&gt;
-为保证Merge Insert Buffer页成功，要有一个特殊的页（Insert Buffer Bitmap）来标记每个辅助索引页(space, page_no)的可用空间。&lt;/li&gt;
+&lt;li&gt;Insert Buffer Bitmap&lt;/li&gt;
 &lt;/ol&gt;
-&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;启用Insert Buffer 索引后，辅助索引页(space, page_no)中的记录可能被插入到 Insert Buffer B+树中，&lt;br&gt;
+为保证Merge Insert Buffer页成功，要有一个特殊的页（Insert Buffer Bitmap）来标记每个辅助索引页(space, page_no)的可用空间。&lt;/p&gt;
 &lt;p&gt;每个Insert Buffer Bitmap页可追踪16384个辅助索引页，即256个区(Extent).&lt;br&gt;
 每个Insert Buffer Bitmap页都在在16364个页的第二个页中。&lt;br&gt;
 每个辅助索引页在 Insert Buffer Bitmap 页中占用 4 位，由下表中的三个部分组成：&lt;/p&gt;
@@ -804,30 +760,134 @@ delete 表示 Purge Buffer
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;blockquote&gt;
-&lt;p&gt;4 Merge Insert Buffer&lt;br&gt;
-若要实现插入记录的辅助索引页不在缓冲池中，则须将辅助索引记录先插入到这棵B＋树中，&lt;br&gt;
+&lt;h4 id=&#34;414-merge-insert-buffer&#34;&gt;4.1.4 Merge Insert Buffer&lt;/h4&gt;
+&lt;p&gt;若要实现插入记录的辅助索引页不在缓冲池中，则须将辅助索引记录先插入到这棵B＋树中，&lt;br&gt;
 Merge Insert Buffer的操作可能发生在以下几种情况下:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;辅助索引页被读取到缓冲池时&lt;br&gt;
+在执行正常的SELECT查询操作时，要检查Insert Buffer Bitmap页，然后确认该辅助索引页是否有记录在Insert Buffer B+树中；&lt;br&gt;
+若有，则将B+树中该页的记录插入到该辅助索引页中；&lt;br&gt;
+对该页多次的记录操作通过一次操作合并到了原有的辅助页中，会大幅提高性能。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Insert Buffer Bitmap 页追踪到该辅助索引页无可用空间时&lt;br&gt;
+若插入辅助索引记录时检测到插入记录后可用空间小于1/32页，则会强制进行一次合并操作: 强制读取辅助索引页，将Insert Buffer B+树中该页的记录及待插入的记录插入到辅助索引页中。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Master Thread&lt;br&gt;
+在Master Thread线程中每秒或每十少会进行一次 Merge Insert Buffer 的操作，但每次merge的页数量不同。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;虽然辅助索引页是排好序的，但对于 Insert Buffer 页的选择，InnoDB随机地选择Insert Buffer B+树的一个页，读取该页中的space及之后所需要数量的页。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;若进行 merge 时，要进行 merge 的胶已经被删除，则可以直接选择已经被 Insert/Change Buffer 的数据记录。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;42-两次写&#34;&gt;4.2 两次写&lt;/h3&gt;
+&lt;p&gt;Insert Buffer 带给 InnoDB 存储引擎性能上的提升，doublewrite带来的是数据页的可靠性。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;部分写失效: 正在写入某个页(16KB)到表中，只写了前部分页(4KB)就发生了宕机&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;doublewrite: 在此时页本身已经损坏，对其进行重做是无意义的，因此需要通过页的副本来不愿该页，再进行重做&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mysql_innodb/images/doublewrite_acch.png&#34; alt=&#34;doublewrite_acch&#34;  /&gt;&lt;br&gt;
+doublewrite由两人部分组成:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;doublewrite buffer ，大小为2MB，&lt;/li&gt;
+&lt;li&gt;物理磁盘上共享表空间中连续的128个页，即2个区(extent)，大小也为2MB&lt;br&gt;
+在刷新缓冲池中的脏页时，不会直接定入磁盘：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;而是通过memcpy函数将脏页先复制到内存中的 doublewrite buffer，&lt;/li&gt;
+&lt;li&gt;通过 doublewrite buffer 再分两次，每次1MB顺序地写入共享表空间的物理磁盘上，然后fsync同步到磁盘&lt;br&gt;
+因为 doublewrite 页是连续的，因此这个过程是顺序写的，开销不大。&lt;/li&gt;
+&lt;li&gt;将 doublewrite buffer 中的页写入各个表空间文件中，此时的写入是离散的&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;观察 doublewrite 运行情况扣命令:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mysql root@127.0.0.1:test&amp;gt; show global status like &#39;innodb_dblwr%&#39;\G
+***************************[ 1. row ]***************************
+Variable_name | Innodb_dblwr_pages_written
+Value         | 22
+***************************[ 2. row ]***************************
+Variable_name | Innodb_dblwr_writes
+Value         | 6
+
+2 rows in set
+Time: 0.012s
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;可以看到, doublewrite  共写了22个页，但实际的写入次数为6次，一般会符合 64：1.&lt;br&gt;
+若 Innodb_dblwr_pages_written : Innodb_dblwr_writes 远小于 64:1, 说明系统写入压力不是很高。&lt;/p&gt;
+&lt;p&gt;若用户有多个从服务器，且需要提供较快的性能，可以通过 skip_innodb_doublewrite 参数禁止使用 doublewrite 功能；但这可能会导致前面提及的写失效问题。&lt;/p&gt;
+&lt;h3 id=&#34;43-自适应哈希索引&#34;&gt;4.3 自适应哈希索引&lt;/h3&gt;
+&lt;p&gt;InnoDB会监控对表上各索引页的查询，若观察到建立哈希索引可以提升速度，则会建立哈希索引，称之为自适应哈希索引(Adaptive Hash Index, AHI)。&lt;br&gt;
+AHI 是通过缓冲池的 B+ 树页构造而来，且不需要对整张表构造，因此建立速度很快。&lt;br&gt;
+InnoDB会自动根据访问频率和模式来自动地为某些热点页建立哈希索引。&lt;br&gt;
+AHI 要求:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;AHI 对这个页的连续访问模式（查询条件）是一样的。&lt;/li&gt;
+&lt;li&gt;以该模式访问了100次&lt;/li&gt;
+&lt;li&gt;页通过该模式访问了N次，其中 N＝ 页中记录 *1/16&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;哈希索引只能用来搜索等值的查询，如 SELECT ＊ FROM T WHERE IDX ＝ &amp;lsquo;XXX&amp;rsquo;; 范围等其它查询不能使用哈希索引。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;可以通过 hash searches : non-hash searches 大概了解使用哈希索引后的效率，AHI是由 InnoDB存储引擎摈的，默认处于开启状态。&lt;/p&gt;
+&lt;h3 id=&#34;44-异步io&#34;&gt;4.4 异步IO&lt;/h3&gt;
+&lt;p&gt;AIO： 若用户发出一条索引扫描的查询，则这条SQL语句可能要扫描多个索引页，即进行多次IO操作，此时没有必要扫描一个页并等等其完成后再进行下一次扫描；用户可以在发出一个IO请求后立即发出其它IO请求，当全部IO请求发送完毕后，等待所有IO操作的完成。&lt;br&gt;
+AIO 可以进行 IO Merge 操作: 将多个 IO 合并为 1 个IO，可以提高 IOPS的性能。&lt;br&gt;
+例如:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;用户需要访问的页为(space, page_no)为：（8，6）、（8，7），（8，8），每个页的大小为 16KB，
+同步IO需要进行3次IO操作，但AIO会发现这三个页是连续的（space, page_no）,
+因此 AIO 底层会发送一个 IO 请求，从 (8,6)开始，读取 48KB 的页。
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在 InnoDB 1.1.x 之前，AIO 是通过 InnoDB存储引擎中的代码来模拟实现的，但从 InnoDB 1.1.x 开始，提供了内核级别 AIO 的支持，称为 Native AIO.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;因此在编译或运动该版本的 MySQL 时，需要 libaio 库的支持。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;ul&gt;
-&lt;li&gt;辅助索引页被读取到缓冲池时&lt;/li&gt;
+&lt;li&gt;通过 innodb_use_native_aio 参数来控制是否启用 Native AIO&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;在执行正常的SELECT查询操作时，要检查Insert Buffer Bitmap页，然后确认该辅助索引页是否有记录在Insert Buffer B+树中；
-若有，则将B+树中该页的记录插入到该辅助索引页中；
-对该页多次的记录操作通过一次操作合并到了原有的辅助页中，会大幅提高性能。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;Insert Buffer Bitmap 页追踪到该辅助索引页无可用空间时&lt;/li&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-MySQL&#34; data-lang=&#34;MySQL&#34;&gt;&lt;span class=&#34;n&#34;&gt;mysql&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;127&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;show&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;variables&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;like&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;innodb_use_native_aio&amp;#39;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;G&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;***************************&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Variable_name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;innodb_use_native_aio&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Value&lt;/span&gt;         &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;ON&lt;/span&gt;
+
+&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;row&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;set&lt;/span&gt;
+&lt;span class=&#34;kt&#34;&gt;Time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;012&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;官方测试显示，启用 Native AIO, 恢复速度可以提高 75%。&lt;br&gt;
+在 InnoDB 中，read ahead 方式的读取、脏页的刷新 全部由 AIO 完成。&lt;/p&gt;
+&lt;h3 id=&#34;45-刷新邻接页&#34;&gt;4.5 刷新邻接页&lt;/h3&gt;
+&lt;p&gt;Flush Neighbor Page 特性: 当刷新一个脏页时，InnoDB 会检测该页所在区(extent)的所有页，若是脏页则一起进行刷新。&lt;br&gt;
+但要考虑两个问题:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;是否可能将不太脏的页进行了写入，而该页之后又会很快变成脏页？&lt;/li&gt;
+&lt;li&gt;固态硬盘有着较高的 IOPS， 是否需要这个特性？&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;若插入辅助索引记录时检测到插入记录后可用空间小于1/32页，则会强制进行一次合并操作: 强制读取辅助索引页，将Insert Buffer B+树中该页的记录及待插入的记录插入到辅助索引页中。
-&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
-&lt;li&gt;Master Thread&lt;/li&gt;
+&lt;p&gt;InnoDB 从 1.2.x开始提高了 innodb_flush_neighbors 参数，用来控制是否启用该特性。&lt;/p&gt;
+&lt;h2 id=&#34;5-启动关闭和恢复&#34;&gt;5 启动、关闭和恢复&lt;/h2&gt;
+&lt;p&gt;在关闭 InnoDB 存储引擎时，参数 innodb_fast_shutdown 影响着表的存储引擎为InnoDB的行为。&lt;br&gt;
+该参数可取值为 0, 1, 2； 默认为1。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;0 表示在数据库关闭时，InnoDB要完成所有的 full purge 和 merge insert buffer, 并将所有的脏页刷新回磁盘。这样耗时较久，若在进行 InnoDB 升级时，须将这个参数设为0，再关闭数据库&lt;/li&gt;
+&lt;li&gt;1 表示不需要完成上述的 full purge 和 merge insert buffer 操作，但是会刷新缓冲池中的一些脏页到磁盘中。&lt;/li&gt;
+&lt;li&gt;2 表示完成 full purge 和 merinsert buffer 操作，也不刷新缓冲池中的数据脏页到磁盘；而是将日志都写入日志文件。虽然不会有事务的丢失，但是下次数据库启动时，会进行恢复操作。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;在Master Thread线程中每秒或每十少会进行一次 Merge Insert Buffer 的操作，但每次merge的页数量不同。
-&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
-&lt;p&gt;虽然辅助索引页是排好序的，但对于 Insert Buffer 页的选择，InnoDB随机地选择Insert Buffer B+树的一个页，读取该页中的space及之后所需要数量的页。&lt;br&gt;
-若进行 merge 时，要进行 merge 的胶已经被删除，则可以直接选择已经被 Insert/Change Buffer 的数据记录。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;参数 innodb_force_recovery 会影响整个 InnoDB 存储引擎恢复的状况。参数值如下（默认为0）:&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;4.2 两次写&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;0 表示在需要恢复时，进行所有的恢复操作； 当不能进行有效恢复时，如数据页发生了corruption，数据库可能会宕机，并把错误写入错误日志中。&lt;/li&gt;
+&lt;li&gt;1(SRV_FORCE_IGNORE_CORRUPT): 忽略检查到的 corrupt 页&lt;/li&gt;
+&lt;li&gt;2(SRV_FORCE_NO_BACKGROUND):  阻止 Master Thread 线程的运行，若 Master Thread 线程要进行 full merge 操盘，会导致 crash&lt;/li&gt;
+&lt;li&gt;3(SRV_FORCE_NO_TRX_UNDO):    不进行事务的回滚操作&lt;/li&gt;
+&lt;li&gt;4(SRV_FORCE_NO_IBUF_MERGE):  不进行插入缓冲的合并操作&lt;/li&gt;
+&lt;li&gt;5(SRV_FORCE_NO_UNDO_LOG_SCAN): 不查看撤销日志(Undo Log), InnoDB 会将未提交的事务视为已提交&lt;/li&gt;
+&lt;li&gt;6(SRV_FORCE_NO_LOG_REDO):      不进行前滚的操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;若 innodb_force_recovery 参数值大于0，用户可以对表进行 select, create 和 drop 操作，但不允许 insert, update 和 delete 这类 DML 操作。&lt;/p&gt;
+&lt;/blockquote&gt;
 </description>
         </item>
         <item>
