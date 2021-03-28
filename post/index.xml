@@ -8,6 +8,20 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 24 Mar 2021 18:36:08 +0800</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>2. The Basics </title>
+      <link>/p/2.-the-basics/</link>
+      <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
+      
+      <guid>/p/2.-the-basics/</guid>
+      <description>Statement  This article is my study notes about C++ Primer. Please refer to the original work for more details and indicate the source for reprinting.  1. 使用gdb  print 命令
+print 默认情况下会根据变量的类型对应的格式打印变量值。
+如果需要更加灵活的变量打印格式控制，则需要使用格式控制符 (类比 C 语言中的 printf 函数)。   常用的格式控制符包括：
+ d：按十进制格式打印变量 x：按十六进制格式打印变量 t：按二进制格式打印变量 o：按八进制格式打印变量 f：按浮点数格式打印变量 c：按字符格式打印变量 例如，p/x int_val 可以以十六进制的形式打印整型变量 int_val 的值。
+但是，使用 p/t float_val 以二进制形式打印浮点型变量 float_val 时，会因为被转换为整型而出错 (二进制 1001 表示9)。这时候，需要用到另外一个查看变量的命令 examine。
+ examine 命令 (缩写形式 x)</description>
+    </item>
+    
+    <item>
       <title>cp2. InnoDB</title>
       <link>/p/cp2.-innodb/</link>
       <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>

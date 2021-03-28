@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Statement  This article is my study notes about C&#43;&#43; Primer. Please refer to the original work for more details and indicate the source for reprinting.  1. 使用gdb  print 命令
+print 默认情况下会根据变量的类型对应的格式打印变量值。
+如果需要更加灵活的变量打印格式控制，则需要使用格式控制符 (类比 C 语言中的 printf 函数)。   常用的格式控制符包括：
+ d：按十进制格式打印变量 x：按十六进制格式打印变量 t：按二进制格式打印变量 o：按八进制格式打印变量 f：按浮点数格式打印变量 c：按字符格式打印变量 例如，p/x int_val 可以以十六进制的形式打印整型变量 int_val 的值。
+但是，使用 p/t float_val 以二进制形式打印浮点型变量 float_val 时，会因为被转换为整型而出错 (二进制 1001 表示9)。这时候，需要用到另外一个查看变量的命令 examine。
+ examine 命令 (缩写形式 x)'><title>2. The Basics </title>
+
+<link rel='canonical' href='/p/2.-the-basics/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='2. The Basics '>
+<meta property='og:description' content='Statement  This article is my study notes about C&#43;&#43; Primer. Please refer to the original work for more details and indicate the source for reprinting.  1. 使用gdb  print 命令
+print 默认情况下会根据变量的类型对应的格式打印变量值。
+如果需要更加灵活的变量打印格式控制，则需要使用格式控制符 (类比 C 语言中的 printf 函数)。   常用的格式控制符包括：
+ d：按十进制格式打印变量 x：按十六进制格式打印变量 t：按二进制格式打印变量 o：按八进制格式打印变量 f：按浮点数格式打印变量 c：按字符格式打印变量 例如，p/x int_val 可以以十六进制的形式打印整型变量 int_val 的值。
+但是，使用 p/t float_val 以二进制形式打印浮点型变量 float_val 时，会因为被转换为整型而出错 (二进制 1001 表示9)。这时候，需要用到另外一个查看变量的命令 examine。
+ examine 命令 (缩写形式 x)'>
+<meta property='og:url' content='/p/2.-the-basics/'>
+<meta property='og:site_name' content='Li. Mingzhi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='C&#43;&#43;' /><meta property='article:published_time' content='2021-03-24T18:36:08&#43;08:00'/><meta property='article:modified_time' content='2021-03-24T18:36:08&#43;08:00'/>
+<meta name="twitter:title" content="2. The Basics ">
+<meta name="twitter:description" content="Statement  This article is my study notes about C&#43;&#43; Primer. Please refer to the original work for more details and indicate the source for reprinting.  1. 使用gdb  print 命令
+print 默认情况下会根据变量的类型对应的格式打印变量值。
+如果需要更加灵活的变量打印格式控制，则需要使用格式控制符 (类比 C 语言中的 printf 函数)。   常用的格式控制符包括：
+ d：按十进制格式打印变量 x：按十六进制格式打印变量 t：按二进制格式打印变量 o：按八进制格式打印变量 f：按浮点数格式打印变量 c：按字符格式打印变量 例如，p/x int_val 可以以十六进制的形式打印整型变量 int_val 的值。
+但是，使用 p/t float_val 以二进制形式打印浮点型变量 float_val 时，会因为被转换为整型而出错 (二进制 1001 表示9)。这时候，需要用到另外一个查看变量的命令 examine。
+ examine 命令 (缩写形式 x)">
+    </head>
+    <body class="">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "auto");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.body.dataset.scheme = 'dark';
+        } else {
+            document.body.dataset.scheme = 'light';
+        }
+    })();
+</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    
+                    
+                    
+                        
+                        <img src="/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+
+                
+            </figure>
+        
+        <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
+    </header>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/p/resume/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/archives/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/search/index.html'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <div id="article-toolbar">
+        <a href="" class="back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+            <span>Back</span>
+        </a>
+    </div>
+
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/c&#43;&#43;-primer/" >
+                C&#43;&#43; Primer
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/2.-the-basics/">2. The Basics </a>
+    </h2>
+
+    <footer class="article-time">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <time class="article-time--published">Mar 24, 2021</time>
+    </footer></div>
+</header>
+
+    <section class="article-content">
+    <h1 id="statement">Statement</h1>
+<ul>
+<li>This article is my study notes about C++ Primer.</li>
+<li>Please refer to the original work for more details and indicate the source for reprinting.</li>
+</ul>
+<h2 id="1-使用gdb">1. 使用gdb</h2>
+<ul>
+<li>print 命令<br>
+print 默认情况下会根据变量的类型对应的格式打印变量值。<br>
+如果需要更加灵活的变量打印格式控制，则需要使用格式控制符 (类比 C 语言中的 printf 函数)。</li>
+</ul>
+<blockquote>
+<p>常用的格式控制符包括：</p>
+</blockquote>
+<pre><code>d：按十进制格式打印变量
+x：按十六进制格式打印变量
+t：按二进制格式打印变量
+o：按八进制格式打印变量
+f：按浮点数格式打印变量
+c：按字符格式打印变量
+</code></pre><p>例如，p/x int_val 可以以十六进制的形式打印整型变量 int_val 的值。<br>
+但是，使用 p/t float_val 以二进制形式打印浮点型变量 float_val 时，会因为被转换为整型而出错 (二进制 1001 表示9)。这时候，需要用到另外一个查看变量的命令 examine。</p>
+<ul>
+<li>examine 命令 (缩写形式 x)<br>
+可以查看变量在对应内存地址中的值，其命令格式为：x/[n][f][u] addr。</li>
+</ul>
+<p>其中，可选参数 n 表示要打印的内存单元个数，默认值为1；<br>
+f 表示上面介绍的各种格式控制符；<br>
+u 表示要打印的内存单元长度;<br>
+addr 表示变量的内存地址 (注意：不能是变量名)。</p>
+<blockquote>
+<p>常用的内存单元包括：b (单字节)、h (双字节)、w (四字节)、g (八字节)。</p>
+</blockquote>
+<p>如果需要以单字节为单位，以二进制的方式打印浮点变量 float_val，可以使用 GDB 命令 x/4tb &amp;float_val；<br>
+同样地，x/10dw int_array 可以四字节的方法打印以 int_array 地址开始的连续10个内存单元的值 (这正好是整型数组 int_array 10个元素的值)。</p>
+<p>display 命令可以用于当程序被 GDB 暂停时自动打印某变量的值。<br>
+info registers 命令可以查看除浮点寄存器外的所有寄存器值。</p>
+<h2 id="1-primitive-built-in-types">1. Primitive Built-in Types</h2>
+<h2 id="11-arithmetic-types">1.1 Arithmetic Types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Meaning</th>
+<th>Minimum Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bool</td>
+<td>boolean</td>
+<td>NA</td>
+</tr>
+<tr>
+<td>char</td>
+<td>character</td>
+<td>8 bits</td>
+</tr>
+<tr>
+<td>wchar_t</td>
+<td>wide character</td>
+<td>16 bits</td>
+</tr>
+<tr>
+<td>char16_t</td>
+<td>Unicode character</td>
+<td>16 bits</td>
+</tr>
+<tr>
+<td>char32_t</td>
+<td>Unicode character</td>
+<td>32 bits</td>
+</tr>
+<tr>
+<td>short</td>
+<td>short integer</td>
+<td>16 bits</td>
+</tr>
+<tr>
+<td>int</td>
+<td>integer</td>
+<td>16 bits</td>
+</tr>
+<tr>
+<td>long</td>
+<td>long integer</td>
+<td>32 bits</td>
+</tr>
+<tr>
+<td>long long</td>
+<td>long integer</td>
+<td>32 bits</td>
+</tr>
+<tr>
+<td>float</td>
+<td>single-precision floating-point</td>
+<td>6 significant digits</td>
+</tr>
+<tr>
+<td>double</td>
+<td>double-precision floating-point</td>
+<td>10 significant digits</td>
+</tr>
+<tr>
+<td>long double</td>
+<td>extended-precision floating-point</td>
+<td>10 significant digits</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Deciding which Type to Unsigned</p>
+</blockquote>
+<ul>
+<li>Use an unsigned type when you know that the values cannot be negative</li>
+<li>Use int for integer arithmetic<br>
+Use long long if your data values are larger than the minimun size of an int</li>
+<li>Do not use plain char or bool in arithmetic expressions.</li>
+<li>Use double for floating-point computations<br>
+Float usually doesn&rsquo;t have enough precision, and the cost of double-precision calculation versus single-precision is negligible. In fact, double-precision operations are even faster than sinle on some machines.</li>
+</ul>
+<h2 id="12-type-convession">1.2 Type Convession</h2>
+<blockquote>
+<p>Don&rsquo;t Mix Signed and Unsigned Types</p>
+</blockquote>
+<pre><code>Expressions that mix signed and unsigned values can yield surprisning results when the signed value is negative.
+</code></pre><blockquote>
+<p>Signed values are automatically converted to unsigned.<br>
+For example, in an expression like int(-1) * unsigned(1),<br>
+the value of this expression depends on how many bits an int has on the particular machine.<br>
+This expression yields 429496795 on my machine.</p>
+</blockquote>
+<h2 id="13-literals">1.3 Literals</h2>
+<blockquote>
+<p>Specifying the Type of a Literal<br>
+Be default, decimal literals are signed whereas octal and hexadecimal literals can be either signed or unsigned types.</p>
+</blockquote>
+<blockquote>
+<p>extern<br>
+Variables must be defined exactly once but can be declared many times.</p>
+</blockquote>
+<h2 id="14-compound-types">1.4 Compound Types</h2>
+<blockquote>
+<p>A reference must be initialized; once initialized, a reference remains bound to its initial object.</p>
+</blockquote>
+<blockquote>
+<p>A pointer is an object in its own right, which can be assigned and copied.</p>
+</blockquote>
+<blockquote>
+<p>A poiner need not be initialized at the time its defined, and can point to different objects over its lifetime.</p>
+</blockquote>
+<blockquote>
+<p>we may not define a pointer to a reference, since the are not objects or don&rsquo;t have addresses.</p>
+</blockquote>
+<blockquote>
+<p>The result of accessing an invalid pointer is undefined.</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-Cpp" data-lang="Cpp"><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+<span class="kt">int</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+<span class="kt">int</span> <span class="o">*&amp;</span><span class="n">r</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>  <span class="c1">// r is a reference to the pointer p
+</span><span class="c1"></span><span class="n">r</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>       <span class="c1">// r refers to a pointer; assigning &amp;i to r makes p point to i
+</span><span class="c1"></span><span class="o">*</span><span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>       <span class="c1">// dereferencing r yields i, the object to which p points; changs i to 0
+</span></code></pre></div><p>The easiest way to understand the type of r is to read the definition right to left.<br>
+The symbol closest to the name of the variable(in this case the &amp; in &amp;r) is the one that<br>
+has the most immediate effect on the variables&rsquo;s type.<br>
+<!-- raw HTML omitted -->Thus, we that r is a reference! <!-- raw HTML omitted --><br>
+The rest of the declarator determines the type to which r refers.<br>
+The next symbol, * in this case, says that the type r refers to is a pointer type.<br>
+Finally, the base type of the declaration says that r is a reference to a pointer to an int.</p>
+<blockquote>
+<p>It can be easier to understand complicated pointer or reference declarations if you read them from right to left.</p>
+</blockquote>
+<h2 id="15-const-qualifier">1.5 const qualifier</h2>
+<p>Since we cann&rsquo;t change the value of a const object after we create it, it must be initialized.</p>
+<ul>
+<li>Const objects are local to a file</li>
+<li>To define a single instance of a const variable, we use the keyword extern on both its definition and declaration(s);</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-Cpp" data-lang="Cpp"><span class="c1">// file_1.cc defines and initializes a const that is accessible to other files
+</span><span class="c1"></span><span class="k">extern</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">bufSize</span> <span class="o">=</span> <span class="n">fcn</span><span class="p">();</span>
+
+<span class="c1">// file_1.h
+</span><span class="c1"></span><span class="k">extern</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">bufSize</span><span class="p">;</span>   <span class="c1">// same bufSize as defined in file_1.cc
+</span></code></pre></div><p>The extern signifies that bufSize is not local to this file and that its definition will occur elsewhere.</p>
+<blockquote>
+<p>To share a const object among mutiple files, you must define the variable as extern.</p>
+</blockquote>
+<h3 id="151-references-to-const">1.5.1 References to const</h3>
+<p>Unlike an ordinary reference, a reference to const cannot be used to change the object to which the reference is bound.</p>
+<div class="highlight"><pre class="chroma"><code class="language-Cpp" data-lang="Cpp"><span class="kt">int</span> <span class="n">errNum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span> <span class="o">*</span><span class="k">const</span> <span class="n">curErr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">errNum</span><span class="p">;</span>  <span class="c1">// curErr will always point to errNum
+</span><span class="c1"></span><span class="k">const</span> <span class="kt">double</span> <span class="n">pi</span> <span class="o">=</span> <span class="mf">3.14159</span><span class="p">;</span>
+<span class="k">const</span> <span class="kt">double</span> <span class="o">*</span><span class="k">const</span> <span class="n">pip</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">pi</span><span class="p">;</span>  <span class="c1">// pip is a const pointer to a const object
+</span></code></pre></div><p>The easiest way to understand these declarations is to read them from right to left.<br>
+In this case, the symbol closest to <!-- raw HTML omitted -->curErr<!-- raw HTML omitted --> is const,<br>
+which means that curErr itself will be a const object.<br>
+The type of that object is formed from the rest of the declarator.<br>
+The next symbol in the declarator is *, which means that curErr is a const pointer.<br>
+Finally, the base type of the declaration completes the type of curErr, which is a const pinter to an object of type int.<br>
+Similary, pip is a const pointer to an object of type const double.</p>
+<h3 id="152-top-level-const">1.5.2 Top-Level const</h3>
+<p>We use the term <!-- raw HTML omitted -->top-level const<!-- raw HTML omitted --> to indiecate that the pointer itself is a const.<br>
+When a pointer can point to a const object, we refer that const as a <!-- raw HTML omitted -->low-level const<!-- raw HTML omitted -->.</p>
+<p>When we copy an object, top-level consts are ignored:</p>
+<div class="highlight"><pre class="chroma"><code class="language-Cpp" data-lang="Cpp"><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span> <span class="o">*</span> <span class="k">const</span> <span class="n">pi</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>        <span class="c1">// we cann&#39;t change the value of p1; const is top-level
+</span><span class="c1"></span><span class="k">const</span> <span class="kt">int</span> <span class="n">ci</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>          <span class="c1">// we cannot change ci; const is top-level
+</span><span class="c1"></span><span class="k">const</span> <span class="kt">int</span> <span class="o">*</span><span class="n">p2</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ci</span><span class="p">;</span>        <span class="c1">// we can change p2; const is low-level
+</span><span class="c1"></span><span class="k">const</span> <span class="kt">int</span> <span class="o">*</span><span class="k">const</span> <span class="n">p3</span> <span class="o">=</span> <span class="n">p2</span><span class="p">;</span>   <span class="c1">// right-most const is top-level, left-most is not
+</span><span class="c1"></span><span class="k">const</span> <span class="kt">int</span> <span class="o">&amp;</span><span class="n">r</span> <span class="o">=</span> <span class="n">ci</span><span class="p">;</span>          <span class="c1">// const in reference type is always low-level
+</span><span class="c1"></span>
+<span class="n">i</span> <span class="o">=</span> <span class="n">ci</span><span class="p">;</span>   <span class="c1">// ok: copying the value of ci; top-level const in ci is ignored
+</span><span class="c1"></span><span class="n">p2</span> <span class="o">=</span> <span class="n">p3</span><span class="p">;</span>  <span class="c1">// ok: pointed-to type matches; top-level const in p3 is ignored;
+</span></code></pre></div><p>Copying an object doesn&rsquo;t change the copied object, thus it&rsquo;s immaterial whether the object copied from of copied into is const.</p>
+<p>However, <!-- raw HTML omitted -->low-level const is never ignored<!-- raw HTML omitted -->.<br>
+When we copy an object, both objects must have the same low-level const qualification of there must be a conversion between the types of the two objects.<br>
+Commonly, we cann convert a non-const to const but not the other way round!</p>
+<h3 id="153constexpr-and-const-expressions">1.5.3constexpr and const expressions</h3>
+<p>Variables<br>
+declared as constexpr are implicitly const and must be initialized by constant<br>
+expressions:</p>
+<div class="highlight"><pre class="chroma"><code class="language-Cpp" data-lang="Cpp"><span class="k">constexpr</span> <span class="kt">int</span> <span class="n">mf</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span> <span class="c1">// 20 is a constant expression
+</span><span class="c1"></span><span class="k">constexpr</span> <span class="kt">int</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">mf</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// mf + 1 is a constant expression
+</span><span class="c1"></span><span class="k">constexpr</span> <span class="kt">int</span> <span class="n">sz</span> <span class="o">=</span> <span class="n">size</span><span class="p">();</span> <span class="c1">// ok only if size is a constexpr function
+</span></code></pre></div><p>constexpr imposes a top-level const on the objects it defines.<br>
+Like any other constant pointer, a constexpr pointer may point to a const or a<br>
+nonconst type:</p>
+<div class="highlight"><pre class="chroma"><code class="language-Cpp" data-lang="Cpp"><span class="k">constexpr</span> <span class="kt">int</span> <span class="o">*</span><span class="n">np</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span> <span class="c1">// np is a constant pointer to int that is
+</span><span class="c1"></span><span class="n">null</span>
+<span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">constexpr</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span> <span class="c1">// type of i is const intition
+</span><span class="c1">// i and j must be defined outside any function
+</span><span class="c1"></span><span class="k">constexpr</span> <span class="k">const</span> <span class="kt">int</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span> <span class="c1">// p is a constant pointer to the const int i
+</span><span class="c1"></span><span class="k">constexpr</span> <span class="kt">int</span> <span class="o">*</span><span class="n">p1</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">j</span><span class="p">;</span> <span class="c1">// p1 is a constant pointer to the int j
+</span></code></pre></div><h2 id="6-dealng-with-tyes">6. Dealng with Tyes</h2>
+<ul>
+<li>参考<br>
+<a class="link" href="https://vimjc.com/gdb-print-variable.html"  target="_blank" rel="noopener"
+    >https://vimjc.com/gdb-print-variable.html</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+</aside>
+
+
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 Li. Mingzhi
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
