@@ -6,7 +6,19 @@
     <description>Recent content in Posts on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 02 Apr 2021 18:36:08 +0800</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 05 Apr 2021 18:36:08 +0800</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>cp4. Tables</title>
+      <link>/p/cp4.-tables/</link>
+      <pubDate>Mon, 05 Apr 2021 18:36:08 +0800</pubDate>
+      
+      <guid>/p/cp4.-tables/</guid>
+      <description>Statement  该文是在下在看书过程中的学习笔记，仅限于学习交流，禁止用于商业用途。 非商业用途转载请注明出处，若要详细了解书中内容，请参考原作: MySQL技术内幕（InnoDB存储引擎）。  1. 索引组织表 InnoDB存储引擎的表是根据主键顺序组织存放的，这种存储方式的表被称为 索引组织表(index organized table)。
+每张 InnoDB 表都有个主键(primary key),若在建表时未指定主键，则存储引擎会按如下方式指定主键：
+ 若表中有非空的唯一索引(unique not null), 则该列即为主键
+若表中有多个非空唯一索引，则第一个定义的非空唯一索引为主键  CREATE TABLE `z` ( `a` int NOT NULL, `b` int DEFAULT NULL, `c` int NOT NULL, `d` int NOT NULL, UNIQUE KEY `d` (`d`), UNIQUE KEY `c` (`c`), UNIQUE KEY `b` (`b`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci mysql root@127.0.0.1:test&amp;gt; insert into z select 5, 6, 7, 8; Query OK, 1 row affected Time: 0.</description>
+    </item>
+    
     <item>
       <title>cp3. Files</title>
       <link>/p/cp3.-files/</link>

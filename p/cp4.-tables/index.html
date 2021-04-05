@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Statement  该文是在下在看书过程中的学习笔记，仅限于学习交流，禁止用于商业用途。 非商业用途转载请注明出处，若要详细了解书中内容，请参考原作: MySQL技术内幕（InnoDB存储引擎）。  1. 索引组织表 InnoDB存储引擎的表是根据主键顺序组织存放的，这种存储方式的表被称为 索引组织表(index organized table)。
+每张 InnoDB 表都有个主键(primary key),若在建表时未指定主键，则存储引擎会按如下方式指定主键：
+ 若表中有非空的唯一索引(unique not null), 则该列即为主键
+若表中有多个非空唯一索引，则第一个定义的非空唯一索引为主键  CREATE TABLE `z` ( `a` int NOT NULL, `b` int DEFAULT NULL, `c` int NOT NULL, `d` int NOT NULL, UNIQUE KEY `d` (`d`), UNIQUE KEY `c` (`c`), UNIQUE KEY `b` (`b`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci mysql root@127.0.0.1:test&amp;gt; insert into z select 5, 6, 7, 8; Query OK, 1 row affected Time: 0.'><title>cp4. Tables</title>
+
+<link rel='canonical' href='/p/cp4.-tables/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='cp4. Tables'>
+<meta property='og:description' content='Statement  该文是在下在看书过程中的学习笔记，仅限于学习交流，禁止用于商业用途。 非商业用途转载请注明出处，若要详细了解书中内容，请参考原作: MySQL技术内幕（InnoDB存储引擎）。  1. 索引组织表 InnoDB存储引擎的表是根据主键顺序组织存放的，这种存储方式的表被称为 索引组织表(index organized table)。
+每张 InnoDB 表都有个主键(primary key),若在建表时未指定主键，则存储引擎会按如下方式指定主键：
+ 若表中有非空的唯一索引(unique not null), 则该列即为主键
+若表中有多个非空唯一索引，则第一个定义的非空唯一索引为主键  CREATE TABLE `z` ( `a` int NOT NULL, `b` int DEFAULT NULL, `c` int NOT NULL, `d` int NOT NULL, UNIQUE KEY `d` (`d`), UNIQUE KEY `c` (`c`), UNIQUE KEY `b` (`b`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci mysql root@127.0.0.1:test&amp;gt; insert into z select 5, 6, 7, 8; Query OK, 1 row affected Time: 0.'>
+<meta property='og:url' content='/p/cp4.-tables/'>
+<meta property='og:site_name' content='Li. Mingzhi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='MySQL' /><meta property='article:tag' content='InnoDB' /><meta property='article:published_time' content='2021-04-05T18:36:08&#43;08:00'/><meta property='article:modified_time' content='2021-04-05T18:36:08&#43;08:00'/>
+<meta name="twitter:title" content="cp4. Tables">
+<meta name="twitter:description" content="Statement  该文是在下在看书过程中的学习笔记，仅限于学习交流，禁止用于商业用途。 非商业用途转载请注明出处，若要详细了解书中内容，请参考原作: MySQL技术内幕（InnoDB存储引擎）。  1. 索引组织表 InnoDB存储引擎的表是根据主键顺序组织存放的，这种存储方式的表被称为 索引组织表(index organized table)。
+每张 InnoDB 表都有个主键(primary key),若在建表时未指定主键，则存储引擎会按如下方式指定主键：
+ 若表中有非空的唯一索引(unique not null), 则该列即为主键
+若表中有多个非空唯一索引，则第一个定义的非空唯一索引为主键  CREATE TABLE `z` ( `a` int NOT NULL, `b` int DEFAULT NULL, `c` int NOT NULL, `d` int NOT NULL, UNIQUE KEY `d` (`d`), UNIQUE KEY `c` (`c`), UNIQUE KEY `b` (`b`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci mysql root@127.0.0.1:test&amp;gt; insert into z select 5, 6, 7, 8; Query OK, 1 row affected Time: 0.">
+    </head>
+    <body class="">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "auto");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.body.dataset.scheme = 'dark';
+        } else {
+            document.body.dataset.scheme = 'light';
+        }
+    })();
+</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    
+                    
+                    
+                        
+                        <img src="/images/avatar_hu518c5ba2d560f0e95b4ebe9ab0244799_30403_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+
+                
+            </figure>
+        
+        <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
+    </header>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/p/resume/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/archives/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/search/index.html'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <div id="article-toolbar">
+        <a href="" class="back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+            <span>Back</span>
+        </a>
+    </div>
+
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/" >
+                MySQL技术内幕
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/cp4.-tables/">cp4. Tables</a>
+    </h2>
+
+    <footer class="article-time">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <time class="article-time--published">Apr 05, 2021</time>
+    </footer></div>
+</header>
+
+    <section class="article-content">
+    <h1 id="statement">Statement</h1>
+<ul>
+<li>该文是在下在看书过程中的学习笔记，仅限于学习交流，禁止用于商业用途。</li>
+<li>非商业用途转载请注明出处，若要详细了解书中内容，请参考原作: MySQL技术内幕（InnoDB存储引擎）。</li>
+</ul>
+<h2 id="1-索引组织表">1. 索引组织表</h2>
+<p>InnoDB存储引擎的表是根据主键顺序组织存放的，这种存储方式的表被称为 索引组织表(index organized table)。<br>
+每张 InnoDB 表都有个主键(primary key),若在建表时未指定主键，则存储引擎会按如下方式指定主键：</p>
+<ul>
+<li>若表中有非空的唯一索引(unique not null), 则该列即为主键<br>
+若表中有多个非空唯一索引，则<!-- raw HTML omitted -->第一个定义的非空唯一索引为主键<!-- raw HTML omitted --></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-mysql" data-lang="mysql">  <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="o">`</span><span class="n">z</span><span class="o">`</span> <span class="p">(</span>
+  <span class="o">`</span><span class="n">a</span><span class="o">`</span> <span class="kt">int</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">b</span><span class="o">`</span> <span class="kt">int</span> <span class="k">DEFAULT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">c</span><span class="o">`</span> <span class="kt">int</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">d</span><span class="o">`</span> <span class="kt">int</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="k">UNIQUE</span> <span class="k">KEY</span> <span class="o">`</span><span class="n">d</span><span class="o">`</span> <span class="p">(</span><span class="o">`</span><span class="n">d</span><span class="o">`</span><span class="p">),</span>
+  <span class="k">UNIQUE</span> <span class="k">KEY</span> <span class="o">`</span><span class="n">c</span><span class="o">`</span> <span class="p">(</span><span class="o">`</span><span class="n">c</span><span class="o">`</span><span class="p">),</span>
+  <span class="k">UNIQUE</span> <span class="k">KEY</span> <span class="o">`</span><span class="n">b</span><span class="o">`</span> <span class="p">(</span><span class="o">`</span><span class="n">b</span><span class="o">`</span><span class="p">)</span>
+<span class="p">)</span> <span class="kp">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="kp">CHARSET</span><span class="o">=</span><span class="n">utf8mb4</span> <span class="k">COLLATE</span><span class="o">=</span><span class="n">utf8mb4_0900_ai_ci</span>
+
+<span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">z</span> <span class="k">select</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="n">affected</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">003</span><span class="n">s</span>
+<span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">z</span> <span class="k">select</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="n">affected</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">002</span><span class="n">s</span>
+
+<span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">_rowid</span> <span class="k">from</span> <span class="n">z</span><span class="p">;</span>
+<span class="o">+---+----+----+----+--------+</span>
+<span class="o">|</span> <span class="n">a</span> <span class="o">|</span> <span class="n">b</span>  <span class="o">|</span> <span class="n">c</span>  <span class="o">|</span> <span class="n">d</span>  <span class="o">|</span> <span class="n">_rowid</span> <span class="o">|</span>
+<span class="o">+---+----+----+----+--------+</span>
+<span class="o">|</span> <span class="mi">5</span> <span class="o">|</span> <span class="mi">6</span>  <span class="o">|</span> <span class="mi">7</span>  <span class="o">|</span> <span class="mi">8</span>  <span class="o">|</span> <span class="mi">8</span>      <span class="o">|</span>
+<span class="o">|</span> <span class="mi">9</span> <span class="o">|</span> <span class="mi">10</span> <span class="o">|</span> <span class="mi">11</span> <span class="o">|</span> <span class="mi">12</span> <span class="o">|</span> <span class="mi">12</span>     <span class="o">|</span>
+<span class="o">+---+----+----+----+--------+</span>
+
+<span class="mi">2</span> <span class="n">rows</span> <span class="k">in</span> <span class="kt">set</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">013</span><span class="n">s</span>
+</code></pre></div><p>上面示例创建的表z有a,b,c,d四个列，b、c、d三列上都有唯一索引，不同的是b列允许NULL；<br>
+由于未显式地定义主键，因此会选择非空的唯一索引，_rowid显示表的主键；<br>
+虽然c、d列都是非空唯一索引，但d列被首先定义为唯一索引，帮d被视为主键。</p>
+<blockquote>
+<p>_rowid 只能用于查看单个列为主键的情况，对于多列组成的主键无效。</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-MySQL" data-lang="MySQL"><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="o">`</span><span class="n">a</span><span class="o">`</span> <span class="p">(</span>
+  <span class="o">`</span><span class="n">a</span><span class="o">`</span> <span class="kt">int</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">b</span><span class="o">`</span> <span class="kt">int</span> <span class="k">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="o">`</span><span class="n">a</span><span class="o">`</span><span class="p">,</span><span class="o">`</span><span class="n">b</span><span class="o">`</span><span class="p">)</span>
+<span class="p">)</span> <span class="kp">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="kp">CHARSET</span><span class="o">=</span><span class="n">utf8mb4</span> <span class="k">COLLATE</span><span class="o">=</span><span class="n">utf8mb4_0900_ai_ci</span>
+
+<span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="k">into</span> <span class="n">a</span> <span class="k">select</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="n">affected</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">003</span><span class="n">s</span>
+<span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">a</span><span class="p">,</span> <span class="n">_rowid</span> <span class="k">from</span> <span class="n">a</span><span class="p">;</span>
+<span class="p">(</span><span class="mi">1054</span><span class="p">,</span> <span class="s2">&#34;Unknown column &#39;_rowid&#39; in &#39;field list&#39;&#34;</span><span class="p">)</span>
+</code></pre></div><ul>
+<li>若不符合上述条件，则 InnoDB 存储引擎会自动创建一个6字节大小的指针</li>
+</ul>
+<h2 id="2-innodb-逻辑存储结构">2. InnoDB 逻辑存储结构</h2>
+<p>从 InnoDB 存储引擎的逻辑存储结构来看，所有数据都被逻辑地存放在一个空间中，即表空间(tablespace)；<br>
+表空间又由段(segment)、区(extent)、页(page)组成。<br>
+页在一些文档中有时也被称为块(block)。</p>
+<p>InnoDB 存储引擎的逻辑存储结构如下图所示：<br>
+<img src="/post/mysql_innodb/images/logic_store_org.png" alt="logic_store_org"  /></p>
+<h3 id="21-表空间">2.1 表空间</h3>
+<p>表空间是 InnoDB 存储引擎逻辑结构的最高层，所有数据都在表空间中。<br>
+默认情况下有一个共享表空间ibdata1, 但基指定了参数 innodb_file_per_table,则每张表内的数据会单独放到一个表空间内；但每张表的表空间存储的只是数据、索引和插入缓冲Bitmap页；<br>
+其它的数据, 如回滚(undo)信息，插入缓冲索引页，系统事务信息，二次定缓冲(double write buffer)等还是在原来的共享表空间中。</p>
+<blockquote>
+<p>InnoDB 存储引擎不会在执行 rollback 时去收缩默认表空间，但是会判断这些undo信息是否还需要，若不需要，<br>
+则会将这些空间标记为可用空间，供下次undo使用。</p>
+</blockquote>
+<h3 id="22-段">2.2 段</h3>
+<p>表空间由段组成，常见的段有:数据段、索引段、回滚段等。<br>
+InnoDB存储引擎表是索引组织的(index organized),因此数据即索引，索引即数据；<br>
+数据段即为 B+ 树的叶子节点(leaf node segment),<br>
+索引段即为 B+ 树的非叶子节点(non-leaf node segment)</p>
+<p>InnoDB 存储引擎负责对段的管理，DBA不能对其进行控制。</p>
+<h3 id="23-区">2.3 区</h3>
+<p>区由连续页组成，每个区的大小为 1MB； 为了保证区中页的连续性，InnoDB 存储引擎一次从磁盘中申请 4～5个区；<br>
+默认的 InnoDB 存储引擎页大小为 16KB，即一个区中共有64个连续的页。</p>
+<p>InnoDB 1.0.x 版本开始引入压缩页，可以通过参数 KEY_BLOCK_SIZE 设置为 2K, 4K, 8K; 对应的页的数量为512, 256, 128。</p>
+<p>InnoDB 1.2.x 版本新增了参数 innodb_page_size, 可以将默认页的大小设为4K，8K，但页中的数据库是不能压缩的；<br>
+此时区中页的数量为256， 128，即无论页的大小怎么变化， 区的大小总是 1MB。</p>
+<blockquote>
+<p>为何启用了参数 innodb_file_per_table 后，创建的表默认大小为96KB(我用的 MySQL 8.0.23, 默认为112K）<br>
+在每个段开始时，先用32个页大小的碎片页(fragment page)来存放数据，在这此页被用完后，才申请64个连续的页。<br>
+其目的是，对于一些小表或undo这类的段，可以在开始时申请较少的空间。</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-MySQL" data-lang="MySQL"><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="o">`</span><span class="n">t1</span><span class="o">`</span> <span class="p">(</span>
+  <span class="o">`</span><span class="n">col1</span><span class="o">`</span> <span class="kt">int</span> <span class="k">NOT</span> <span class="no">NULL</span> <span class="kp">AUTO_INCREMENT</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">col2</span><span class="o">`</span> <span class="kt">varchar</span><span class="p">(</span><span class="mi">7000</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="o">`</span><span class="n">col1</span><span class="o">`</span><span class="p">)</span>
+<span class="p">)</span> <span class="kp">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="kp">CHARSET</span><span class="o">=</span><span class="n">utf8mb4</span> <span class="k">COLLATE</span><span class="o">=</span><span class="n">utf8mb4_0900_ai_ci</span>
+
+<span class="c1">#root@best: /var/lib/mysql/test# ll -h t1.ibd
+</span><span class="c1"></span><span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">---</span><span class="c1">-- 1 mysql mysql 112K 4月   5 22:45 t1.ibd
+</span><span class="c1"></span>
+<span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="n">t1</span> <span class="k">select</span> <span class="no">null</span><span class="p">,</span> <span class="k">repeat</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">7000</span><span class="p">);</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="n">affected</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">003</span><span class="n">s</span>
+<span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="n">t1</span> <span class="k">select</span> <span class="no">null</span><span class="p">,</span> <span class="k">repeat</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">7000</span><span class="p">);</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="n">affected</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">004</span><span class="n">s</span>
+<span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="n">t1</span> <span class="k">select</span> <span class="no">null</span><span class="p">,</span> <span class="k">repeat</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">7000</span><span class="p">);</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="n">affected</span>
+</code></pre></div><p>上述 SQL 创建了t1表，col2字段为VARCHAR（7000），这样保证一个页最多2条记录。<br>
+接着插入2行数据，因为所有记录都在一个页中，因此没有非叶子节点；<br>
+但若插入第三条记录，就会产生一个非叶子节点；新插入的记录导致了 B+ 树的分裂操作；<br>
+接着继续插入60条记录，即表t1中共有63条记录，32个页：</p>
+<div class="highlight"><pre class="chroma"><code class="language-MySQL" data-lang="MySQL"><span class="k">create</span> <span class="k">procedure</span> <span class="nf">load_t1</span><span class="p">(</span><span class="n">count</span> <span class="kt">int</span> <span class="k">unsigned</span><span class="p">)</span>
+<span class="n">begin</span>
+<span class="k">declare</span> <span class="n">s</span> <span class="kt">int</span> <span class="k">unsigned</span> <span class="k">default</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">declare</span> <span class="n">c</span> <span class="kt">varchar</span><span class="p">(</span><span class="mi">7000</span><span class="p">)</span> <span class="k">default</span> <span class="k">repeat</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">7000</span><span class="p">);</span>
+<span class="k">while</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="n">count</span> <span class="n">do</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">t1</span> <span class="k">select</span> <span class="no">null</span><span class="p">,</span> <span class="n">c</span><span class="p">;</span>
+<span class="kt">set</span> <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+<span class="n">end</span> <span class="k">while</span><span class="p">;</span>
+<span class="n">end</span><span class="p">;</span>
+
+<span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">call</span> <span class="nf">load_t1</span><span class="p">(</span><span class="mi">60</span><span class="p">);</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="n">affected</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">114</span><span class="n">s</span>
+
+<span class="o">+----------+</span>
+<span class="o">|</span> <span class="nf">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+----------+</span>
+<span class="o">|</span> <span class="mi">63</span>       <span class="o">|</span>
+<span class="o">+----------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">011</span><span class="n">s</span>
+
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">---</span><span class="c1">-- 1 mysql mysql 608K 4月   5 22:52 t1.ibd
+</span></code></pre></div><p>在导入了63条数据后，表空间的大小还是小于1MB，<br>
+若再插入一条记录，则表空间将按连续64个页的大小开始增长</p>
+<div class="highlight"><pre class="chroma"><code class="language-mysql" data-lang="mysql"><span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">insert</span> <span class="n">t1</span> <span class="k">select</span> <span class="no">null</span><span class="p">,</span> <span class="k">repeat</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">7000</span><span class="p">);</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">1</span> <span class="n">row</span> <span class="n">affected</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">009</span><span class="n">s</span>
+<span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">select</span> <span class="nf">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">from</span> <span class="n">t1</span><span class="p">;</span>
+<span class="o">+----------+</span>
+<span class="o">|</span> <span class="nf">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">+----------+</span>
+<span class="o">|</span> <span class="mi">64</span>       <span class="o">|</span>
+<span class="o">+----------+</span>
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">011</span><span class="n">s</span>
+
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">---</span><span class="c1">-- 1 mysql mysql 2.0M 4月   5 22:53 t1.ibd
+</span></code></pre></div><h3 id="24-页">2.4 页</h3>
+<p>页是 InnoDB 磁盘管理的最小单位。默认每个页大小为16KB。从1.2.x开始，可以通过参数 innodb_page_size 修改页的大小为4K, 8K 16K。<br>
+若设置完成，则所有表中页的大小都为 innodb_page_size，不可以再次修改。除非用 mysqldump 导入和导出操作来产生新的库。</p>
+<h4 id="241-常见的页类型">2.4.1 常见的页类型</h4>
+<ul>
+<li>数据页(B+tree Node)</li>
+<li>undo页(undo log page)</li>
+<li>系统页(system page)</li>
+<li>事务数据页(transaction system page)</li>
+<li>插入缓冲位图页(insert buffer bitmap)</li>
+<li>插入缓冲空闲列表页(insert buffer free list)</li>
+<li>未压缩的二进制大对象页(uncompressed blog page)</li>
+<li>压缩的二进制大对象页(compressed blog page)</li>
+</ul>
+<h3 id="25-行">2.5 行</h3>
+<p>InnoDB 存储引擎是面对列的(row-oriented),即数据是按行存放的。<br>
+每个页最多允许存储16KB/2-200行记录，即7229行。</p>
+<h2 id="3-innodb-行记录格式">3 InnoDB 行记录格式</h2>
+<p>有两种格式来存放行数据: Compatct 和 Redundant。<br>
+Redundant是为兼容旧版本而保留的，在 MySQL 5.1 版本中，默认为 Compact 行格式。</p>
+<ul>
+<li>我的 Mysql 8 的 row_format 是 Dynamic</li>
+</ul>
+<blockquote>
+<p>命令 SHOW TABLE STATUS LIKE &lsquo;table_name&rsquo; 可以查看表使用的行格式。</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-MySQL" data-lang="MySQL"><span class="n">mysql</span> <span class="n">root</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="n">test</span><span class="o">&gt;</span> <span class="k">show</span> <span class="k">table</span> <span class="n">status</span> <span class="k">like</span> <span class="s1">&#39;mytest&#39;</span> <span class="err">\</span><span class="n">G</span>
+<span class="o">***************************</span><span class="p">[</span> <span class="mi">1</span><span class="p">.</span> <span class="n">row</span> <span class="p">]</span><span class="o">***************************</span>
+<span class="n">Name</span>            <span class="o">|</span> <span class="n">mytest</span>
+<span class="kp">Engine</span>          <span class="o">|</span> <span class="n">InnoDB</span>
+<span class="n">Version</span>         <span class="o">|</span> <span class="mi">10</span>
+<span class="n">Row_format</span>      <span class="o">|</span> <span class="n">Dynamic</span>
+<span class="n">Rows</span>            <span class="o">|</span> <span class="mi">996918</span>
+<span class="n">Avg_row_length</span>  <span class="o">|</span> <span class="mi">71</span>
+<span class="n">Data_length</span>     <span class="o">|</span> <span class="mi">70877184</span>
+<span class="n">Max_data_length</span> <span class="o">|</span> <span class="mi">0</span>
+<span class="n">Index_length</span>    <span class="o">|</span> <span class="mi">0</span>
+<span class="n">Data_free</span>       <span class="o">|</span> <span class="mi">5242880</span>
+<span class="kp">Auto_increment</span>  <span class="o">|</span> <span class="mi">1</span>
+<span class="n">Create_time</span>     <span class="o">|</span> <span class="mi">2021</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">05</span> <span class="mi">22</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">46</span>
+<span class="n">Update_time</span>     <span class="o">|</span> <span class="o">&lt;</span><span class="no">null</span><span class="o">&gt;</span>
+<span class="n">Check_time</span>      <span class="o">|</span> <span class="o">&lt;</span><span class="no">null</span><span class="o">&gt;</span>
+<span class="n">Collation</span>       <span class="o">|</span> <span class="n">utf8mb4_0900_ai_ci</span>
+<span class="n">Checksum</span>        <span class="o">|</span> <span class="o">&lt;</span><span class="no">null</span><span class="o">&gt;</span>
+<span class="n">Create_options</span>  <span class="o">|</span>
+<span class="n">Comment</span>         <span class="o">|</span>
+
+<span class="mi">1</span> <span class="n">row</span> <span class="k">in</span> <span class="kt">set</span>
+<span class="kt">Time</span><span class="p">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">012</span><span class="n">s</span>
+</code></pre></div><h3 id="32-compact-行记录格式">3.2 Compact 行记录格式</h3>
+<p>Compact 记录头信息</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>大小(bit)</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>()</td>
+<td>1</td>
+<td>未知</td>
+</tr>
+<tr>
+<td>()</td>
+<td>1</td>
+<td>未知</td>
+</tr>
+<tr>
+<td>deleted_flag</td>
+<td>1</td>
+<td>该行是否已被删除</td>
+</tr>
+<tr>
+<td>min_rec_flag</td>
+<td>1</td>
+<td>为1，若该记录是预告被定义为最小的记录</td>
+</tr>
+<tr>
+<td>n_owned</td>
+<td>4</td>
+<td>该记录拥有的记录数</td>
+</tr>
+<tr>
+<td>heap_no</td>
+<td>13</td>
+<td>索引堆中该条记录的排序记录</td>
+</tr>
+<tr>
+<td>record_type</td>
+<td>3</td>
+<td>记录类型: 000表示普通，001为B+树节点指针，010为Infimum, 011为Supremum, 1xx保留</td>
+</tr>
+<tr>
+<td>next_record</td>
+<td>16</td>
+<td>页中下一条记录的相对位置</td>
+</tr>
+<tr>
+<td>total</td>
+<td>40</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>最后的部分即为实际每个列的数据。</p>
+<blockquote>
+<p>NULL 不占该部分任何空间，即 NULL 除了占有 NULL 标志位，实际存储不占有任何空间。<br>
+每行数据除了用户定义的列，还有两个隐藏列: 事务ID列和回滚指针列，分别为6字节和7字节的大小。<br>
+若未定义主键，每行还会增加一个6字节的_rowid列。</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-MySQL" data-lang="MySQL"><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="o">`</span><span class="n">mytest2</span><span class="o">`</span> <span class="p">(</span>
+  <span class="o">`</span><span class="n">t1</span><span class="o">`</span> <span class="kt">varchar</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">t2</span><span class="o">`</span> <span class="kt">varchar</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">t3</span><span class="o">`</span> <span class="kt">char</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">t4</span><span class="o">`</span> <span class="kt">varchar</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="no">NULL</span>
+<span class="p">)</span> <span class="kp">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="kp">CHARSET</span><span class="o">=</span><span class="n">latin1</span> <span class="n">ROW_FORMAT</span><span class="o">=</span><span class="n">COMPACT</span>
+
+</code></pre></div><blockquote>
+<p>InnoDB 存储引擎在页内容是通过一种链表结构来串连各个行记录的。<br>
+无论是 CHAR 类型还是 VARCHAR 类型，在 compact 格式下， NULL 值都不占用任何存储空间。</p>
+</blockquote>
+<h3 id="32-redundant-行记录格式">3.2 Redundant 行记录格式</h3>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/mysql/">MySQL</a>
+        
+            <a href="/tags/innodb/">InnoDB</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/cp3.-files/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">cp3. Files</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/cp2.-innodb/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">cp2. InnoDB</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 Li. Mingzhi
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
