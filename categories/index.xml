@@ -6,22 +6,22 @@
     <description>Recent content in Categories on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Mar 2021 18:36:08 +0800</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 02 Apr 2021 18:36:08 +0800</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL技术内幕</title>
+      <link>/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</link>
+      <pubDate>Fri, 02 Apr 2021 18:36:08 +0800</pubDate>
+      
+      <guid>/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>C&#43;&#43; Primer</title>
       <link>/categories/c&#43;&#43;-primer/</link>
       <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
       
       <guid>/categories/c&#43;&#43;-primer/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>MySQL技术内幕</title>
-      <link>/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</link>
-      <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
-      
-      <guid>/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</guid>
       <description></description>
     </item>
     

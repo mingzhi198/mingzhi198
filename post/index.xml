@@ -6,7 +6,27 @@
     <description>Recent content in Posts on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Mar 2021 18:36:08 +0800</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 02 Apr 2021 18:36:08 +0800</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>cp3. Files</title>
+      <link>/p/cp3.-files/</link>
+      <pubDate>Fri, 02 Apr 2021 18:36:08 +0800</pubDate>
+      
+      <guid>/p/cp3.-files/</guid>
+      <description>Statement  该文是在下在看书过程中的学习笔记，仅限于学习交流，禁止用于商业用途。 非商业用途转载请注明出处，若要详细了解书中内容，请参考原作: MySQL技术内幕（InnoDB存储引擎）。  MySQL 数据库和 InnoDB 存储数据表的各种类型文件：
+ 参数文件 日志文件 socket文件 pid文件 MySQL表结构文件 存储引擎文件  1. 参数文件 MySQL不同于Oracle，即使没有参数文件也可以启动，此时所有的参数取决于编译MySQL时指定的默认值。
+但MySQL的启动依赖数据库目录下的mysql加构文件。
+1.1 参数 推荐可以通过命令SHOW VARIABLES 查看数据库中的所有参数，也可能通过LIKE来过滤参数
+从MySQL5.1开始，可以通过information_schema架构下的GLOBAL_VARIABLES视图来进行查找。
+1.2 参数类型  动态参数(dynamic)
+可以在MySQL运行过程中修改的参数，global和session关键字，表明该参数的修改是基于当前会话，不是整个实例的生命周期。
+但在下次启动MySQL实例还是会读取参数文件，因为若想修改的参数一直有效，用户需要修改参数文件。 静态参数(static)
+对于静态变量的修改，会得到read only的错误提示  2. 日志文件 日志文件记录了MySQL数据库的各种类型活动，常见的日志文件有:
+ 错误日志(err log) 二进制日志(binlog) 慢查询日志(slow query log) 查询日志(log)  2.1 错误日志 错误日志文件记录对MySQL的启动、运动、和关闭过程。
+用户可以通过命令SHOW VARIABLES LIKE &amp;lsquo;log_error&amp;rsquo;来定位该文件，如:
+mysql root@127.0.0.1:test&amp;gt; show variables like &amp;#39;log_error&amp;#39; +---------------+--------------------------+ | Variable_name | Value | +---------------+--------------------------+ | log_error | /var/log/mysql/error.</description>
+    </item>
+    
     <item>
       <title>2. The Basics </title>
       <link>/p/2.-the-basics/</link>
@@ -36,26 +56,6 @@ InnoDB 1.0版本之前共有4个IO Thread: write, read, insert buffer and log IO
 从InnoDB 1.2版本开始，支持多个 Purge Thread, 从而加快undo页的回收；
 另外 Purge Thread 离散地读取 undo 页，可以利用磁盘的随机读取性能。
 mysql root@127.0.0.1:test&amp;gt; show variables like &amp;#39;innodb_purge_threads&amp;#39; \G ***************************[ 1.</description>
-    </item>
-    
-    <item>
-      <title>cp3. Files</title>
-      <link>/p/cp3.-files/</link>
-      <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
-      
-      <guid>/p/cp3.-files/</guid>
-      <description>Statement  该文是在下在看书过程中的学习笔记，仅限于学习交流，禁止用于商业用途。 非商业用途转载请注明出处，若要详细了解书中内容，请参考原作: MySQL技术内幕（InnoDB存储引擎）。  MySQL 数据库和 InnoDB 存储数据表的各种类型文件：
- 参数文件 日志文件 socket文件 pid文件 MySQL表结构文件 存储引擎文件  1. 参数文件 MySQL不同于Oracle，即使没有参数文件也可以启动，此时所有的参数取决于编译MySQL时指定的默认值。
-但MySQL的启动依赖数据库目录下的mysql加构文件。
-1.1 参数 推荐可以通过命令SHOW VARIABLES 查看数据库中的所有参数，也可能通过LIKE来过滤参数
-从MySQL5.1开始，可以通过information_schema架构下的GLOBAL_VARIABLES视图来进行查找。
-1.2 参数类型  动态参数(dynamic)
-可以在MySQL运行过程中修改的参数，global和session关键字，表明该参数的修改是基于当前会话，不是整个实例的生命周期。
-但在下次启动MySQL实例还是会读取参数文件，因为若想修改的参数一直有效，用户需要修改参数文件。 静态参数(static)
-对于静态变量的修改，会得到read only的错误提示  2. 日志文件 日志文件记录了MySQL数据库的各种类型活动，常见的日志文件有:
- 错误日志(err log) 二进制日志(binlog) 慢查询日志(slow query log) 查询日志(log)  2.1 错误日志 错误日志文件记录对MySQL的启动、运动、和关闭过程。
-用户可以通过命令SHOW VARIABLES LIKE &amp;lsquo;log_error&amp;rsquo;来定位该文件，如:
-mysql root@127.0.0.1:test&amp;gt; show variables like &amp;#39;log_error&amp;#39; +---------------+--------------------------+ | Variable_name | Value | +---------------+--------------------------+ | log_error | /var/log/mysql/error.</description>
     </item>
     
     <item>
