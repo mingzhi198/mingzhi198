@@ -4632,7 +4632,7 @@ A[Hard edge] --&amp;gt; |Link text| B(Round edge)
 B --&amp;gt; C{Decision}
 C --&amp;gt; |One| D[Result One]
 C --&amp;gt; |Two| E[Result Two]
-&lt;/code&gt;&lt;/pre&gt;&lt;pre&gt;&lt;code class=&#34;language-Mermaid&#34; data-lang=&#34;Mermaid&#34;&gt;graph TB
+&lt;/code&gt;&lt;/pre&gt;&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;graph TB
     main --&amp;gt; parse --&amp;gt; execute;
     main --&amp;gt; init;
     main --&amp;gt; cleanup;
@@ -4653,7 +4653,7 @@ C --&amp;gt; |Two| E[Result Two]
   B --&amp;gt; C{扔硬币}
   C --&amp;gt;|正面朝上| D[喝牛奶]
   C --&amp;gt;|反面朝上| E[喝果汁]
-  C --&amp;gt;|金枪不倒| F[(看情况)]
+  C --&amp;gt;|刷牙| F[(看情况)]
   A --&amp;gt;|穿衣服| G([跳绳])
   A --&amp;gt; H{{洗澡}}
 &lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
