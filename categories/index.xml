@@ -8,9 +8,18 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 01 Jun 2021 10:08:08 +0800</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Database</title>
+      <link>/categories/database/</link>
+      <pubDate>Tue, 01 Jun 2021 10:08:08 +0800</pubDate>
+      
+      <guid>/categories/database/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>MySQL技术内幕</title>
       <link>/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</link>
-      <pubDate>Tue, 01 Jun 2021 10:08:08 +0800</pubDate>
+      <pubDate>Mon, 05 Apr 2021 18:36:08 +0800</pubDate>
       
       <guid>/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</guid>
       <description></description>

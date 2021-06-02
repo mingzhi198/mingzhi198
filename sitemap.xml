@@ -5,6 +5,9 @@
     <loc>/categories/</loc>
     <lastmod>2021-06-01T10:08:08+08:00</lastmod>
   </url><url>
+    <loc>/categories/database/</loc>
+    <lastmod>2021-06-01T10:08:08+08:00</lastmod>
+  </url><url>
     <loc>/</loc>
     <lastmod>2021-06-01T10:08:08+08:00</lastmod>
   </url><url>
@@ -12,9 +15,6 @@
     <lastmod>2021-06-01T10:08:08+08:00</lastmod>
   </url><url>
     <loc>/p/mongodb-index/</loc>
-    <lastmod>2021-06-01T10:08:08+08:00</lastmod>
-  </url><url>
-    <loc>/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</loc>
     <lastmod>2021-06-01T10:08:08+08:00</lastmod>
   </url><url>
     <loc>/post/</loc>
@@ -30,6 +30,9 @@
     <lastmod>2021-04-05T18:36:08+08:00</lastmod>
   </url><url>
     <loc>/tags/mysql/</loc>
+    <lastmod>2021-04-05T18:36:08+08:00</lastmod>
+  </url><url>
+    <loc>/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/</loc>
     <lastmod>2021-04-05T18:36:08+08:00</lastmod>
   </url><url>
     <loc>/p/cp3.-files/</loc>
