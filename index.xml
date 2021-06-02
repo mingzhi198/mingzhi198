@@ -6,7 +6,185 @@
         <description>Recent content on Li. Mingzhi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Mon, 05 Apr 2021 18:36:08 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 01 Jun 2021 10:08:08 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>MongoDB Index</title>
+        <link>/p/mongodb-index/</link>
+        <pubDate>Tue, 01 Jun 2021 10:08:08 +0800</pubDate>
+        
+        <guid>/p/mongodb-index/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;This article is my study notes from &lt;a class=&#34;link&#34; href=&#34;https://docs.mongodb.com/manual/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;mongodb manual&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;index-names&#34;&gt;Index Names&lt;/h2&gt;
+&lt;h2 id=&#34;evaluate-the-performance-of-a-query&#34;&gt;Evaluate the Performance of a Query&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mongo&#34; data-lang=&#34;mongo&#34;&gt;db.inventory.find(
+   { quantity: { $gte: 100, $lte: 200 } }
+   ).explain(&amp;quot;executionStats&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;query results:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+	&amp;quot;queryPlanner&amp;quot; : {
+		&amp;quot;plannerVersion&amp;quot; : 1,
+		&amp;quot;namespace&amp;quot; : &amp;quot;test.inventory&amp;quot;,
+		&amp;quot;indexFilterSet&amp;quot; : false,
+		&amp;quot;parsedQuery&amp;quot; : {
+			&amp;quot;$and&amp;quot; : [
+				{
+					&amp;quot;quantity&amp;quot; : {
+						&amp;quot;$lte&amp;quot; : 200
+					}
+				},
+				{
+					&amp;quot;quantity&amp;quot; : {
+						&amp;quot;$gte&amp;quot; : 100
+					}
+				}
+			]
+		},
+		&amp;quot;winningPlan&amp;quot; : {
+			&amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;,
+			&amp;quot;filter&amp;quot; : {
+				&amp;quot;$and&amp;quot; : [
+					{
+						&amp;quot;quantity&amp;quot; : {
+							&amp;quot;$lte&amp;quot; : 200
+						}
+					},
+					{
+						&amp;quot;quantity&amp;quot; : {
+							&amp;quot;$gte&amp;quot; : 100
+						}
+					}
+				]
+			},
+			&amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot;
+		},
+		&amp;quot;rejectedPlans&amp;quot; : [ ]
+	},
+	&amp;quot;executionStats&amp;quot; : {
+		&amp;quot;executionSuccess&amp;quot; : true,
+		&amp;quot;nReturned&amp;quot; : 3,
+		&amp;quot;executionTimeMillis&amp;quot; : 0,
+		&amp;quot;totalKeysExamined&amp;quot; : 0,
+		&amp;quot;totalDocsExamined&amp;quot; : 10,
+		&amp;quot;executionStages&amp;quot; : {
+			&amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;,
+			&amp;quot;filter&amp;quot; : {
+				&amp;quot;$and&amp;quot; : [
+					{
+						&amp;quot;quantity&amp;quot; : {
+							&amp;quot;$lte&amp;quot; : 200
+						}
+					},
+					{
+						&amp;quot;quantity&amp;quot; : {
+							&amp;quot;$gte&amp;quot; : 100
+						}
+					}
+				]
+			},
+			&amp;quot;nReturned&amp;quot; : 3,
+			&amp;quot;executionTimeMillisEstimate&amp;quot; : 0,
+			&amp;quot;works&amp;quot; : 12,
+			&amp;quot;advanced&amp;quot; : 3,
+			&amp;quot;needTime&amp;quot; : 8,
+			&amp;quot;needYield&amp;quot; : 0,
+			&amp;quot;saveState&amp;quot; : 0,
+			&amp;quot;restoreState&amp;quot; : 0,
+			&amp;quot;isEOF&amp;quot; : 1,
+			&amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot;,
+			&amp;quot;docsExamined&amp;quot; : 10
+		}
+	},
+	&amp;quot;serverInfo&amp;quot; : {
+		&amp;quot;host&amp;quot; : &amp;quot;sdj&amp;quot;,
+		&amp;quot;port&amp;quot; : 27017,
+		&amp;quot;version&amp;quot; : &amp;quot;4.4.6&amp;quot;,
+		&amp;quot;gitVersion&amp;quot; : &amp;quot;72e66213c2c3eab37d9358d5e78ad7f5c1d0d0d7&amp;quot;
+	},
+	&amp;quot;ok&amp;quot; : 1
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;queryPlanner.winningPlan.stage&lt;br&gt;
+displays COLLSCAN to indicate a collection scan.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Collection scans indicate that the mongod had to scan the entire collection document by document to identify the results.&lt;br&gt;
+This is a generally expensive operation and can result in slow queries.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.nReturned&lt;br&gt;
+displays 3 to indicate that the query matches and returns three documents.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.totalKeysExamined&lt;br&gt;
+displays 0 to indicate that this is query is not using an index.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.totalDocsExamined&lt;br&gt;
+displays 10 to indicate that MongoDB had to scan ten documents&lt;br&gt;
+(i.e. all documents in the collection) to find the three matching documents.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;create-an-index&#34;&gt;Create an Index&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mongo&#34; data-lang=&#34;mongo&#34;&gt;db.inventory.createIndex( { quantity: 1 } )
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We can check the query plan statistics by using explain method:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mongo&#34; data-lang=&#34;mongo&#34;&gt;db.inventory.find(
+   { quantity: { $gte: 100, $lte: 200 } }
+).explain(&amp;quot;executionStats&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;query results:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mongo&#34; data-lang=&#34;mongo&#34;&gt;{
+   &amp;quot;queryPlanner&amp;quot; : {
+         &amp;quot;plannerVersion&amp;quot; : 1,
+         ...
+         &amp;quot;winningPlan&amp;quot; : {
+               &amp;quot;stage&amp;quot; : &amp;quot;FETCH&amp;quot;,
+               &amp;quot;inputStage&amp;quot; : {
+                  &amp;quot;stage&amp;quot; : &amp;quot;IXSCAN&amp;quot;,
+                  &amp;quot;keyPattern&amp;quot; : {
+                     &amp;quot;quantity&amp;quot; : 1
+                  },
+                  ...
+               }
+         },
+         &amp;quot;rejectedPlans&amp;quot; : [ ]
+   },
+   &amp;quot;executionStats&amp;quot; : {
+         &amp;quot;executionSuccess&amp;quot; : true,
+         &amp;quot;nReturned&amp;quot; : 3,
+         &amp;quot;executionTimeMillis&amp;quot; : 0,
+         &amp;quot;totalKeysExamined&amp;quot; : 3,
+         &amp;quot;totalDocsExamined&amp;quot; : 3,
+         &amp;quot;executionStages&amp;quot; : {
+            ...
+         },
+         ...
+   },
+   ...
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;queryPlanner.winningPlan.inputStage.stage displays IXSCAN to indicate index use.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.nReturned&lt;br&gt;
+displays 3 to indicate that the query matches and returns three documents.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.totalKeysExamined&lt;br&gt;
+displays 3 to indicate that MongoDB scanned three index entries. The number of keys examined match the number of documents returned, meaning that the mongod only had to examine index keys to return the results. The mongod did not have to scan all of the documents, and only the three matching documents had to be pulled into memory. This results in a very efficient query.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.totalDocsExamined&lt;br&gt;
+display 3 to indicate that MongoDB scanned three documents.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>cp4. Tables</title>
         <link>/p/cp4.-tables/</link>
         <pubDate>Mon, 05 Apr 2021 18:36:08 +0800</pubDate>

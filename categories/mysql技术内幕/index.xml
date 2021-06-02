@@ -6,7 +6,17 @@
     <description>Recent content in MySQL技术内幕 on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 05 Apr 2021 18:36:08 +0800</lastBuildDate><atom:link href="/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Jun 2021 10:08:08 +0800</lastBuildDate><atom:link href="/categories/mysql%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MongoDB Index</title>
+      <link>/p/mongodb-index/</link>
+      <pubDate>Tue, 01 Jun 2021 10:08:08 +0800</pubDate>
+      
+      <guid>/p/mongodb-index/</guid>
+      <description>Statement  This article is my study notes from mongodb manual. Please refer to the original work for more details and indicate the source for reprinting.  Index Names Evaluate the Performance of a Query db.inventory.find( { quantity: { $gte: 100, $lte: 200 } } ).explain(&amp;quot;executionStats&amp;quot;) query results:
+{ &amp;quot;queryPlanner&amp;quot; : { &amp;quot;plannerVersion&amp;quot; : 1, &amp;quot;namespace&amp;quot; : &amp;quot;test.inventory&amp;quot;, &amp;quot;indexFilterSet&amp;quot; : false, &amp;quot;parsedQuery&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;winningPlan&amp;quot; : { &amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;, &amp;quot;filter&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot; }, &amp;quot;rejectedPlans&amp;quot; : [ ] }, &amp;quot;executionStats&amp;quot; : { &amp;quot;executionSuccess&amp;quot; : true, &amp;quot;nReturned&amp;quot; : 3, &amp;quot;executionTimeMillis&amp;quot; : 0, &amp;quot;totalKeysExamined&amp;quot; : 0, &amp;quot;totalDocsExamined&amp;quot; : 10, &amp;quot;executionStages&amp;quot; : { &amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;, &amp;quot;filter&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;nReturned&amp;quot; : 3, &amp;quot;executionTimeMillisEstimate&amp;quot; : 0, &amp;quot;works&amp;quot; : 12, &amp;quot;advanced&amp;quot; : 3, &amp;quot;needTime&amp;quot; : 8, &amp;quot;needYield&amp;quot; : 0, &amp;quot;saveState&amp;quot; : 0, &amp;quot;restoreState&amp;quot; : 0, &amp;quot;isEOF&amp;quot; : 1, &amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot;, &amp;quot;docsExamined&amp;quot; : 10 } }, &amp;quot;serverInfo&amp;quot; : { &amp;quot;host&amp;quot; : &amp;quot;sdj&amp;quot;, &amp;quot;port&amp;quot; : 27017, &amp;quot;version&amp;quot; : &amp;quot;4.</description>
+    </item>
+    
     <item>
       <title>cp4. Tables</title>
       <link>/p/cp4.-tables/</link>
