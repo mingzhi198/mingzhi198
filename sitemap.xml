@@ -5,13 +5,13 @@
     <loc>/categories/</loc>
     <lastmod>2021-06-01T10:08:08+08:00</lastmod>
   </url><url>
-    <loc>/categories/database/</loc>
-    <lastmod>2021-06-01T10:08:08+08:00</lastmod>
-  </url><url>
     <loc>/</loc>
     <lastmod>2021-06-01T10:08:08+08:00</lastmod>
   </url><url>
     <loc>/tags/mongodb/</loc>
+    <lastmod>2021-06-01T10:08:08+08:00</lastmod>
+  </url><url>
+    <loc>/categories/mongodb/</loc>
     <lastmod>2021-06-01T10:08:08+08:00</lastmod>
   </url><url>
     <loc>/p/mongodb-index/</loc>
