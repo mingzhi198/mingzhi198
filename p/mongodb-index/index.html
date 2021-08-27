@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Statement  This article is my study notes from mongodb manual. Please refer to the original work for more details and indicate the source for reprinting.  Index Names Evaluate the Performance of a Query db.inventory.find( { quantity: { $gte: 100, $lte: 200 } } ).explain(&amp;quot;executionStats&amp;quot;) query results:
+{ &amp;quot;queryPlanner&amp;quot; : { &amp;quot;plannerVersion&amp;quot; : 1, &amp;quot;namespace&amp;quot; : &amp;quot;test.inventory&amp;quot;, &amp;quot;indexFilterSet&amp;quot; : false, &amp;quot;parsedQuery&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;winningPlan&amp;quot; : { &amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;, &amp;quot;filter&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot; }, &amp;quot;rejectedPlans&amp;quot; : [ ] }, &amp;quot;executionStats&amp;quot; : { &amp;quot;executionSuccess&amp;quot; : true, &amp;quot;nReturned&amp;quot; : 3, &amp;quot;executionTimeMillis&amp;quot; : 0, &amp;quot;totalKeysExamined&amp;quot; : 0, &amp;quot;totalDocsExamined&amp;quot; : 10, &amp;quot;executionStages&amp;quot; : { &amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;, &amp;quot;filter&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;nReturned&amp;quot; : 3, &amp;quot;executionTimeMillisEstimate&amp;quot; : 0, &amp;quot;works&amp;quot; : 12, &amp;quot;advanced&amp;quot; : 3, &amp;quot;needTime&amp;quot; : 8, &amp;quot;needYield&amp;quot; : 0, &amp;quot;saveState&amp;quot; : 0, &amp;quot;restoreState&amp;quot; : 0, &amp;quot;isEOF&amp;quot; : 1, &amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot;, &amp;quot;docsExamined&amp;quot; : 10 } }, &amp;quot;serverInfo&amp;quot; : { &amp;quot;host&amp;quot; : &amp;quot;sdj&amp;quot;, &amp;quot;port&amp;quot; : 27017, &amp;quot;version&amp;quot; : &amp;quot;4.'><title>MongoDB Index</title>
+
+<link rel='canonical' href='/p/mongodb-index/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='MongoDB Index'>
+<meta property='og:description' content='Statement  This article is my study notes from mongodb manual. Please refer to the original work for more details and indicate the source for reprinting.  Index Names Evaluate the Performance of a Query db.inventory.find( { quantity: { $gte: 100, $lte: 200 } } ).explain(&amp;quot;executionStats&amp;quot;) query results:
+{ &amp;quot;queryPlanner&amp;quot; : { &amp;quot;plannerVersion&amp;quot; : 1, &amp;quot;namespace&amp;quot; : &amp;quot;test.inventory&amp;quot;, &amp;quot;indexFilterSet&amp;quot; : false, &amp;quot;parsedQuery&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;winningPlan&amp;quot; : { &amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;, &amp;quot;filter&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot; }, &amp;quot;rejectedPlans&amp;quot; : [ ] }, &amp;quot;executionStats&amp;quot; : { &amp;quot;executionSuccess&amp;quot; : true, &amp;quot;nReturned&amp;quot; : 3, &amp;quot;executionTimeMillis&amp;quot; : 0, &amp;quot;totalKeysExamined&amp;quot; : 0, &amp;quot;totalDocsExamined&amp;quot; : 10, &amp;quot;executionStages&amp;quot; : { &amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;, &amp;quot;filter&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;nReturned&amp;quot; : 3, &amp;quot;executionTimeMillisEstimate&amp;quot; : 0, &amp;quot;works&amp;quot; : 12, &amp;quot;advanced&amp;quot; : 3, &amp;quot;needTime&amp;quot; : 8, &amp;quot;needYield&amp;quot; : 0, &amp;quot;saveState&amp;quot; : 0, &amp;quot;restoreState&amp;quot; : 0, &amp;quot;isEOF&amp;quot; : 1, &amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot;, &amp;quot;docsExamined&amp;quot; : 10 } }, &amp;quot;serverInfo&amp;quot; : { &amp;quot;host&amp;quot; : &amp;quot;sdj&amp;quot;, &amp;quot;port&amp;quot; : 27017, &amp;quot;version&amp;quot; : &amp;quot;4.'>
+<meta property='og:url' content='/p/mongodb-index/'>
+<meta property='og:site_name' content='Li. Mingzhi'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='MongoDB' /><meta property='article:published_time' content='2021-06-01T10:08:08&#43;08:00'/><meta property='article:modified_time' content='2021-06-01T10:08:08&#43;08:00'/>
+<meta name="twitter:title" content="MongoDB Index">
+<meta name="twitter:description" content="Statement  This article is my study notes from mongodb manual. Please refer to the original work for more details and indicate the source for reprinting.  Index Names Evaluate the Performance of a Query db.inventory.find( { quantity: { $gte: 100, $lte: 200 } } ).explain(&amp;quot;executionStats&amp;quot;) query results:
+{ &amp;quot;queryPlanner&amp;quot; : { &amp;quot;plannerVersion&amp;quot; : 1, &amp;quot;namespace&amp;quot; : &amp;quot;test.inventory&amp;quot;, &amp;quot;indexFilterSet&amp;quot; : false, &amp;quot;parsedQuery&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;winningPlan&amp;quot; : { &amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;, &amp;quot;filter&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot; }, &amp;quot;rejectedPlans&amp;quot; : [ ] }, &amp;quot;executionStats&amp;quot; : { &amp;quot;executionSuccess&amp;quot; : true, &amp;quot;nReturned&amp;quot; : 3, &amp;quot;executionTimeMillis&amp;quot; : 0, &amp;quot;totalKeysExamined&amp;quot; : 0, &amp;quot;totalDocsExamined&amp;quot; : 10, &amp;quot;executionStages&amp;quot; : { &amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;, &amp;quot;filter&amp;quot; : { &amp;quot;$and&amp;quot; : [ { &amp;quot;quantity&amp;quot; : { &amp;quot;$lte&amp;quot; : 200 } }, { &amp;quot;quantity&amp;quot; : { &amp;quot;$gte&amp;quot; : 100 } } ] }, &amp;quot;nReturned&amp;quot; : 3, &amp;quot;executionTimeMillisEstimate&amp;quot; : 0, &amp;quot;works&amp;quot; : 12, &amp;quot;advanced&amp;quot; : 3, &amp;quot;needTime&amp;quot; : 8, &amp;quot;needYield&amp;quot; : 0, &amp;quot;saveState&amp;quot; : 0, &amp;quot;restoreState&amp;quot; : 0, &amp;quot;isEOF&amp;quot; : 1, &amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot;, &amp;quot;docsExamined&amp;quot; : 10 } }, &amp;quot;serverInfo&amp;quot; : { &amp;quot;host&amp;quot; : &amp;quot;sdj&amp;quot;, &amp;quot;port&amp;quot; : 27017, &amp;quot;version&amp;quot; : &amp;quot;4.">
+    </head>
+    <body class="">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            localStorage.setItem(colorSchemeKey, "auto");
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.body.dataset.scheme = 'dark';
+        } else {
+            document.body.dataset.scheme = 'light';
+        }
+    })();
+</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    
+                    
+                    
+                        
+                        <img src="/images/avatar_hu293ca6c6e78e5e0367766a16589f1967_47660_300x0_resize_q75_box.jpeg" width="300"
+                            height="405" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+
+                
+            </figure>
+        
+        <h1 class="site-name"><a href="">Li. Mingzhi</a></h1>
+        <h2 class="site-description">I am a Backend Software Engineer focusing on system design and algorithm(^_^). 
+        Progress one percent per day...</h2>
+    </header>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/p/resume/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About Me</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/archives/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/search/index.html'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <div id="article-toolbar">
+        <a href="" class="back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+            <span>Back</span>
+        </a>
+    </div>
+
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mongodb/" >
+                MongoDB
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/mongodb-index/">MongoDB Index</a>
+    </h2>
+
+    <footer class="article-time">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <time class="article-time--published">Jun 01, 2021</time>
+    </footer></div>
+</header>
+
+    <section class="article-content">
+    <h1 id="statement">Statement</h1>
+<ul>
+<li>This article is my study notes from <a class="link" href="https://docs.mongodb.com/manual/"  target="_blank" rel="noopener"
+    >mongodb manual</a>.</li>
+<li>Please refer to the original work for more details and indicate the source for reprinting.</li>
+</ul>
+<h2 id="index-names">Index Names</h2>
+<h2 id="evaluate-the-performance-of-a-query">Evaluate the Performance of a Query</h2>
+<pre><code class="language-mongo" data-lang="mongo">db.inventory.find(
+   { quantity: { $gte: 100, $lte: 200 } }
+   ).explain(&quot;executionStats&quot;)
+</code></pre><p>query results:</p>
+<pre><code>{
+	&quot;queryPlanner&quot; : {
+		&quot;plannerVersion&quot; : 1,
+		&quot;namespace&quot; : &quot;test.inventory&quot;,
+		&quot;indexFilterSet&quot; : false,
+		&quot;parsedQuery&quot; : {
+			&quot;$and&quot; : [
+				{
+					&quot;quantity&quot; : {
+						&quot;$lte&quot; : 200
+					}
+				},
+				{
+					&quot;quantity&quot; : {
+						&quot;$gte&quot; : 100
+					}
+				}
+			]
+		},
+		&quot;winningPlan&quot; : {
+			&quot;stage&quot; : &quot;COLLSCAN&quot;,
+			&quot;filter&quot; : {
+				&quot;$and&quot; : [
+					{
+						&quot;quantity&quot; : {
+							&quot;$lte&quot; : 200
+						}
+					},
+					{
+						&quot;quantity&quot; : {
+							&quot;$gte&quot; : 100
+						}
+					}
+				]
+			},
+			&quot;direction&quot; : &quot;forward&quot;
+		},
+		&quot;rejectedPlans&quot; : [ ]
+	},
+	&quot;executionStats&quot; : {
+		&quot;executionSuccess&quot; : true,
+		&quot;nReturned&quot; : 3,
+		&quot;executionTimeMillis&quot; : 0,
+		&quot;totalKeysExamined&quot; : 0,
+		&quot;totalDocsExamined&quot; : 10,
+		&quot;executionStages&quot; : {
+			&quot;stage&quot; : &quot;COLLSCAN&quot;,
+			&quot;filter&quot; : {
+				&quot;$and&quot; : [
+					{
+						&quot;quantity&quot; : {
+							&quot;$lte&quot; : 200
+						}
+					},
+					{
+						&quot;quantity&quot; : {
+							&quot;$gte&quot; : 100
+						}
+					}
+				]
+			},
+			&quot;nReturned&quot; : 3,
+			&quot;executionTimeMillisEstimate&quot; : 0,
+			&quot;works&quot; : 12,
+			&quot;advanced&quot; : 3,
+			&quot;needTime&quot; : 8,
+			&quot;needYield&quot; : 0,
+			&quot;saveState&quot; : 0,
+			&quot;restoreState&quot; : 0,
+			&quot;isEOF&quot; : 1,
+			&quot;direction&quot; : &quot;forward&quot;,
+			&quot;docsExamined&quot; : 10
+		}
+	},
+	&quot;serverInfo&quot; : {
+		&quot;host&quot; : &quot;sdj&quot;,
+		&quot;port&quot; : 27017,
+		&quot;version&quot; : &quot;4.4.6&quot;,
+		&quot;gitVersion&quot; : &quot;72e66213c2c3eab37d9358d5e78ad7f5c1d0d0d7&quot;
+	},
+	&quot;ok&quot; : 1
+}
+</code></pre><ul>
+<li>queryPlanner.winningPlan.stage<br>
+displays COLLSCAN to indicate a collection scan.</li>
+</ul>
+<p>Collection scans indicate that the mongod had to scan the entire collection document by document to identify the results.<br>
+This is a generally expensive operation and can result in slow queries.</p>
+<ul>
+<li>
+<p>executionStats.nReturned<br>
+displays 3 to indicate that the query matches and returns three documents.</p>
+</li>
+<li>
+<p>executionStats.totalKeysExamined<br>
+displays 0 to indicate that this is query is not using an index.</p>
+</li>
+<li>
+<p>executionStats.totalDocsExamined<br>
+displays 10 to indicate that MongoDB had to scan ten documents<br>
+(i.e. all documents in the collection) to find the three matching documents.</p>
+</li>
+</ul>
+<h2 id="create-an-index">Create an Index</h2>
+<pre><code class="language-mongo" data-lang="mongo">db.inventory.createIndex( { quantity: 1 } )
+</code></pre><p>We can check the query plan statistics by using explain method:</p>
+<pre><code class="language-mongo" data-lang="mongo">db.inventory.find(
+   { quantity: { $gte: 100, $lte: 200 } }
+).explain(&quot;executionStats&quot;)
+</code></pre><blockquote>
+<p>query results:</p>
+</blockquote>
+<pre><code class="language-mongo" data-lang="mongo">{
+   &quot;queryPlanner&quot; : {
+         &quot;plannerVersion&quot; : 1,
+         ...
+         &quot;winningPlan&quot; : {
+               &quot;stage&quot; : &quot;FETCH&quot;,
+               &quot;inputStage&quot; : {
+                  &quot;stage&quot; : &quot;IXSCAN&quot;,
+                  &quot;keyPattern&quot; : {
+                     &quot;quantity&quot; : 1
+                  },
+                  ...
+               }
+         },
+         &quot;rejectedPlans&quot; : [ ]
+   },
+   &quot;executionStats&quot; : {
+         &quot;executionSuccess&quot; : true,
+         &quot;nReturned&quot; : 3,
+         &quot;executionTimeMillis&quot; : 0,
+         &quot;totalKeysExamined&quot; : 3,
+         &quot;totalDocsExamined&quot; : 3,
+         &quot;executionStages&quot; : {
+            ...
+         },
+         ...
+   },
+   ...
+}
+</code></pre><ul>
+<li>
+<p>queryPlanner.winningPlan.inputStage.stage displays IXSCAN to indicate index use.</p>
+</li>
+<li>
+<p>executionStats.nReturned<br>
+displays 3 to indicate that the query matches and returns three documents.</p>
+</li>
+<li>
+<p>executionStats.totalKeysExamined<br>
+displays 3 to indicate that MongoDB scanned three index entries. The number of keys examined match the number of documents returned, meaning that the mongod only had to examine index keys to return the results. The mongod did not have to scan all of the documents, and only the three matching documents had to be pulled into memory. This results in a very efficient query.</p>
+</li>
+<li>
+<p>executionStats.totalDocsExamined<br>
+display 3 to indicate that MongoDB scanned three documents.</p>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/mongodb/">MongoDB</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+</aside>
+
+
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2021 Li. Mingzhi
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

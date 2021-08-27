@@ -6,7 +6,16 @@
     <description>Recent content in Tags on Li. Mingzhi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 05 Apr 2021 18:36:08 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Jun 2021 10:08:08 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MongoDB</title>
+      <link>/tags/mongodb/</link>
+      <pubDate>Tue, 01 Jun 2021 10:08:08 +0800</pubDate>
+      
+      <guid>/tags/mongodb/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>InnoDB</title>
       <link>/tags/innodb/</link>

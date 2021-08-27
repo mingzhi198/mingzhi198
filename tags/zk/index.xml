@@ -13,6 +13,27 @@
       <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
       
       <guid>/p/zk-1.-introduction-to-zookeeper/</guid>
+      <description>Statement  该文是在下在看书过程中的学习笔记，仅限于学习交流，禁止用于商业用途。 非商业用途转载请注明出处，若要详细了解书中内容，请参考原作: MySQL技术内幕（InnoDB存储引擎）。  1. Nginx的五大模块 Nginx由不同功能的模块组成，这些模块会根据配置参数决定其行为。
+在 configure的参数中，有为五大类模块：
+ 事件模块 默认编译的HTTP模块 默认不编译的HTTP模块 邮件代理服务相关的mail模块 其它模块  2. Nginx的8类配置项   虚拟主机与请求的分发
+  文件路径的定义
+  内存及磁盘资源的分配
+  网络连接的设置
+  MIME类型的设置
+  对客户端请求的限制
+  文件操作的优化
+  对客户端请求的特殊处理
+  参考
+https://zhuanlan.zhihu.com/p/34156758
+  </description>
+    </item>
+    
+    <item>
+      <title>ZK 1. Introduction to Zookeeper </title>
+      <link>/p/zk-1.-introduction-to-zookeeper/</link>
+      <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
+      
+      <guid>/p/zk-1.-introduction-to-zookeeper/</guid>
       <description>Statement  This article is my study notes about Zookeeper. Please refer to the original work for more details and indicate the source for reprinting.  1. zookeeper是一个顺序一致性的分布式数据库 多个节点共同组成一个分布式集群，挂掉任意一个节点，
 数据库仍然可以正常工作，客户端无感知故障切换。
 客户端向任意一个节点写入数据，其它节点可以立即看到最新的数据。

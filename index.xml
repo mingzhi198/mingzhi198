@@ -6,7 +6,185 @@
         <description>Recent content on Li. Mingzhi</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Mon, 05 Apr 2021 18:36:08 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 01 Jun 2021 10:08:08 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>MongoDB Index</title>
+        <link>/p/mongodb-index/</link>
+        <pubDate>Tue, 01 Jun 2021 10:08:08 +0800</pubDate>
+        
+        <guid>/p/mongodb-index/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;This article is my study notes from &lt;a class=&#34;link&#34; href=&#34;https://docs.mongodb.com/manual/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;mongodb manual&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Please refer to the original work for more details and indicate the source for reprinting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;index-names&#34;&gt;Index Names&lt;/h2&gt;
+&lt;h2 id=&#34;evaluate-the-performance-of-a-query&#34;&gt;Evaluate the Performance of a Query&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mongo&#34; data-lang=&#34;mongo&#34;&gt;db.inventory.find(
+   { quantity: { $gte: 100, $lte: 200 } }
+   ).explain(&amp;quot;executionStats&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;query results:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+	&amp;quot;queryPlanner&amp;quot; : {
+		&amp;quot;plannerVersion&amp;quot; : 1,
+		&amp;quot;namespace&amp;quot; : &amp;quot;test.inventory&amp;quot;,
+		&amp;quot;indexFilterSet&amp;quot; : false,
+		&amp;quot;parsedQuery&amp;quot; : {
+			&amp;quot;$and&amp;quot; : [
+				{
+					&amp;quot;quantity&amp;quot; : {
+						&amp;quot;$lte&amp;quot; : 200
+					}
+				},
+				{
+					&amp;quot;quantity&amp;quot; : {
+						&amp;quot;$gte&amp;quot; : 100
+					}
+				}
+			]
+		},
+		&amp;quot;winningPlan&amp;quot; : {
+			&amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;,
+			&amp;quot;filter&amp;quot; : {
+				&amp;quot;$and&amp;quot; : [
+					{
+						&amp;quot;quantity&amp;quot; : {
+							&amp;quot;$lte&amp;quot; : 200
+						}
+					},
+					{
+						&amp;quot;quantity&amp;quot; : {
+							&amp;quot;$gte&amp;quot; : 100
+						}
+					}
+				]
+			},
+			&amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot;
+		},
+		&amp;quot;rejectedPlans&amp;quot; : [ ]
+	},
+	&amp;quot;executionStats&amp;quot; : {
+		&amp;quot;executionSuccess&amp;quot; : true,
+		&amp;quot;nReturned&amp;quot; : 3,
+		&amp;quot;executionTimeMillis&amp;quot; : 0,
+		&amp;quot;totalKeysExamined&amp;quot; : 0,
+		&amp;quot;totalDocsExamined&amp;quot; : 10,
+		&amp;quot;executionStages&amp;quot; : {
+			&amp;quot;stage&amp;quot; : &amp;quot;COLLSCAN&amp;quot;,
+			&amp;quot;filter&amp;quot; : {
+				&amp;quot;$and&amp;quot; : [
+					{
+						&amp;quot;quantity&amp;quot; : {
+							&amp;quot;$lte&amp;quot; : 200
+						}
+					},
+					{
+						&amp;quot;quantity&amp;quot; : {
+							&amp;quot;$gte&amp;quot; : 100
+						}
+					}
+				]
+			},
+			&amp;quot;nReturned&amp;quot; : 3,
+			&amp;quot;executionTimeMillisEstimate&amp;quot; : 0,
+			&amp;quot;works&amp;quot; : 12,
+			&amp;quot;advanced&amp;quot; : 3,
+			&amp;quot;needTime&amp;quot; : 8,
+			&amp;quot;needYield&amp;quot; : 0,
+			&amp;quot;saveState&amp;quot; : 0,
+			&amp;quot;restoreState&amp;quot; : 0,
+			&amp;quot;isEOF&amp;quot; : 1,
+			&amp;quot;direction&amp;quot; : &amp;quot;forward&amp;quot;,
+			&amp;quot;docsExamined&amp;quot; : 10
+		}
+	},
+	&amp;quot;serverInfo&amp;quot; : {
+		&amp;quot;host&amp;quot; : &amp;quot;sdj&amp;quot;,
+		&amp;quot;port&amp;quot; : 27017,
+		&amp;quot;version&amp;quot; : &amp;quot;4.4.6&amp;quot;,
+		&amp;quot;gitVersion&amp;quot; : &amp;quot;72e66213c2c3eab37d9358d5e78ad7f5c1d0d0d7&amp;quot;
+	},
+	&amp;quot;ok&amp;quot; : 1
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;queryPlanner.winningPlan.stage&lt;br&gt;
+displays COLLSCAN to indicate a collection scan.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Collection scans indicate that the mongod had to scan the entire collection document by document to identify the results.&lt;br&gt;
+This is a generally expensive operation and can result in slow queries.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.nReturned&lt;br&gt;
+displays 3 to indicate that the query matches and returns three documents.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.totalKeysExamined&lt;br&gt;
+displays 0 to indicate that this is query is not using an index.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.totalDocsExamined&lt;br&gt;
+displays 10 to indicate that MongoDB had to scan ten documents&lt;br&gt;
+(i.e. all documents in the collection) to find the three matching documents.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;create-an-index&#34;&gt;Create an Index&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mongo&#34; data-lang=&#34;mongo&#34;&gt;db.inventory.createIndex( { quantity: 1 } )
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We can check the query plan statistics by using explain method:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mongo&#34; data-lang=&#34;mongo&#34;&gt;db.inventory.find(
+   { quantity: { $gte: 100, $lte: 200 } }
+).explain(&amp;quot;executionStats&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;query results:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mongo&#34; data-lang=&#34;mongo&#34;&gt;{
+   &amp;quot;queryPlanner&amp;quot; : {
+         &amp;quot;plannerVersion&amp;quot; : 1,
+         ...
+         &amp;quot;winningPlan&amp;quot; : {
+               &amp;quot;stage&amp;quot; : &amp;quot;FETCH&amp;quot;,
+               &amp;quot;inputStage&amp;quot; : {
+                  &amp;quot;stage&amp;quot; : &amp;quot;IXSCAN&amp;quot;,
+                  &amp;quot;keyPattern&amp;quot; : {
+                     &amp;quot;quantity&amp;quot; : 1
+                  },
+                  ...
+               }
+         },
+         &amp;quot;rejectedPlans&amp;quot; : [ ]
+   },
+   &amp;quot;executionStats&amp;quot; : {
+         &amp;quot;executionSuccess&amp;quot; : true,
+         &amp;quot;nReturned&amp;quot; : 3,
+         &amp;quot;executionTimeMillis&amp;quot; : 0,
+         &amp;quot;totalKeysExamined&amp;quot; : 3,
+         &amp;quot;totalDocsExamined&amp;quot; : 3,
+         &amp;quot;executionStages&amp;quot; : {
+            ...
+         },
+         ...
+   },
+   ...
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;queryPlanner.winningPlan.inputStage.stage displays IXSCAN to indicate index use.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.nReturned&lt;br&gt;
+displays 3 to indicate that the query matches and returns three documents.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.totalKeysExamined&lt;br&gt;
+displays 3 to indicate that MongoDB scanned three index entries. The number of keys examined match the number of documents returned, meaning that the mongod only had to examine index keys to return the results. The mongod did not have to scan all of the documents, and only the three matching documents had to be pulled into memory. This results in a very efficient query.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;executionStats.totalDocsExamined&lt;br&gt;
+display 3 to indicate that MongoDB scanned three documents.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>cp4. Tables</title>
         <link>/p/cp4.-tables/</link>
         <pubDate>Mon, 05 Apr 2021 18:36:08 +0800</pubDate>
@@ -286,6 +464,11 @@ Redundant是为兼容旧版本而保留的，在 MySQL 5.1 版本中，默认为
 无论是 CHAR 类型还是 VARCHAR 类型，在 compact 格式下， NULL 值都不占用任何存储空间。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id=&#34;32-redundant-行记录格式&#34;&gt;3.2 Redundant 行记录格式&lt;/h3&gt;
+&lt;p&gt;Redundant 是 MySQL5.0之前 InnoDB的行记录存储方式，MySQL5.0支持 Redundant 是为了兼容之前版本的页格式。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Redundant 行记录格式：&lt;br&gt;
+字段长度偏移列表|记录头信息|列1数据|列2数据|&amp;hellip;|&lt;/p&gt;
+&lt;/blockquote&gt;
 </description>
         </item>
         <item>
@@ -1929,6 +2112,61 @@ AIO 可以进行 IO Merge 操作: 将多个 IO 合并为 1 个IO，可以提高 
 &lt;blockquote&gt;
 &lt;p&gt;若 innodb_force_recovery 参数值大于0，用户可以对表进行 select, create 和 drop 操作，但不允许 insert, update 和 delete 这类 DML 操作。&lt;/p&gt;
 &lt;/blockquote&gt;
+</description>
+        </item>
+        <item>
+        <title>ZK 1. Introduction to Zookeeper </title>
+        <link>/p/zk-1.-introduction-to-zookeeper/</link>
+        <pubDate>Wed, 24 Mar 2021 18:36:08 +0800</pubDate>
+        
+        <guid>/p/zk-1.-introduction-to-zookeeper/</guid>
+        <description>&lt;h1 id=&#34;statement&#34;&gt;Statement&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;该文是在下在看书过程中的学习笔记，仅限于学习交流，禁止用于商业用途。&lt;/li&gt;
+&lt;li&gt;非商业用途转载请注明出处，若要详细了解书中内容，请参考原作: MySQL技术内幕（InnoDB存储引擎）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;1-nginx的五大模块&#34;&gt;1. Nginx的五大模块&lt;/h3&gt;
+&lt;p&gt;Nginx由不同功能的模块组成，这些模块会根据配置参数决定其行为。&lt;br&gt;
+在 configure的参数中，有为五大类模块：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;事件模块&lt;/li&gt;
+&lt;li&gt;默认编译的HTTP模块&lt;/li&gt;
+&lt;li&gt;默认不编译的HTTP模块&lt;/li&gt;
+&lt;li&gt;邮件代理服务相关的mail模块&lt;/li&gt;
+&lt;li&gt;其它模块&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-nginx的8类配置项&#34;&gt;2. Nginx的8类配置项&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;虚拟主机与请求的分发&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;文件路径的定义&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;内存及磁盘资源的分配&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;网络连接的设置&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;MIME类型的设置&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对客户端请求的限制&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;文件操作的优化&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对客户端请求的特殊处理&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;参考&lt;br&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/34156758&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://zhuanlan.zhihu.com/p/34156758&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 </description>
         </item>
         <item>
@@ -4632,7 +4870,7 @@ A[Hard edge] --&amp;gt; |Link text| B(Round edge)
 B --&amp;gt; C{Decision}
 C --&amp;gt; |One| D[Result One]
 C --&amp;gt; |Two| E[Result Two]
-&lt;/code&gt;&lt;/pre&gt;&lt;pre&gt;&lt;code class=&#34;language-Mermaid&#34; data-lang=&#34;Mermaid&#34;&gt;graph TB
+&lt;/code&gt;&lt;/pre&gt;&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34; data-lang=&#34;mermaid&#34;&gt;graph TB
     main --&amp;gt; parse --&amp;gt; execute;
     main --&amp;gt; init;
     main --&amp;gt; cleanup;
@@ -4653,7 +4891,7 @@ C --&amp;gt; |Two| E[Result Two]
   B --&amp;gt; C{扔硬币}
   C --&amp;gt;|正面朝上| D[喝牛奶]
   C --&amp;gt;|反面朝上| E[喝果汁]
-  C --&amp;gt;|金枪不倒| F[(看情况)]
+  C --&amp;gt;|刷牙| F[(看情况)]
   A --&amp;gt;|穿衣服| G([跳绳])
   A --&amp;gt; H{{洗澡}}
 &lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
@@ -6013,42 +6251,21 @@ Otherwise, you were risking yourself and wouldn&amp;rsquo;t have a good score in
 &lt;tr&gt;
 &lt;th style=&#34;text-align:left&#34;&gt;University&lt;/th&gt;
 &lt;th style=&#34;text-align:right&#34;&gt;Major&lt;/th&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;Period&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td style=&#34;text-align:left&#34;&gt;Shenzhen University&lt;/td&gt;
 &lt;td style=&#34;text-align:right&#34;&gt;Software Engineering&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;2016.3~2019.1&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style=&#34;text-align:left&#34;&gt;Henan Institute of Technology&lt;/td&gt;
 &lt;td style=&#34;text-align:right&#34;&gt;Mechanical Manufacture and Automation&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;2005.9~2008.7&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;!-- raw HTML omitted --&gt;
-&lt;h3 id=&#34;language-skills&#34;&gt;Language Skills&lt;/h3&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Language&lt;/th&gt;
-&lt;th&gt;Level&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;Chinese&lt;/td&gt;
-&lt;td&gt;Fluent&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;English&lt;/td&gt;
-&lt;td&gt;TOEFL: 102 (MyBest107), GRE:322&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
+&lt;!-- raw HTML omitted --&gt;
 &lt;h3 id=&#34;special-skills&#34;&gt;Special Skills&lt;/h3&gt;
 &lt;p&gt;Good at troubleshooting, analyzing and solving problems.&lt;br&gt;
 Good at optimizing interface performance, achieving high concurrent access and stability.&lt;/p&gt;
@@ -6066,7 +6283,7 @@ Good at optimizing interface performance, achieving high concurrent access and s
 &lt;li&gt;Familiar with wrk (Lua) pressure measurement tool, pprof performance optimization tool&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id=&#34;other-hubbies&#34;&gt;Other Hubbies&lt;/h3&gt;
-&lt;p&gt;Reading, Music, Gym&lt;/p&gt;
+&lt;p&gt;Reading, Music, Gym, Boxing&lt;/p&gt;
 </description>
         </item>
         
